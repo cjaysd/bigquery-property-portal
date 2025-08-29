@@ -1,0 +1,3732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Investment Analysis Portal - OODA</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            /* OODA Design System - Dark Theme */
+            --ooda-dark: #1a1a19;
+            --ooda-darker: #0e0e0d;
+            --ooda-darkest: #050505;
+            --ooda-mint: #26D086;
+            --ooda-mint-light: #4FE0A3;
+            --ooda-mint-dark: #1BA66A;
+            --ooda-mint-glow: rgba(38, 208, 134, 0.4);
+            
+            /* Extended Dark Palette */
+            --neutral-900: #1a1a19;
+            --neutral-800: #262625;
+            --neutral-700: #333332;
+            --neutral-600: #404040;
+            --neutral-500: #595959;
+            --neutral-400: #737373;
+            --neutral-300: #8C8C8C;
+            --neutral-200: #A6A6A6;
+            --neutral-100: #BFBFBF;
+            --neutral-50: #D9D9D9;
+            
+            /* Semantic colors for dark theme */
+            --bg-primary: #1a1a19;
+            --bg-secondary: #262625;
+            --bg-tertiary: #333332;
+            --bg-elevated: rgba(38, 38, 37, 0.8);
+            --bg-glass: rgba(26, 26, 25, 0.7);
+            --text-primary: #E5E5E4;
+            --text-secondary: #A6A6A6;
+            --text-muted: #737373;
+            --text-accent: #26D086;
+            --border-light: rgba(255, 255, 255, 0.1);
+            --border-medium: rgba(255, 255, 255, 0.15);
+            --border-accent: rgba(38, 208, 134, 0.3);
+            
+            /* Success colors matching dashboard */
+            --success-green: #26D086;
+            --success-green-light: #4FE0A3;
+            --success-green-dark: #1BA66A;
+            --success-bg: rgba(38, 208, 134, 0.1);
+            --success-border: rgba(38, 208, 134, 0.3);
+            
+            /* Chart colors */
+            --chart-primary: #26D086;
+            --chart-secondary: #4B9BFF;
+            --chart-tertiary: #FFB84D;
+            --chart-quaternary: #FF6B6B;
+            
+            /* Info/Warning/Error */
+            --info-blue: #4B9BFF;
+            --warning-amber: #FFB84D;
+            --error-red: #FF6B6B;
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(26, 26, 25, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-blur: 12px;
+            
+            /* Shadows for dark theme */
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.7);
+            --shadow-glow: 0 0 30px rgba(38, 208, 134, 0.3);
+            
+            /* Gradients */
+            --gradient-mint: linear-gradient(135deg, #26D086 0%, #1BA66A 100%);
+            --gradient-dark: linear-gradient(135deg, #333332 0%, #1a1a19 100%);
+            --gradient-glass: linear-gradient(135deg, rgba(38, 208, 134, 0.1) 0%, rgba(38, 208, 134, 0.05) 100%);
+            
+            /* Spacing */
+            --space-xs: 0.5rem;
+            --space-sm: 0.75rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --space-3xl: 4rem;
+            
+            /* Border Radius */
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+            --radius-full: 9999px;
+            
+            /* Transitions */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slower: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* Loading State - matching dashboard */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            gap: var(--space-lg);
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--bg-tertiary);
+            border-top: 3px solid var(--ooda-mint);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            min-height: 600px;
+            background: var(--gradient-dark);
+            overflow: hidden;
+        }
+        
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.3;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(2px);
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                180deg,
+                rgba(26, 26, 25, 0.7) 0%,
+                rgba(26, 26, 25, 0.9) 50%,
+                rgba(26, 26, 25, 1) 100%
+            );
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            padding: var(--space-3xl) var(--space-xl);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .hero-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .hero-title-section h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: var(--space-sm);
+            background: var(--gradient-mint);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .property-address {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .lead-info {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .confidence-badge {
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--border-accent);
+            border-radius: var(--radius-xl);
+            padding: var(--space-md) var(--space-lg);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .confidence-score {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--ooda-mint);
+        }
+        
+        .confidence-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Hero Metrics Grid - matching dashboard card style */
+        .hero-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-lg);
+            margin-top: var(--space-2xl);
+        }
+        
+        .hero-metric-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            transition: all var(--transition-base);
+        }
+        
+        .hero-metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-glow);
+            border-color: var(--border-accent);
+        }
+        
+        .hero-metric-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-xs);
+        }
+        
+        .hero-metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: var(--space-xs);
+        }
+        
+        .hero-metric-value.revenue {
+            background: linear-gradient(135deg, var(--success-green) 0%, var(--ooda-mint-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-metric-value.occupancy {
+            background: linear-gradient(135deg, var(--info-blue) 0%, var(--chart-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-metric-value.adr {
+            background: linear-gradient(135deg, var(--warning-amber) 0%, var(--chart-tertiary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-metric-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Container for main content */
+        .portal-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--space-xl);
+        }
+        
+        /* Section styles */
+        .portal-section {
+            margin-bottom: var(--space-3xl);
+        }
+        
+        .section-header {
+            margin-bottom: var(--space-xl);
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: var(--space-sm);
+            color: var(--text-primary);
+        }
+        
+        .section-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Glass panel style from analysis.html */
+        .glass-panel {
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            transition: all var(--transition-base);
+        }
+        
+        .glass-panel:hover {
+            border-color: var(--border-medium);
+            box-shadow: var(--shadow-md);
+        }
+        
+        /* Executive Summary Styles */
+        .position-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-lg);
+        }
+        
+        .position-card {
+            display: flex;
+            gap: var(--space-md);
+            padding: var(--space-lg);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-light);
+            transition: all var(--transition-base);
+        }
+        
+        .position-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--border-accent);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .position-icon {
+            font-size: 2rem;
+            line-height: 1;
+        }
+        
+        .position-content {
+            flex: 1;
+        }
+        
+        .position-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: var(--space-xs);
+        }
+        
+        .position-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ooda-mint);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .position-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Investment Metrics */
+        .investment-metrics {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+        
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-sm) 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+        
+        .metric-row.highlight {
+            padding: var(--space-md);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-accent);
+            margin-top: var(--space-sm);
+        }
+        
+        .metric-row .metric-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .metric-row .metric-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--ooda-mint);
+        }
+        
+        /* Market Explorer Styles */
+        /* Tab Navigation Styles */
+        .tabs-container {
+            max-width: 100%;
+            margin: 0 0 var(--space-xl) 0;
+        }
+        
+        .tab-buttons {
+            display: inline-flex;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 4px;
+            position: relative;
+            gap: 2px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tab-button {
+            padding: var(--space-sm) var(--space-lg);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: var(--radius-md);
+            transition: all var(--transition-base);
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            white-space: nowrap;
+        }
+        
+        .tab-button:hover:not(.active) {
+            color: var(--text-primary);
+        }
+        
+        .tab-button.active {
+            color: var(--ooda-dark);
+            font-weight: 600;
+        }
+        
+        .tab-indicator {
+            position: absolute;
+            background: var(--primary);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-base);
+            box-shadow: 0 2px 8px rgba(38, 208, 134, 0.3);
+            z-index: 1;
+        }
+        
+        .tab-icon {
+            font-size: 1.1rem;
+            display: inline-block;
+            transition: transform var(--transition-base);
+        }
+        
+        .tab-button.active .tab-icon {
+            transform: scale(1.1);
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: var(--space-lg);
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .filter-label {
+            display: block;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: var(--space-xs);
+        }
+        
+        .filter-inputs {
+            display: flex;
+            gap: var(--space-sm);
+            align-items: center;
+        }
+        
+        .filter-select {
+            flex: 1;
+            padding: var(--space-sm) var(--space-md);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            transition: all var(--transition-base);
+        }
+        
+        .filter-select:hover {
+            border-color: var(--border-accent);
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--ooda-mint);
+            box-shadow: 0 0 0 3px var(--ooda-mint-glow);
+        }
+        
+        .filter-separator {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+        
+        .filter-apply-btn {
+            padding: var(--space-sm) var(--space-xl);
+            background: var(--gradient-mint);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            box-shadow: 0 4px 12px rgba(38, 208, 134, 0.3);
+        }
+        
+        .filter-apply-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(38, 208, 134, 0.4);
+        }
+        
+        /* Market Stats Row */
+        .market-stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .stat-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            text-align: center;
+            transition: all var(--transition-base);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--border-accent);
+        }
+        
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--ooda-mint);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Property Grid - matching dashboard style */
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--space-lg);
+            padding: var(--space-lg) 0;
+        }
+        
+        .property-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            transition: all var(--transition-base);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .property-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(38, 208, 134, 0.2);
+        }
+        
+        .property-card.selected {
+            border-color: var(--primary);
+            background: rgba(38, 208, 134, 0.1);
+        }
+        
+        .property-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--space-md);
+        }
+        
+        .property-card-header h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+            line-height: 1.3;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        
+        .property-distance {
+            font-size: 0.875rem;
+            color: var(--primary);
+            font-weight: 500;
+            white-space: nowrap;
+            margin-left: var(--space-sm);
+        }
+        
+        .property-card-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+        
+        .property-metric {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .property-metric .metric-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .property-metric .metric-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .property-card-footer {
+            margin-top: var(--space-md);
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .select-property-btn {
+            width: 100%;
+            padding: var(--space-sm);
+            background: var(--primary);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+        
+        .select-property-btn:hover {
+            background: var(--ooda-mint-light);
+            transform: scale(1.02);
+        }
+        
+        .property-card.selected .select-property-btn {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        /* Property Card - adapted from dashboard */
+        .property-card {
+            position: relative;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            transition: all var(--transition-base);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .property-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--border-accent);
+        }
+        
+        .property-image {
+            position: relative;
+            height: 200px;
+            background: var(--bg-tertiary);
+            overflow: hidden;
+        }
+        
+        .property-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .property-image-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            font-size: 3rem;
+            color: var(--text-muted);
+            background: var(--gradient-dark);
+        }
+        
+        .property-rank {
+            position: absolute;
+            top: var(--space-sm);
+            left: var(--space-sm);
+            background: var(--bg-glass);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-accent);
+            color: var(--ooda-mint);
+            font-weight: 800;
+            font-size: 1.25rem;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .distance-badge {
+            position: absolute;
+            top: var(--space-sm);
+            right: var(--space-sm);
+            background: var(--bg-glass);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-light);
+            color: var(--text-primary);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .comp-checkbox {
+            position: absolute;
+            top: var(--space-md);
+            left: var(--space-md);
+            width: 24px;
+            height: 24px;
+            accent-color: var(--ooda-mint);
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        .property-content {
+            padding: var(--space-lg);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .property-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+            line-height: 1.2;
+        }
+        
+        .property-location {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-md);
+        }
+        
+        .property-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+        }
+        
+        .metric {
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+        
+        .metric-value.revenue {
+            color: var(--success-green);
+        }
+        
+        .metric-value.occupancy {
+            color: var(--info-blue);
+        }
+        
+        .metric-value.adr {
+            color: var(--warning-amber);
+        }
+        
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        
+        .property-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: var(--space-sm);
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .property-details {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .performance-badge {
+            padding: 4px 8px;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .performance-badge.top-10 {
+            background: var(--gradient-mint);
+            color: var(--ooda-dark);
+        }
+        
+        .performance-badge.top-25 {
+            background: linear-gradient(135deg, var(--warning-amber) 0%, var(--chart-tertiary) 100%);
+            color: var(--ooda-dark);
+        }
+        
+        /* Selection Panel - matching dashboard */
+        .selection-panel {
+            position: fixed;
+            bottom: var(--space-xl);
+            right: var(--space-xl);
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--border-accent);
+            border-radius: var(--radius-xl);
+            padding: var(--space-lg) var(--space-xl);
+            box-shadow: var(--shadow-xl);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+            min-width: 300px;
+        }
+        
+        .selection-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .selection-counter {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .clear-selections {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-light);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+        
+        .clear-selections:hover {
+            border-color: var(--border-accent);
+            color: var(--text-primary);
+        }
+        
+        .analyze-button {
+            background: var(--gradient-mint);
+            color: white;
+            border: none;
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            box-shadow: 0 4px 12px rgba(38, 208, 134, 0.3);
+        }
+        
+        .analyze-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(38, 208, 134, 0.4);
+        }
+        
+        .analyze-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Placeholder for future sections */
+        .placeholder {
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            border: 2px dashed var(--border-light);
+            border-radius: var(--radius-xl);
+        }
+        
+        /* Detailed Projections Styles */
+        .view-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-md);
+            flex-wrap: wrap;
+            gap: var(--space-md);
+        }
+        
+        .view-tabs {
+            display: flex;
+            gap: var(--space-sm);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px;
+            border-radius: var(--radius-md);
+        }
+        
+        .view-tab {
+            padding: var(--space-sm) var(--space-md);
+            background: transparent;
+            border: none;
+            color: var(--medium);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .view-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .view-tab.active {
+            background: var(--primary);
+            color: var(--dark);
+        }
+        
+        .metric-toggle {
+            display: flex;
+            gap: var(--space-xs);
+        }
+        
+        .metric-btn {
+            padding: var(--space-xs) var(--space-md);
+            background: transparent;
+            border: 1px solid var(--dark-gray);
+            color: var(--medium);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+        
+        .metric-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .metric-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--dark);
+        }
+        
+        .chart-container {
+            padding: var(--space-lg);
+        }
+        
+        .projection-stats {
+            padding: var(--space-lg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-lg);
+        }
+        
+        .projection-stat {
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--medium);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--light);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .stat-detail {
+            font-size: 0.9rem;
+            color: var(--primary);
+        }
+        
+        .confidence-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: var(--space-xs);
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            transition: width 0.5s ease;
+        }
+        
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-md);
+        }
+        
+        .scenario-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .scenario-card.conservative {
+            border-color: rgba(255, 152, 0, 0.3);
+        }
+        
+        .scenario-card.expected {
+            border-color: rgba(0, 230, 118, 0.3);
+        }
+        
+        .scenario-card.optimistic {
+            border-color: rgba(0, 122, 255, 0.3);
+        }
+        
+        .scenario-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-md);
+            padding-bottom: var(--space-sm);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .scenario-label {
+            font-weight: 600;
+            color: var(--light);
+        }
+        
+        .scenario-badge {
+            font-size: 0.85rem;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--medium);
+        }
+        
+        .conservative .scenario-badge {
+            background: rgba(255, 152, 0, 0.2);
+            color: rgb(255, 152, 0);
+        }
+        
+        .expected .scenario-badge {
+            background: rgba(0, 230, 118, 0.2);
+            color: var(--success);
+        }
+        
+        .optimistic .scenario-badge {
+            background: rgba(0, 122, 255, 0.2);
+            color: rgb(0, 122, 255);
+        }
+        
+        .scenario-metrics {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+        
+        .scenario-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .scenario-metric span {
+            color: var(--medium);
+            font-size: 0.85rem;
+        }
+        
+        .scenario-metric strong {
+            color: var(--light);
+            font-size: 1.1rem;
+        }
+        
+        /* Supporting Evidence Styles */
+        .data-table-container {
+            overflow-x: auto;
+            margin-top: var(--space-md);
+        }
+        
+        .evidence-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        
+        .evidence-table th {
+            background: rgba(0, 0, 0, 0.5);
+            color: var(--primary);
+            padding: var(--space-md);
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary);
+            white-space: nowrap;
+        }
+        
+        .evidence-table td {
+            padding: var(--space-md);
+            color: var(--light);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .evidence-table tbody tr:hover {
+            background: rgba(38, 208, 134, 0.05);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-lg);
+        }
+        
+        .market-stat {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+        
+        .stat-icon {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(38, 208, 134, 0.1);
+            border-radius: var(--radius-md);
+        }
+        
+        .stat-content {
+            flex: 1;
+        }
+        
+        .methodology-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-xl);
+            padding: var(--space-lg);
+        }
+        
+        .methodology-item h4 {
+            color: var(--primary);
+            margin-bottom: var(--space-sm);
+            font-size: 1rem;
+        }
+        
+        .methodology-item p,
+        .methodology-item ul {
+            color: var(--medium);
+            line-height: 1.6;
+        }
+        
+        .methodology-item ul {
+            margin-left: var(--space-lg);
+            list-style-type: none;
+        }
+        
+        .methodology-item li::before {
+            content: "✓ ";
+            color: var(--primary);
+            font-weight: bold;
+            margin-right: var(--space-xs);
+        }
+
+        /* Market Explorer Styles */
+        .market-explorer-section {
+            background: var(--bg-primary);
+            padding: var(--space-3xl) 0;
+            margin-top: var(--space-2xl);
+            border-top: 1px solid var(--border-light);
+        }
+
+        .market-explorer-header {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+        }
+
+        .market-explorer-header .section-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+        }
+
+        .market-explorer-header .section-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Filter Display */
+        .filter-display {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-xl);
+            margin-bottom: var(--space-2xl);
+            flex-wrap: wrap;
+        }
+
+        .filter-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: var(--space-md) var(--space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .filter-value {
+            font-weight: 700;
+            color: var(--ooda-mint);
+        }
+
+        /* Property Tabs */
+        .property-tabs {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-md);
+            margin-bottom: var(--space-2xl);
+        }
+
+        .tab-button {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            padding: var(--space-md) var(--space-xl);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .tab-button:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-accent);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .tab-button.active {
+            background: var(--gradient-mint);
+            color: var(--bg-primary);
+            border-color: var(--ooda-mint);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .tab-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Properties Container */
+        .properties-container {
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: var(--space-xl);
+            margin-top: var(--space-xl);
+        }
+
+        .properties-container.active {
+            display: grid;
+        }
+
+        .loading-properties {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-lg);
+            padding: var(--space-3xl);
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Property Card Styles (adapted from dashboard) */
+        .property-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-xl);
+            padding: var(--space-lg);
+            transition: all var(--transition-base);
+            cursor: pointer;
+        }
+
+        .property-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--border-accent);
+        }
+
+        .property-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-lg);
+        }
+
+        .property-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .property-address {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .property-price {
+            background: var(--gradient-mint);
+            color: var(--bg-primary);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .property-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+
+        .stat-item {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: var(--space-sm);
+            text-align: center;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .property-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--border-light);
+        }
+
+        .property-meta {
+            display: flex;
+            gap: var(--space-lg);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .error-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: var(--space-2xl);
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: var(--radius-lg);
+            color: #EF4444;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .filter-display {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .property-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .properties-container {
+                grid-template-columns: 1fr;
+                gap: var(--space-lg);
+            }
+
+            .market-explorer-header .section-title {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading State -->
+    <div id="loadingState" class="loading">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading property analysis...</div>
+    </div>
+    
+    <!-- Main Portal (hidden initially) -->
+    <div id="portalContent" style="display: none;">
+        
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-background" id="heroBackground"></div>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <div class="hero-header">
+                    <div class="hero-title-section">
+                        <h1>Investment Opportunity Analysis</h1>
+                        <div class="property-address" id="propertyAddress">Loading...</div>
+                        <div class="lead-info" id="leadInfo">Loading...</div>
+                    </div>
+                    <div class="confidence-badge">
+                        <div class="confidence-score" id="confidenceScore">--</div>
+                        <div class="confidence-label">Confidence<br>Score</div>
+                    </div>
+                </div>
+                
+                <div class="hero-metrics">
+                    <div class="hero-metric-card">
+                        <div class="hero-metric-label">Projected Monthly Revenue</div>
+                        <div class="hero-metric-value revenue" id="monthlyRevenue">$0</div>
+                        <div class="hero-metric-subtitle">Based on market analysis</div>
+                    </div>
+                    <div class="hero-metric-card">
+                        <div class="hero-metric-label">Annual Revenue Potential</div>
+                        <div class="hero-metric-value revenue" id="annualRevenue">$0</div>
+                        <div class="hero-metric-subtitle">12-month projection</div>
+                    </div>
+                    <div class="hero-metric-card">
+                        <div class="hero-metric-label">Expected Occupancy</div>
+                        <div class="hero-metric-value occupancy" id="occupancyRate">0%</div>
+                        <div class="hero-metric-subtitle">Market average</div>
+                    </div>
+                    <div class="hero-metric-card">
+                        <div class="hero-metric-label">Nightly Rate (ADR)</div>
+                        <div class="hero-metric-value adr" id="adrRate">$0</div>
+                        <div class="hero-metric-subtitle">Recommended pricing</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Main Content Container -->
+        <div class="portal-container">
+            
+            <!-- Executive Summary Section -->
+            <section class="portal-section" id="executiveSummary">
+                <div class="section-header">
+                    <h2 class="section-title">Executive Summary</h2>
+                    <p class="section-subtitle">Key insights and market positioning for your property</p>
+                </div>
+                
+                <!-- Market Position Card -->
+                <div class="glass-panel" style="margin-bottom: var(--space-lg);">
+                    <div class="market-position">
+                        <h3 style="color: var(--text-primary); margin-bottom: var(--space-lg);">Market Position Analysis</h3>
+                        <div class="position-grid">
+                            <div class="position-card">
+                                <div class="position-icon">📊</div>
+                                <div class="position-content">
+                                    <div class="position-label">Market Rank</div>
+                                    <div class="position-value" id="marketRank">Top 25%</div>
+                                    <div class="position-subtitle">Based on revenue potential</div>
+                                </div>
+                            </div>
+                            <div class="position-card">
+                                <div class="position-icon">🎯</div>
+                                <div class="position-content">
+                                    <div class="position-label">Competition Level</div>
+                                    <div class="position-value" id="competitionLevel">Medium</div>
+                                    <div class="position-subtitle"><span id="compCount">0</span> active listings nearby</div>
+                                </div>
+                            </div>
+                            <div class="position-card">
+                                <div class="position-icon">📈</div>
+                                <div class="position-content">
+                                    <div class="position-label">Revenue Percentile</div>
+                                    <div class="position-value" id="revenuePercentile">75th</div>
+                                    <div class="position-subtitle">vs. comparable properties</div>
+                                </div>
+                            </div>
+                            <div class="position-card">
+                                <div class="position-icon">⚡</div>
+                                <div class="position-content">
+                                    <div class="position-label">Market Demand</div>
+                                    <div class="position-value" id="marketDemand">High</div>
+                                    <div class="position-subtitle">Based on occupancy rates</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Investment Metrics -->
+                <div class="glass-panel">
+                    <h3 style="color: var(--text-primary); margin-bottom: var(--space-lg);">Investment Quick Analysis</h3>
+                    <div class="investment-metrics">
+                        <div class="metric-row">
+                            <span class="metric-label">Estimated Setup Cost:</span>
+                            <span class="metric-value" id="setupCost">$25,000</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Monthly Operating Expenses:</span>
+                            <span class="metric-value" id="monthlyExpenses">$1,500</span>
+                        </div>
+                        <div class="metric-row">
+                            <span class="metric-label">Break-even Timeline:</span>
+                            <span class="metric-value" id="breakEven">8-10 months</span>
+                        </div>
+                        <div class="metric-row highlight">
+                            <span class="metric-label">First Year Net Revenue:</span>
+                            <span class="metric-value" id="firstYearNet">$0</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Selected Comparable Properties Gallery (NEW) -->
+            <section class="portal-section" id="selectedCompsGallery" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">Selected Comparable Properties</h2>
+                    <p class="section-subtitle" id="selectedCompsCount">Analyzing specific properties for accurate projections</p>
+                </div>
+                
+                <div class="glass-panel">
+                    <div id="selectedCompsGrid" style="
+                        display: grid;
+                        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                        gap: var(--space-lg);
+                        padding: var(--space-lg);
+                    ">
+                        <!-- Will be populated with selected comp cards -->
+                    </div>
+                </div>
+            </section>
+            
+            
+            <!-- Detailed Projections Section -->
+            <section class="portal-section" id="detailedProjections">
+                <div class="section-header">
+                    <h2 class="section-title">Detailed Revenue Projections</h2>
+                    <p class="section-subtitle">Monthly, seasonal, and scenario-based forecasts</p>
+                </div>
+                
+                <!-- Chart View Controls -->
+                <div class="glass-panel" style="margin-bottom: var(--space-lg);">
+                    <div class="view-controls">
+                        <div class="view-tabs">
+                            <button class="view-tab active" data-view="monthly">Monthly</button>
+                            <button class="view-tab" data-view="seasonal">Seasonal</button>
+                            <button class="view-tab" data-view="quarterly">Quarterly</button>
+                        </div>
+                        <div class="metric-toggle">
+                            <button class="metric-btn active" data-metric="revenue">Revenue</button>
+                            <button class="metric-btn" data-metric="occupancy">Occupancy</button>
+                            <button class="metric-btn" data-metric="adr">ADR</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Chart Container -->
+                <div class="glass-panel">
+                    <div class="chart-container" style="position: relative; height: 400px;">
+                        <canvas id="projections-chart"></canvas>
+                    </div>
+                    
+                    <!-- Quick Stats Below Chart -->
+                    <div class="projection-stats">
+                        <div class="stat-group">
+                            <div class="projection-stat">
+                                <div class="stat-label">Peak Month</div>
+                                <div class="stat-value" id="peakMonth">July</div>
+                                <div class="stat-detail" id="peakValue">$8,500</div>
+                            </div>
+                            <div class="projection-stat">
+                                <div class="stat-label">Low Month</div>
+                                <div class="stat-value" id="lowMonth">January</div>
+                                <div class="stat-detail" id="lowValue">$4,200</div>
+                            </div>
+                            <div class="projection-stat">
+                                <div class="stat-label">Average Monthly</div>
+                                <div class="stat-value" id="avgMonthly">$6,350</div>
+                                <div class="stat-detail">±$850</div>
+                            </div>
+                            <div class="projection-stat">
+                                <div class="stat-label">Confidence Score</div>
+                                <div class="stat-value">
+                                    <span id="confidenceScore">85%</span>
+                                </div>
+                                <div class="confidence-bar">
+                                    <div class="confidence-fill" style="width: 85%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Scenario Analysis -->
+                <div class="glass-panel" style="margin-top: var(--space-lg);">
+                    <h3 style="color: var(--light); margin-bottom: var(--space-md);">Scenario Analysis</h3>
+                    <div class="scenario-grid">
+                        <div class="scenario-card conservative">
+                            <div class="scenario-header">
+                                <span class="scenario-label">Conservative</span>
+                                <span class="scenario-badge">-20%</span>
+                            </div>
+                            <div class="scenario-metrics">
+                                <div class="scenario-metric">
+                                    <span>Annual Revenue</span>
+                                    <strong id="conservativeRevenue">$61,200</strong>
+                                </div>
+                                <div class="scenario-metric">
+                                    <span>Monthly Average</span>
+                                    <strong id="conservativeMonthly">$5,100</strong>
+                                </div>
+                                <div class="scenario-metric">
+                                    <span>Break-even</span>
+                                    <strong id="conservativeBreakeven">6 months</strong>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="scenario-card expected">
+                            <div class="scenario-header">
+                                <span class="scenario-label">Expected</span>
+                                <span class="scenario-badge">Base Case</span>
+                            </div>
+                            <div class="scenario-metrics">
+                                <div class="scenario-metric">
+                                    <span>Annual Revenue</span>
+                                    <strong id="expectedRevenue">$76,500</strong>
+                                </div>
+                                <div class="scenario-metric">
+                                    <span>Monthly Average</span>
+                                    <strong id="expectedMonthly">$6,375</strong>
+                                </div>
+                                <div class="scenario-metric">
+                                    <span>Break-even</span>
+                                    <strong id="expectedBreakeven">5 months</strong>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="scenario-card optimistic">
+                            <div class="scenario-header">
+                                <span class="scenario-label">Optimistic</span>
+                                <span class="scenario-badge">+20%</span>
+                            </div>
+                            <div class="scenario-metrics">
+                                <div class="scenario-metric">
+                                    <span>Annual Revenue</span>
+                                    <strong id="optimisticRevenue">$91,800</strong>
+                                </div>
+                                <div class="scenario-metric">
+                                    <span>Monthly Average</span>
+                                    <strong id="optimisticMonthly">$7,650</strong>
+                                </div>
+                                <div class="scenario-metric">
+                                    <span>Break-even</span>
+                                    <strong id="optimisticBreakeven">4 months</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Supporting Evidence Section -->
+            <section class="portal-section" id="supportingEvidence">
+                <div class="section-header">
+                    <h2 class="section-title">Market Evidence & Data</h2>
+                    <p class="section-subtitle">Complete market analysis and comparable property details</p>
+                </div>
+                
+                <!-- Comparable Properties Table -->
+                <div class="glass-panel">
+                    <h3 style="color: var(--light); margin-bottom: var(--space-lg);">Comparable Properties Analysis</h3>
+                    <div class="data-table-container">
+                        <table class="evidence-table" id="comparablesTable">
+                            <thead>
+                                <tr>
+                                    <th>Property</th>
+                                    <th>Bedrooms</th>
+                                    <th>Distance</th>
+                                    <th>Annual Revenue</th>
+                                    <th>Occupancy</th>
+                                    <th>ADR</th>
+                                    <th>Rating</th>
+                                    <th>Reviews</th>
+                                </tr>
+                            </thead>
+                            <tbody id="comparablesTableBody">
+                                <!-- Will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Market Statistics -->
+                <div class="glass-panel" style="margin-top: var(--space-lg);">
+                    <h3 style="color: var(--light); margin-bottom: var(--space-lg);">Market Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="market-stat">
+                            <div class="stat-icon">📊</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Average Revenue</div>
+                                <div class="stat-value" id="avgRevenue">$38,898</div>
+                            </div>
+                        </div>
+                        <div class="market-stat">
+                            <div class="stat-icon">🏠</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Total Comparables</div>
+                                <div class="stat-value" id="totalComps">10</div>
+                            </div>
+                        </div>
+                        <div class="market-stat">
+                            <div class="stat-icon">📈</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Market Growth</div>
+                                <div class="stat-value" id="marketGrowth">+12%</div>
+                            </div>
+                        </div>
+                        <div class="market-stat">
+                            <div class="stat-icon">⭐</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Avg Rating</div>
+                                <div class="stat-value" id="avgRating">4.8</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Data Sources -->
+                <div class="glass-panel" style="margin-top: var(--space-lg);">
+                    <h3 style="color: var(--light); margin-bottom: var(--space-md);">Data Sources & Methodology</h3>
+                    <div class="methodology-content">
+                        <div class="methodology-item">
+                            <h4>Data Provider</h4>
+                            <p>AirDNA - Leading short-term rental data analytics platform</p>
+                        </div>
+                        <div class="methodology-item">
+                            <h4>Analysis Method</h4>
+                            <p>Comparative market analysis using properties within 3-mile radius with similar characteristics</p>
+                        </div>
+                        <div class="methodology-item">
+                            <h4>Confidence Factors</h4>
+                            <ul>
+                                <li>Number of comparable properties analyzed</li>
+                                <li>Similarity score based on bedrooms, location, and amenities</li>
+                                <li>Historical performance data (12 months)</li>
+                                <li>Market trend adjustments</li>
+                            </ul>
+                        </div>
+                        <div class="methodology-item">
+                            <h4>Update Frequency</h4>
+                            <p>Data refreshed monthly to ensure accuracy</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Market Explorer Section (Moved to Bottom) -->
+            <section class="portal-section" id="marketExplorer">
+                <div class="section-header">
+                    <h2 class="section-title">Interactive Market Explorer</h2>
+                    <p class="section-subtitle">Explore comparable properties and adjust your analysis</p>
+                </div>
+                
+                <!-- Tab Navigation -->
+                <div class="tabs-container" style="margin-bottom: var(--space-lg);">
+                    <div class="tab-buttons">
+                        <div class="tab-indicator" id="market-tab-indicator"></div>
+                        <button class="tab-button active" onclick="switchMarketTab('nearby')" id="nearby-tab-btn">
+                            <span class="tab-icon">📍</span>
+                            Nearby Properties
+                        </button>
+                        <button class="tab-button" onclick="switchMarketTab('revenue')" id="revenue-tab-btn">
+                            <span class="tab-icon">💰</span>
+                            Top Revenue Properties
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Filters Panel -->
+                <div class="glass-panel" style="margin-bottom: var(--space-lg);">
+                    <div class="explorer-controls">
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <label class="filter-label">Bedrooms</label>
+                                <div class="filter-inputs">
+                                    <select id="filterMinBeds" class="filter-select">
+                                        <option value="1">1+</option>
+                                        <option value="2">2+</option>
+                                        <option value="3">3+</option>
+                                        <option value="4">4+</option>
+                                    </select>
+                                    <span class="filter-separator">to</span>
+                                    <select id="filterMaxBeds" class="filter-select">
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="10" selected>10</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Search Radius</label>
+                                <div class="filter-inputs">
+                                    <select id="filterRadius" class="filter-select">
+                                        <option value="1">1 mile</option>
+                                        <option value="3">3 miles</option>
+                                        <option value="5" selected>5 miles</option>
+                                        <option value="10">10 miles</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="filter-apply-btn" onclick="applyFilters()">
+                                Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Market Stats -->
+                <div class="market-stats-row">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalProperties">0</div>
+                        <div class="stat-label">Total Properties</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="avgMonthlyRevenue">$0</div>
+                        <div class="stat-label">Avg Monthly Revenue</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="avgOccupancy">0%</div>
+                        <div class="stat-label">Avg Occupancy</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="avgNightlyRate">$0</div>
+                        <div class="stat-label">Avg Nightly Rate</div>
+                    </div>
+                </div>
+                
+                <!-- Properties Grid -->
+                <div class="glass-panel">
+                    <div class="property-grid" id="propertyGrid">
+                        <!-- Property cards will be inserted here -->
+                    </div>
+                </div>
+                
+                <!-- Selection Panel (matching dashboard style) -->
+                <div class="selection-panel" id="selectionPanel" style="display: none;">
+                    <div class="selection-info">
+                        <span class="selection-counter">0/10 selected</span>
+                        <button class="clear-selections" onclick="clearAllSelections()">Clear All</button>
+                    </div>
+                    <button class="analyze-button" onclick="recalculateProjections()" disabled>
+                        Recalculate Projections
+                    </button>
+                </div>
+            </section>
+            
+        </div>
+    </div>
+    
+    <script>
+        // Configuration
+        const CONFIG = {
+            // ClickUp field IDs from our analysis
+            propertyFieldId: 'cd560980-1b00-4f52-8962-7196934f7ca8',
+            compsFieldId: '5c97e130-faa5-4cdc-a277-13b2f5d6ca99',
+            
+            // New custom field IDs from ClickUp
+            bedroomsFieldId: '9f96c44b-3b49-4fb0-9cb7-aa166063df7e',
+            compBedroomsMinFieldId: 'f0835e4a-dc1c-40e5-8951-2a46ad47b7b1',
+            compBedroomsMaxFieldId: '36ca47b0-6eb7-4b08-ac42-658b7a4739b9',
+            searchRadiusFieldId: 'SEARCH_RADIUS_FIELD_ID', // TODO: Add actual ClickUp field ID
+            propertyImageFieldId: '0286f27b-ec5d-4cd0-8e92-58318be25ff6',
+            setupCostFieldId: '54d66faa-9979-4b62-8b9a-e81638a232bf',
+            monthlyExpensesFieldId: 'd07de33a-0267-45c2-9b25-7108e90877d3',
+            
+            // API configuration (will be fetched from backend)
+            clickupApiToken: null,  // Will be set from /api/config
+            clickupBaseUrl: 'https://api.clickup.com/api/v2',
+            localApiBase: window.location.origin,
+            
+            // Default values (fallbacks when ClickUp fields are empty)
+            defaultPropertyImage: 'https://photos.zillowstatic.com/fp/a98c5c2177de95ce7dd7a8fc34be146c-cc_ft_768.webp',
+            defaultBedrooms: 3,
+            defaultCompMinBedrooms: 2,
+            defaultCompMaxBedrooms: 4,
+            defaultSetupCost: 25000,
+            defaultMonthlyExpenses: 1500,
+            defaultSearchRadius: 5
+        };
+        
+        // Portal Data Manager
+        const PortalData = {
+            taskData: null,
+            propertyAddress: null,
+            comparables: [],
+            selectedCompIds: [],  // NEW: Store comp IDs from ClickUp
+            nearbyProperties: [],  // For Nearby Properties tab
+            topRevenueProperties: [],  // For Top Revenue tab
+            projections: null,
+            marketStats: null,
+            selectedProperties: new Set(),
+            currentMarketTab: 'nearby',  // Track active tab
+            searchRadius: null,  // NEW: Store search radius from ClickUp
+            compBedroomsMin: null,
+            compBedroomsMax: null
+        };
+        
+        // Initialize portal
+        async function initPortal() {
+            console.log('Initializing portal...');
+            
+            try {
+                // First, fetch configuration from backend
+                const configResponse = await fetch('/api/config');
+                if (configResponse.ok) {
+                    const config = await configResponse.json();
+                    CONFIG.clickupApiToken = config.clickup_api_token;
+                    CONFIG.clickupBaseUrl = config.clickup_base_url;
+                } else {
+                    console.error('Failed to fetch configuration from backend');
+                    throw new Error('Configuration not available');
+                }
+                
+                // Get task ID from URL
+                const taskId = getTaskIdFromUrl();
+                
+                // Load ClickUp task data
+                const taskData = await fetchClickUpTask(taskId);
+                PortalData.taskData = taskData;
+                
+                // Extract property information
+                const propertyInfo = extractPropertyData(taskData);
+                PortalData.propertyAddress = propertyInfo.propertyAddress;
+                PortalData.selectedCompIds = propertyInfo.comparableIds || [];  // NEW: Store comp IDs
+                PortalData.propertyBedrooms = propertyInfo.propertyBedrooms;
+                PortalData.compBedroomsMin = propertyInfo.compMinBedrooms;
+                PortalData.compBedroomsMax = propertyInfo.compMaxBedrooms;
+                PortalData.searchRadius = propertyInfo.searchRadius;
+                PortalData.setupCost = propertyInfo.setupCost;
+                PortalData.monthlyExpenses = propertyInfo.monthlyExpenses;
+                PortalData.propertyImage = propertyInfo.propertyImage;
+                
+                // Log comp IDs for debugging
+                console.log('🎯 Selected Comp IDs from ClickUp:', PortalData.selectedCompIds);
+                
+                // Update hero section with basic info
+                updateHeroSection(propertyInfo, taskData);
+                
+                // Load comparable properties
+                const allComparables = await loadComparables(propertyInfo.propertyAddress);
+                
+                // NEW: Filter to ONLY selected comps if we have IDs
+                let comparables;
+                if (PortalData.selectedCompIds && PortalData.selectedCompIds.length > 0) {
+                    comparables = allComparables.filter(p => 
+                        PortalData.selectedCompIds.includes(p.property_id)
+                    );
+                    console.log(`🎯 Filtered to ${comparables.length} selected comps out of ${allComparables.length} total`);
+                    console.log('Using ONLY these comp IDs:', PortalData.selectedCompIds);
+                    
+                    // Log which were found/not found
+                    const foundIds = comparables.map(c => c.property_id);
+                    const notFoundIds = PortalData.selectedCompIds.filter(id => !foundIds.includes(id));
+                    if (notFoundIds.length > 0) {
+                        console.warn('⚠️ Comp IDs not found in data:', notFoundIds);
+                    }
+                    
+                    // CRITICAL FIX: If no matches found, fallback to top revenue properties
+                    if (comparables.length === 0) {
+                        console.warn('🔄 No matching comp IDs found - fetching top 20 revenue properties as fallback');
+                        // Show warning to user
+                        showFilterWarning('The specified comparable properties were not found. Loading top 20 revenue properties instead.');
+                        
+                        // Fetch top revenue properties as fallback
+                        comparables = await loadTopRevenueComparables();
+                    }
+                } else {
+                    // Fallback to top revenue properties if no specific comps
+                    console.log('No specific comps selected, fetching top 20 revenue properties');
+                    comparables = await loadTopRevenueComparables();
+                }
+                
+                PortalData.comparables = comparables;
+                
+                // Calculate projections using ONLY selected/filtered comps
+                const projections = calculateProjections(comparables);
+                PortalData.projections = projections;
+                
+                console.log('Calculated projections:', projections);
+                
+                // Update hero metrics
+                updateHeroMetrics(projections);
+                
+                // Initialize Projection Charts
+                initializeProjectionCharts(projections);
+                
+                // Display Selected Comps Gallery (NEW)
+                displaySelectedCompsGallery(comparables);
+                
+                // Populate Evidence Tables
+                populateEvidenceTables(comparables);
+                
+                // Initialize Market Explorer
+                await initializeMarketExplorer();
+                
+                // Show portal content
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('portalContent').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error initializing portal:', error);
+                showError(error.message);
+            }
+        }
+        
+        // Get task ID from URL (reusing pattern from report system)
+        function getTaskIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('taskId') || params.get('task_id') || params.get('id') || '868fccez6';
+        }
+        
+        // Fetch ClickUp task
+        async function fetchClickUpTask(taskId) {
+            const response = await fetch(`${CONFIG.clickupBaseUrl}/task/${taskId}`, {
+                headers: {
+                    'Authorization': CONFIG.clickupApiToken,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Failed to fetch task: ${response.status}`);
+            }
+            
+            return await response.json();
+        }
+        
+        // Extract property data from task
+        function extractPropertyData(task) {
+            const customFields = task.custom_fields || [];
+            
+            // Extract property address
+            const propertyField = customFields.find(f => f.id === CONFIG.propertyFieldId);
+            const propertyAddress = propertyField?.value?.formatted_address || null;
+            
+            // Extract comparable properties list
+            const compsField = customFields.find(f => f.id === CONFIG.compsFieldId);
+            let comparableIds = [];
+            if (compsField?.value) {
+                try {
+                    comparableIds = JSON.parse(compsField.value);
+                } catch (e) {
+                    comparableIds = compsField.value.split(',').map(id => id.trim()).filter(Boolean);
+                }
+            }
+            
+            // Extract bedrooms (with fallback to default)
+            const bedroomsField = customFields.find(f => f.id === CONFIG.bedroomsFieldId);
+            const propertyBedrooms = bedroomsField?.value || CONFIG.defaultBedrooms;
+            
+            // Extract comp bedroom range (with fallbacks)
+            const compMinBedroomsField = customFields.find(f => f.id === CONFIG.compBedroomsMinFieldId);
+            const compMaxBedroomsField = customFields.find(f => f.id === CONFIG.compBedroomsMaxFieldId);
+            const compMinBedrooms = compMinBedroomsField?.value || CONFIG.defaultCompMinBedrooms;
+            const compMaxBedrooms = compMaxBedroomsField?.value || CONFIG.defaultCompMaxBedrooms;
+            
+            // Extract property image URL (with fallback)
+            const propertyImageField = customFields.find(f => f.id === CONFIG.propertyImageFieldId);
+            const propertyImage = propertyImageField?.value || CONFIG.defaultPropertyImage;
+            
+            // Extract search radius (with fallback)
+            const searchRadiusField = customFields.find(f => f.id === CONFIG.searchRadiusFieldId);
+            const searchRadius = searchRadiusField?.value ? parseInt(searchRadiusField.value) : CONFIG.defaultSearchRadius;
+            
+            // Extract financial fields (with fallbacks)
+            const setupCostField = customFields.find(f => f.id === CONFIG.setupCostFieldId);
+            const monthlyExpensesField = customFields.find(f => f.id === CONFIG.monthlyExpensesFieldId);
+            const setupCost = setupCostField?.value || CONFIG.defaultSetupCost;
+            const monthlyExpenses = monthlyExpensesField?.value || CONFIG.defaultMonthlyExpenses;
+            
+            console.log('Extracted property data:', {
+                propertyBedrooms,
+                compMinBedrooms,
+                compMaxBedrooms,
+                searchRadius,
+                propertyImage: propertyImage ? 'Custom image' : 'Default image',
+                setupCost,
+                monthlyExpenses
+            });
+            
+            return {
+                propertyAddress,
+                comparableIds,
+                propertyBedrooms,
+                compMinBedrooms,
+                compMaxBedrooms,
+                searchRadius,
+                propertyImage,
+                setupCost,
+                monthlyExpenses,
+                taskName: task.name,
+                taskId: task.id
+            };
+        }
+        
+        // Update hero section
+        function updateHeroSection(propertyInfo, taskData) {
+            // Set background image - now using dynamic property image from ClickUp
+            const heroBackground = document.getElementById('heroBackground');
+            heroBackground.style.backgroundImage = `url('${propertyInfo.propertyImage}')`;
+            
+            // Update property details
+            document.getElementById('propertyAddress').textContent = propertyInfo.propertyAddress || 'Address not available';
+            document.getElementById('leadInfo').textContent = `Lead: ${taskData.name || 'Unknown'}`;
+        }
+        
+        // Load comparable properties (reusing dashboard logic)
+        async function loadComparables(address) {
+            // Check if we have a valid address
+            if (!address) {
+                console.warn('⚠️ No address provided, loading top revenue properties instead');
+                return await loadTopRevenueComparables();
+            }
+            
+            const response = await fetch(`${CONFIG.localApiBase}/api/properties/nearby`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    address: address,
+                    // Use dynamic bedroom range from ClickUp custom fields
+                    min_beds: PortalData.compMinBedrooms || Math.max(1, PortalData.propertyBedrooms - 1),
+                    max_beds: PortalData.compMaxBedrooms || Math.min(10, PortalData.propertyBedrooms + 1),
+                    radius_miles: CONFIG.defaultSearchRadius,
+                    limit: 50  // Increased from 20 to 50
+                })
+            });
+            
+            if (!response.ok) {
+                console.error(`Failed to fetch nearby comparables (${response.status}), loading top revenue properties instead`);
+                return await loadTopRevenueComparables();
+            }
+            
+            const data = await response.json();
+            
+            if (data.success && data.properties && data.properties.length > 0) {
+                return data.properties;
+            }
+            
+            // If no properties found nearby, load top revenue properties
+            console.log('No nearby properties found, loading top revenue properties');
+            return await loadTopRevenueComparables();
+        }
+        
+        // Load top 20 revenue properties as fallback comparables
+        async function loadTopRevenueComparables() {
+            console.log('🏆 Loading top 20 revenue properties as comparables within 1 mile...');
+            
+            // Use a default San Diego location if no address available
+            const fallbackLocation = PortalData.propertyAddress || '3226 Lucinda St, San Diego, CA 92106';
+            const searchRadius = 1; // Fixed 1 mile radius only
+            
+            console.log(`📍 Using location: ${fallbackLocation} with ${searchRadius} mile radius`);
+            
+            try {
+                // Search within 1 mile only
+                const response = await fetch(`${CONFIG.localApiBase}/api/properties/top-revenue`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        location: '', // Empty base location
+                        distance_from: fallbackLocation, // Use distance filter
+                        max_distance: searchRadius, // 1 mile radius only
+                        min_beds: parseInt(PortalData.compBedroomsMin) || 0,
+                        max_beds: parseInt(PortalData.compBedroomsMax) || 10,
+                        limit: 20 // Top 20 revenue properties
+                    })
+                });
+                
+                if (!response.ok) {
+                    console.error('Failed to fetch top revenue properties:', response.status);
+                    return [];
+                }
+                
+                const data = await response.json();
+                
+                if (data.properties && data.properties.length > 0) {
+                    console.log(`✅ Loaded ${data.properties.length} top revenue properties within ${searchRadius} mile`);
+                    return data.properties;
+                }
+                
+                console.warn('No top revenue properties found within 1 mile');
+                return [];
+            } catch (error) {
+                console.error('Error loading top revenue properties:', error);
+                return [];
+            }
+        }
+        
+        // Calculate projections (simplified version, will expand)
+        function calculateProjections(comparables) {
+            if (!comparables || comparables.length === 0) {
+                return {
+                    monthlyRevenue: 0,
+                    annualRevenue: 0,
+                    occupancyRate: 0,
+                    adr: 0,
+                    confidence: 0
+                };
+            }
+            
+            // Calculate averages - using the correct field names from API response
+            const monthlyRevenue = comparables.reduce((sum, c) => {
+                // API returns metrics.revenue_annual (not revenue_ltm)
+                const annual = c.metrics?.revenue_annual || 0;
+                return sum + annual;
+            }, 0) / comparables.length / 12;
+            
+            const occupancyRate = comparables.reduce((sum, c) => {
+                // API returns metrics.occupancy_rate already as percentage (not occ_ltm)
+                return sum + (c.metrics?.occupancy_rate || 0);
+            }, 0) / comparables.length;
+            
+            const adr = comparables.reduce((sum, c) => {
+                // API returns metrics.adr (not adr_ltm)
+                return sum + (c.metrics?.adr || 0);
+            }, 0) / comparables.length;
+            
+            // Calculate confidence based on sample size
+            const confidence = Math.min(95, 50 + (comparables.length * 5));
+            
+            return {
+                monthlyRevenue,
+                annualRevenue: monthlyRevenue * 12,
+                occupancyRate,
+                adr,
+                confidence
+            };
+        }
+        
+        // Update hero metrics
+        function updateHeroMetrics(projections) {
+            document.getElementById('monthlyRevenue').textContent = formatCurrency(projections.monthlyRevenue);
+            document.getElementById('annualRevenue').textContent = formatCurrency(projections.annualRevenue);
+            document.getElementById('occupancyRate').textContent = `${projections.occupancyRate.toFixed(1)}%`;
+            document.getElementById('adrRate').textContent = formatCurrency(projections.adr);
+            document.getElementById('confidenceScore').textContent = `${projections.confidence}%`;
+            
+            // Also update Executive Summary
+            updateExecutiveSummary(projections, PortalData.comparables);
+        }
+        
+        // Update Executive Summary section
+        function updateExecutiveSummary(projections, comparables) {
+            // Calculate market position
+            const totalComps = comparables.length;
+            document.getElementById('compCount').textContent = totalComps;
+            
+            // Determine market rank based on projected revenue vs comparables
+            const compRevenues = comparables.map(c => (c.metrics?.revenue_annual || 0) / 12);
+            const higherCount = compRevenues.filter(r => r > projections.monthlyRevenue).length;
+            const percentile = Math.round(((totalComps - higherCount) / totalComps) * 100);
+            
+            let marketRank = 'Top 50%';
+            if (percentile >= 90) marketRank = 'Top 10%';
+            else if (percentile >= 75) marketRank = 'Top 25%';
+            else if (percentile >= 50) marketRank = 'Top 50%';
+            
+            document.getElementById('marketRank').textContent = marketRank;
+            document.getElementById('revenuePercentile').textContent = `${percentile}th`;
+            
+            // Competition level based on comp count
+            let competitionLevel = 'Low';
+            if (totalComps > 30) competitionLevel = 'High';
+            else if (totalComps > 15) competitionLevel = 'Medium';
+            document.getElementById('competitionLevel').textContent = competitionLevel;
+            
+            // Market demand based on average occupancy
+            const avgOccupancy = projections.occupancyRate;
+            let marketDemand = 'Low';
+            if (avgOccupancy > 70) marketDemand = 'Very High';
+            else if (avgOccupancy > 60) marketDemand = 'High';
+            else if (avgOccupancy > 50) marketDemand = 'Medium';
+            document.getElementById('marketDemand').textContent = marketDemand;
+            
+            // Calculate investment metrics using dynamic values from ClickUp
+            const setupCost = PortalData.setupCost || CONFIG.defaultSetupCost;
+            const monthlyExpenses = PortalData.monthlyExpenses || CONFIG.defaultMonthlyExpenses;
+            const monthlyNet = projections.monthlyRevenue - monthlyExpenses;
+            const breakEvenMonths = Math.ceil(setupCost / monthlyNet);
+            const firstYearNet = (monthlyNet * 12) - setupCost;
+            
+            document.getElementById('setupCost').textContent = formatCurrency(setupCost);
+            document.getElementById('monthlyExpenses').textContent = formatCurrency(monthlyExpenses);
+            document.getElementById('breakEven').textContent = `${breakEvenMonths} months`;
+            document.getElementById('firstYearNet').textContent = formatCurrency(firstYearNet);
+        }
+        
+        // Show filter warning to user
+        function showFilterWarning(message) {
+            // Create warning element if it doesn't exist
+            let warningEl = document.getElementById('filter-warning');
+            if (!warningEl) {
+                warningEl = document.createElement('div');
+                warningEl.id = 'filter-warning';
+                warningEl.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: linear-gradient(135deg, rgba(255, 179, 77, 0.95) 0%, rgba(255, 107, 107, 0.95) 100%);
+                    color: white;
+                    padding: 15px 30px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                    z-index: 10000;
+                    font-weight: 500;
+                    display: none;
+                    max-width: 600px;
+                    text-align: center;
+                `;
+                document.body.appendChild(warningEl);
+            }
+            
+            warningEl.textContent = message;
+            warningEl.style.display = 'block';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                warningEl.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Format currency
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(value);
+        }
+        
+        // Show error
+        function showError(message) {
+            document.getElementById('loadingState').innerHTML = `
+                <div style="color: var(--error-red); text-align: center;">
+                    <h2>Error Loading Portal</h2>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+        
+        // Projection Charts
+        let projectionsChart = null;
+        let currentProjections = null;
+        
+        function initializeProjectionCharts(projections) {
+            currentProjections = projections;
+            createMonthlyRevenueChart();
+            updateProjectionStats();
+            updateScenarioAnalysis();
+            
+            // Add event listeners for view controls
+            document.querySelectorAll('.view-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    updateChart(this.dataset.view);
+                });
+            });
+            
+            document.querySelectorAll('.metric-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.metric-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    updateChart();
+                });
+            });
+        }
+        
+        function createMonthlyRevenueChart() {
+            const ctx = document.getElementById('projections-chart').getContext('2d');
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            // Generate monthly projections based on seasonality
+            const monthlyData = generateMonthlyProjections(currentProjections);
+            
+            if (projectionsChart) {
+                projectionsChart.destroy();
+            }
+            
+            projectionsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Projected Revenue',
+                        data: monthlyData.revenue,
+                        borderColor: 'var(--primary)',
+                        backgroundColor: 'rgba(38, 208, 134, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: 'var(--primary)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            titleColor: 'var(--light)',
+                            bodyColor: 'var(--medium)',
+                            borderColor: 'var(--primary)',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Revenue: ' + formatCurrency(context.parsed.y);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: 'var(--medium)',
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: 'var(--medium)',
+                                font: {
+                                    size: 11
+                                },
+                                callback: function(value) {
+                                    return '$' + (value / 1000).toFixed(0) + 'K';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function updateChart(viewType = null) {
+            const activeView = viewType || document.querySelector('.view-tab.active').dataset.view;
+            const activeMetric = document.querySelector('.metric-btn.active').dataset.metric;
+            
+            if (activeView === 'seasonal') {
+                createSeasonalChart(activeMetric);
+            } else if (activeView === 'quarterly') {
+                createQuarterlyChart(activeMetric);
+            } else {
+                createMonthlyChart(activeMetric);
+            }
+        }
+        
+        function createMonthlyChart(metric) {
+            const ctx = document.getElementById('projections-chart').getContext('2d');
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const monthlyData = generateMonthlyProjections(currentProjections);
+            
+            let data, label, yAxisCallback;
+            if (metric === 'occupancy') {
+                data = monthlyData.occupancy;
+                label = 'Occupancy Rate';
+                yAxisCallback = function(value) { return value.toFixed(0) + '%'; };
+            } else if (metric === 'adr') {
+                data = monthlyData.adr;
+                label = 'Average Daily Rate';
+                yAxisCallback = function(value) { return '$' + value.toFixed(0); };
+            } else {
+                data = monthlyData.revenue;
+                label = 'Revenue';
+                yAxisCallback = function(value) { return '$' + (value / 1000).toFixed(0) + 'K'; };
+            }
+            
+            if (projectionsChart) {
+                projectionsChart.destroy();
+            }
+            
+            projectionsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        borderColor: 'var(--primary)',
+                        backgroundColor: 'rgba(38, 208, 134, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: yAxisCallback,
+                                color: 'var(--medium)'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'var(--medium)'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createSeasonalChart(metric) {
+            const ctx = document.getElementById('projections-chart').getContext('2d');
+            const monthlyData = generateMonthlyProjections(currentProjections);
+            
+            const seasonalData = {
+                'Winter': { revenue: 0, occupancy: 0, adr: 0, count: 0 },
+                'Spring': { revenue: 0, occupancy: 0, adr: 0, count: 0 },
+                'Summer': { revenue: 0, occupancy: 0, adr: 0, count: 0 },
+                'Fall': { revenue: 0, occupancy: 0, adr: 0, count: 0 }
+            };
+            
+            // Aggregate by season
+            [11, 0, 1].forEach(m => {
+                seasonalData.Winter.revenue += monthlyData.revenue[m];
+                seasonalData.Winter.occupancy += monthlyData.occupancy[m];
+                seasonalData.Winter.adr += monthlyData.adr[m];
+                seasonalData.Winter.count++;
+            });
+            
+            [2, 3, 4].forEach(m => {
+                seasonalData.Spring.revenue += monthlyData.revenue[m];
+                seasonalData.Spring.occupancy += monthlyData.occupancy[m];
+                seasonalData.Spring.adr += monthlyData.adr[m];
+                seasonalData.Spring.count++;
+            });
+            
+            [5, 6, 7].forEach(m => {
+                seasonalData.Summer.revenue += monthlyData.revenue[m];
+                seasonalData.Summer.occupancy += monthlyData.occupancy[m];
+                seasonalData.Summer.adr += monthlyData.adr[m];
+                seasonalData.Summer.count++;
+            });
+            
+            [8, 9, 10].forEach(m => {
+                seasonalData.Fall.revenue += monthlyData.revenue[m];
+                seasonalData.Fall.occupancy += monthlyData.occupancy[m];
+                seasonalData.Fall.adr += monthlyData.adr[m];
+                seasonalData.Fall.count++;
+            });
+            
+            // Calculate averages
+            Object.keys(seasonalData).forEach(season => {
+                seasonalData[season].occupancy /= seasonalData[season].count;
+                seasonalData[season].adr /= seasonalData[season].count;
+            });
+            
+            let data;
+            if (metric === 'occupancy') {
+                data = Object.values(seasonalData).map(s => s.occupancy);
+            } else if (metric === 'adr') {
+                data = Object.values(seasonalData).map(s => s.adr);
+            } else {
+                data = Object.values(seasonalData).map(s => s.revenue);
+            }
+            
+            if (projectionsChart) {
+                projectionsChart.destroy();
+            }
+            
+            projectionsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(seasonalData),
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            'rgba(100, 180, 255, 0.8)',  // Winter - blue
+                            'rgba(38, 208, 134, 0.8)',   // Spring - green
+                            'rgba(255, 200, 0, 0.8)',    // Summer - yellow
+                            'rgba(255, 120, 0, 0.8)'     // Fall - orange
+                        ],
+                        borderColor: [
+                            'rgba(100, 180, 255, 1)',
+                            'rgba(38, 208, 134, 1)',
+                            'rgba(255, 200, 0, 1)',
+                            'rgba(255, 120, 0, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    if (metric === 'occupancy') return value.toFixed(0) + '%';
+                                    if (metric === 'adr') return '$' + value.toFixed(0);
+                                    return '$' + (value / 1000).toFixed(0) + 'K';
+                                },
+                                color: 'var(--medium)'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'var(--medium)'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createQuarterlyChart(metric) {
+            const ctx = document.getElementById('projections-chart').getContext('2d');
+            const monthlyData = generateMonthlyProjections(currentProjections);
+            
+            const quarterlyData = {
+                'Q1': { revenue: 0, occupancy: 0, adr: 0 },
+                'Q2': { revenue: 0, occupancy: 0, adr: 0 },
+                'Q3': { revenue: 0, occupancy: 0, adr: 0 },
+                'Q4': { revenue: 0, occupancy: 0, adr: 0 }
+            };
+            
+            // Aggregate by quarter
+            for (let i = 0; i < 3; i++) {
+                quarterlyData.Q1.revenue += monthlyData.revenue[i];
+                quarterlyData.Q1.occupancy += monthlyData.occupancy[i];
+                quarterlyData.Q1.adr += monthlyData.adr[i];
+                
+                quarterlyData.Q2.revenue += monthlyData.revenue[i + 3];
+                quarterlyData.Q2.occupancy += monthlyData.occupancy[i + 3];
+                quarterlyData.Q2.adr += monthlyData.adr[i + 3];
+                
+                quarterlyData.Q3.revenue += monthlyData.revenue[i + 6];
+                quarterlyData.Q3.occupancy += monthlyData.occupancy[i + 6];
+                quarterlyData.Q3.adr += monthlyData.adr[i + 6];
+                
+                quarterlyData.Q4.revenue += monthlyData.revenue[i + 9];
+                quarterlyData.Q4.occupancy += monthlyData.occupancy[i + 9];
+                quarterlyData.Q4.adr += monthlyData.adr[i + 9];
+            }
+            
+            // Calculate averages
+            Object.keys(quarterlyData).forEach(quarter => {
+                quarterlyData[quarter].occupancy /= 3;
+                quarterlyData[quarter].adr /= 3;
+            });
+            
+            let data;
+            if (metric === 'occupancy') {
+                data = Object.values(quarterlyData).map(q => q.occupancy);
+            } else if (metric === 'adr') {
+                data = Object.values(quarterlyData).map(q => q.adr);
+            } else {
+                data = Object.values(quarterlyData).map(q => q.revenue);
+            }
+            
+            if (projectionsChart) {
+                projectionsChart.destroy();
+            }
+            
+            projectionsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(quarterlyData),
+                    datasets: [{
+                        data: data,
+                        backgroundColor: 'rgba(38, 208, 134, 0.8)',
+                        borderColor: 'var(--primary)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    if (metric === 'occupancy') return value.toFixed(0) + '%';
+                                    if (metric === 'adr') return '$' + value.toFixed(0);
+                                    return '$' + (value / 1000).toFixed(0) + 'K';
+                                },
+                                color: 'var(--medium)'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'var(--medium)'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function generateMonthlyProjections(projections) {
+            // Generate seasonal variations
+            const seasonalFactors = {
+                0: 0.7,  // Jan
+                1: 0.75, // Feb
+                2: 0.85, // Mar
+                3: 0.9,  // Apr
+                4: 0.95, // May
+                5: 1.15, // Jun
+                6: 1.3,  // Jul
+                7: 1.25, // Aug
+                8: 1.0,  // Sep
+                9: 0.9,  // Oct
+                10: 0.8, // Nov
+                11: 0.75 // Dec
+            };
+            
+            const baseMonthlyRevenue = projections.monthlyRevenue;
+            const baseOccupancy = projections.occupancyRate || 65;
+            const baseAdr = projections.avgNightlyRate || 150;
+            
+            const revenue = [];
+            const occupancy = [];
+            const adr = [];
+            
+            for (let i = 0; i < 12; i++) {
+                revenue.push(baseMonthlyRevenue * seasonalFactors[i]);
+                occupancy.push(Math.min(95, baseOccupancy * seasonalFactors[i]));
+                adr.push(baseAdr * (0.9 + seasonalFactors[i] * 0.2)); // Vary ADR less than revenue
+            }
+            
+            return { revenue, occupancy, adr };
+        }
+        
+        function updateProjectionStats() {
+            const monthlyData = generateMonthlyProjections(currentProjections);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            // Find peak and low months
+            let peakIndex = 0, lowIndex = 0;
+            let peakValue = monthlyData.revenue[0];
+            let lowValue = monthlyData.revenue[0];
+            
+            monthlyData.revenue.forEach((value, index) => {
+                if (value > peakValue) {
+                    peakValue = value;
+                    peakIndex = index;
+                }
+                if (value < lowValue) {
+                    lowValue = value;
+                    lowIndex = index;
+                }
+            });
+            
+            document.getElementById('peakMonth').textContent = months[peakIndex];
+            document.getElementById('peakValue').textContent = formatCurrency(peakValue);
+            document.getElementById('lowMonth').textContent = months[lowIndex];
+            document.getElementById('lowValue').textContent = formatCurrency(lowValue);
+            
+            const avgMonthly = monthlyData.revenue.reduce((a, b) => a + b, 0) / 12;
+            const variance = Math.sqrt(monthlyData.revenue.reduce((sum, val) => sum + Math.pow(val - avgMonthly, 2), 0) / 12);
+            
+            document.getElementById('avgMonthly').textContent = formatCurrency(avgMonthly);
+            document.querySelector('#avgMonthly + .stat-detail').textContent = '±' + formatCurrency(variance);
+            
+            // Update confidence score based on comparable count
+            const confidence = Math.min(95, 60 + (PortalData.comparables.length * 2.5));
+            document.getElementById('confidenceScore').textContent = confidence + '%';
+            document.querySelector('.confidence-fill').style.width = confidence + '%';
+        }
+        
+        function updateScenarioAnalysis() {
+            const baseRevenue = currentProjections.annualRevenue;
+            const baseMonthly = currentProjections.monthlyRevenue;
+            const setupCost = PortalData.setupCost || CONFIG.defaultSetupCost;
+            const monthlyExpenses = PortalData.monthlyExpenses || CONFIG.defaultMonthlyExpenses;
+            
+            // Conservative scenario (-20%)
+            const conservativeRevenue = baseRevenue * 0.8;
+            const conservativeMonthly = baseMonthly * 0.8;
+            const conservativeNet = conservativeMonthly - monthlyExpenses;
+            const conservativeBreakeven = Math.ceil(setupCost / conservativeNet);
+            
+            document.getElementById('conservativeRevenue').textContent = formatCurrency(conservativeRevenue);
+            document.getElementById('conservativeMonthly').textContent = formatCurrency(conservativeMonthly);
+            document.getElementById('conservativeBreakeven').textContent = conservativeBreakeven + ' months';
+            
+            // Expected scenario (base case)
+            const expectedNet = baseMonthly - monthlyExpenses;
+            const expectedBreakeven = Math.ceil(setupCost / expectedNet);
+            
+            document.getElementById('expectedRevenue').textContent = formatCurrency(baseRevenue);
+            document.getElementById('expectedMonthly').textContent = formatCurrency(baseMonthly);
+            document.getElementById('expectedBreakeven').textContent = expectedBreakeven + ' months';
+            
+            // Optimistic scenario (+20%)
+            const optimisticRevenue = baseRevenue * 1.2;
+            const optimisticMonthly = baseMonthly * 1.2;
+            const optimisticNet = optimisticMonthly - monthlyExpenses;
+            const optimisticBreakeven = Math.ceil(setupCost / optimisticNet);
+            
+            document.getElementById('optimisticRevenue').textContent = formatCurrency(optimisticRevenue);
+            document.getElementById('optimisticMonthly').textContent = formatCurrency(optimisticMonthly);
+            document.getElementById('optimisticBreakeven').textContent = optimisticBreakeven + ' months';
+        }
+        
+        // Display Selected Comps Gallery (NEW)
+        function displaySelectedCompsGallery(comparables) {
+            const gallery = document.getElementById('selectedCompsGallery');
+            const grid = document.getElementById('selectedCompsGrid');
+            const count = document.getElementById('selectedCompsCount');
+            
+            // Only show if we have selected comp IDs
+            if (!PortalData.selectedCompIds || PortalData.selectedCompIds.length === 0) {
+                gallery.style.display = 'none';
+                return;
+            }
+            
+            // Show the gallery section
+            gallery.style.display = 'block';
+            count.textContent = `Analyzing ${comparables.length} carefully selected properties for accurate projections`;
+            
+            // Create cards for each comp
+            grid.innerHTML = comparables.map(comp => {
+                const monthlyRevenue = comp.metrics?.revenue_annual ? comp.metrics.revenue_annual / 12 : 0;
+                const occupancy = comp.metrics?.occupancy_rate || 0;
+                const adr = comp.metrics?.adr || 0;
+                const imageUrl = comp.details?.main_image_url || 
+                               'https://via.placeholder.com/300x200/1a1a19/26D086?text=Property';
+                
+                return `
+                    <div style="
+                        background: var(--bg-secondary);
+                        border-radius: var(--radius-lg);
+                        overflow: hidden;
+                        border: 2px solid var(--ooda-mint);
+                        transition: transform 0.3s ease;
+                    " onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <img src="${imageUrl}" 
+                             alt="${comp.title || 'Property'}"
+                             style="
+                                width: 100%;
+                                height: 200px;
+                                object-fit: cover;
+                                background: var(--bg-tertiary);
+                             "
+                             onerror="this.src='https://via.placeholder.com/300x200/1a1a19/26D086?text=No+Image'">
+                        <div style="padding: var(--space-lg);">
+                            <div style="font-size: 0.75rem; color: var(--ooda-mint); margin-bottom: 8px; font-weight: 600;">
+                                ${comp.property_id}
+                            </div>
+                            <h4 style="color: var(--text-primary); margin-bottom: var(--space-md); font-size: 1rem; line-height: 1.4;">
+                                ${comp.title || 'Comparable Property'}
+                            </h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); margin-top: var(--space-md);">
+                                <div style="text-align: center; padding: 8px; background: var(--bg-tertiary); border-radius: 4px;">
+                                    <div style="color: var(--text-muted); font-size: 0.75rem; margin-bottom: 4px;">Monthly</div>
+                                    <div style="color: var(--success-green); font-weight: 700; font-size: 1.1rem;">
+                                        $${monthlyRevenue.toLocaleString('en-US', {maximumFractionDigits: 0})}
+                                    </div>
+                                </div>
+                                <div style="text-align: center; padding: 8px; background: var(--bg-tertiary); border-radius: 4px;">
+                                    <div style="color: var(--text-muted); font-size: 0.75rem; margin-bottom: 4px;">Occupancy</div>
+                                    <div style="color: var(--info-blue); font-weight: 700; font-size: 1.1rem;">
+                                        ${occupancy.toFixed(1)}%
+                                    </div>
+                                </div>
+                                <div style="text-align: center; padding: 8px; background: var(--bg-tertiary); border-radius: 4px;">
+                                    <div style="color: var(--text-muted); font-size: 0.75rem; margin-bottom: 4px;">Nightly</div>
+                                    <div style="color: var(--warning-amber); font-weight: 700; font-size: 1.1rem;">
+                                        $${adr.toFixed(0)}
+                                    </div>
+                                </div>
+                                <div style="text-align: center; padding: 8px; background: var(--bg-tertiary); border-radius: 4px;">
+                                    <div style="color: var(--text-muted); font-size: 0.75rem; margin-bottom: 4px;">Distance</div>
+                                    <div style="color: var(--text-primary); font-weight: 700; font-size: 1.1rem;">
+                                        ${(comp.location?.distance_miles || 0).toFixed(1)} mi
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Populate Evidence Tables
+        function populateEvidenceTables(comparables) {
+            const tbody = document.getElementById('comparablesTableBody');
+            tbody.innerHTML = '';
+            
+            // Sort comparables by revenue for better presentation
+            const sortedComps = [...comparables].sort((a, b) => 
+                (b.metrics?.revenue_annual || 0) - (a.metrics?.revenue_annual || 0)
+            );
+            
+            // Populate table rows
+            sortedComps.slice(0, 10).forEach(comp => {
+                const row = document.createElement('tr');
+                const distance = comp.location?.distance_miles ? comp.location.distance_miles.toFixed(2) : 'N/A';
+                const revenue = comp.metrics?.revenue_annual || 0;
+                const occupancy = comp.metrics?.occupancy_rate || 0;
+                const adr = comp.metrics?.adr || 0;
+                const rating = comp.details?.rating || 'N/A';
+                const reviewCount = comp.details?.review_count || 0;
+                
+                row.innerHTML = `
+                    <td>${comp.title || 'Property'}</td>
+                    <td>${comp.details?.bedrooms || 'N/A'}</td>
+                    <td>${distance} mi</td>
+                    <td>${formatCurrency(revenue)}</td>
+                    <td>${occupancy.toFixed(1)}%</td>
+                    <td>${formatCurrency(adr)}</td>
+                    <td>${rating}</td>
+                    <td>${reviewCount}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Update market statistics
+            const totalRevenue = comparables.reduce((sum, c) => sum + (c.metrics?.revenue_annual || 0), 0);
+            const avgRevenue = totalRevenue / comparables.length;
+            const avgRating = comparables.reduce((sum, c) => sum + (c.metrics?.reviews_rating || 0), 0) / comparables.length;
+            
+            document.getElementById('avgRevenue').textContent = formatCurrency(avgRevenue);
+            document.getElementById('totalComps').textContent = comparables.length;
+            document.getElementById('avgRating').textContent = avgRating.toFixed(1);
+            
+            // Calculate market growth (mock data for now)
+            const marketGrowth = 12; // This would normally come from historical data
+            document.getElementById('marketGrowth').textContent = `+${marketGrowth}%`;
+        }
+        
+        // Market Explorer Functions
+        async function initializeMarketExplorer() {
+            console.log('🚀 Initializing Market Explorer...');
+            
+            // Load the new dashboard-style market explorer
+            await loadMarketExplorer();
+            
+            // Add window resize listener for tab indicator
+            window.addEventListener('resize', updateMarketTabIndicator);
+        }
+        
+        async function loadMarketProperties() {
+            try {
+                const response = await fetch('/api/properties/nearby', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        address: PortalData.propertyAddress,
+                        // Default to subject property bedrooms range
+                        min_beds: Math.max(1, (PortalData.propertyBedrooms || 3) - 1),
+                        max_beds: Math.min(10, (PortalData.propertyBedrooms || 3) + 1),
+                        radius_miles: 5,
+                        limit: 50  // Increased from 20 to 50
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch properties: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success && data.properties) {
+                    // Store all properties
+                    const allProperties = data.properties;
+                    
+                    // Sort by distance for nearby tab
+                    PortalData.nearbyProperties = [...allProperties].sort((a, b) => 
+                        (a.location?.distance_miles || 0) - (b.location?.distance_miles || 0)
+                    );
+                    
+                    // Sort by revenue for top revenue tab
+                    PortalData.topRevenueProperties = [...allProperties].sort((a, b) => 
+                        (b.metrics?.revenue_annual || 0) - (a.metrics?.revenue_annual || 0)
+                    );
+                    
+                    console.log(`Loaded ${allProperties.length} properties for Market Explorer`);
+                    console.log('Nearby properties:', PortalData.nearbyProperties.slice(0, 3));
+                    console.log('Top revenue properties:', PortalData.topRevenueProperties.slice(0, 3));
+                    
+                    // Update market stats
+                    updateMarketStats(allProperties);
+                }
+            } catch (error) {
+                console.error('Error loading market properties:', error);
+            }
+        }
+        
+        function switchMarketTab(tab) {
+            console.log('=== SWITCHING TAB ===');
+            console.log('Target tab:', tab);
+            console.log('Current tab:', PortalData.currentMarketTab);
+            
+            // Update active tab state
+            PortalData.currentMarketTab = tab;
+            
+            // Update button states
+            document.querySelectorAll('#marketExplorer .tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const activeBtn = document.getElementById(`${tab}-tab-btn`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+                console.log('Active button set:', activeBtn.textContent);
+            } else {
+                console.error('Tab button not found:', `${tab}-tab-btn`);
+            }
+            
+            // Update tab indicator
+            setTimeout(() => {
+                updateMarketTabIndicator();
+            }, 10);
+            
+            // Display appropriate properties
+            displayMarketProperties();
+            
+            const propertyCount = tab === 'nearby' ? PortalData.nearbyProperties.length : PortalData.topRevenueProperties.length;
+            console.log(`Tab switched to: ${tab}`);
+            console.log(`Displaying ${propertyCount} properties`);
+            console.log('=== END TAB SWITCH ===');
+        }
+        
+        function updateMarketTabIndicator() {
+            const activeTab = document.querySelector('#marketExplorer .tab-button.active');
+            const indicator = document.getElementById('market-tab-indicator');
+            
+            if (activeTab && indicator) {
+                const tabButtons = activeTab.parentElement;
+                const rect = activeTab.getBoundingClientRect();
+                const parentRect = tabButtons.getBoundingClientRect();
+                
+                indicator.style.width = `${rect.width}px`;
+                indicator.style.height = `${rect.height}px`;
+                indicator.style.left = `${rect.left - parentRect.left}px`;
+                indicator.style.top = `${rect.top - parentRect.top}px`;
+            }
+        }
+        
+        function displayMarketProperties() {
+            const grid = document.getElementById('propertyGrid');
+            if (!grid) return;
+            
+            // Get current properties based on active tab
+            const properties = PortalData.currentMarketTab === 'nearby' 
+                ? PortalData.nearbyProperties 
+                : PortalData.topRevenueProperties;
+            
+            // Apply filters
+            const filteredProperties = applyPropertyFilters(properties);
+            
+            // Clear and populate grid
+            grid.innerHTML = '';
+            
+            filteredProperties.forEach(property => {
+                const card = createPropertyCard(property);
+                grid.appendChild(card);
+            });
+            
+            // Update count
+            updatePropertyCount(filteredProperties.length);
+        }
+        
+        function createPropertyCard(property) {
+            const card = document.createElement('div');
+            card.className = 'property-card';
+            if (PortalData.selectedProperties.has(property.property_id)) {
+                card.classList.add('selected');
+            }
+            
+            const revenue = property.metrics?.revenue_annual || 0;
+            const occupancy = property.metrics?.occupancy_rate || 0;
+            const adr = property.metrics?.adr || 0;
+            const distance = property.location?.distance_miles || 0;
+            
+            card.innerHTML = `
+                <div class="property-card-header">
+                    <h4>${property.title || 'Property'}</h4>
+                    <span class="property-distance">${distance.toFixed(1)} mi</span>
+                </div>
+                <div class="property-card-body">
+                    <div class="property-metric">
+                        <span class="metric-label">Bedrooms</span>
+                        <span class="metric-value">${property.details?.bedrooms || 'N/A'}</span>
+                    </div>
+                    <div class="property-metric">
+                        <span class="metric-label">Annual Revenue</span>
+                        <span class="metric-value">${formatCurrency(revenue)}</span>
+                    </div>
+                    <div class="property-metric">
+                        <span class="metric-label">Occupancy</span>
+                        <span class="metric-value">${occupancy.toFixed(1)}%</span>
+                    </div>
+                    <div class="property-metric">
+                        <span class="metric-label">ADR</span>
+                        <span class="metric-value">${formatCurrency(adr)}</span>
+                    </div>
+                    <div class="property-metric">
+                        <span class="metric-label">Bedrooms</span>
+                        <span class="metric-value">${property.bedrooms || 'N/A'}</span>
+                    </div>
+                </div>
+                <div class="property-card-footer">
+                    <button class="select-property-btn" onclick="togglePropertySelection('${property.property_id}')">
+                        ${PortalData.selectedProperties.has(property.property_id) ? 'Deselect' : 'Select'}
+                    </button>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        function applyPropertyFilters(properties) {
+            const minBeds = parseInt(document.getElementById('filterMinBeds').value);
+            const maxBeds = parseInt(document.getElementById('filterMaxBeds').value);
+            const radius = parseFloat(document.getElementById('filterRadius').value);
+            
+            return properties.filter(property => {
+                const beds = property.bedrooms || 0;
+                const distance = property.distance || 0;
+                
+                return beds >= minBeds && beds <= maxBeds && distance <= radius;
+            });
+        }
+        
+        async function applyFilters() {
+            console.log('Applying filters...');
+            
+            // Get filter values
+            const minBeds = parseInt(document.getElementById('filterMinBeds').value) || 1;
+            const maxBeds = parseInt(document.getElementById('filterMaxBeds').value) || 10;
+            const radius = parseInt(document.getElementById('filterRadius').value) || 5;
+            
+            console.log(`Filters: ${minBeds}-${maxBeds} beds, ${radius} mile radius`);
+            
+            // Make new API call with filters
+            try {
+                const response = await fetch(`${CONFIG.localApiBase}/api/properties/nearby`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        address: PortalData.propertyAddress,
+                        min_beds: minBeds,
+                        max_beds: maxBeds,
+                        radius_miles: radius,
+                        limit: 50
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch filtered properties: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success && data.properties) {
+                    // Update both arrays with new filtered data
+                    const allProperties = data.properties;
+                    
+                    // Sort by distance for nearby tab
+                    PortalData.nearbyProperties = [...allProperties].sort((a, b) => 
+                        (a.location?.distance_miles || 0) - (b.location?.distance_miles || 0)
+                    );
+                    
+                    // Sort by revenue for top revenue tab
+                    PortalData.topRevenueProperties = [...allProperties].sort((a, b) => 
+                        (b.metrics?.revenue_annual || 0) - (a.metrics?.revenue_annual || 0)
+                    );
+                    
+                    console.log(`Filtered: ${allProperties.length} properties found`);
+                    
+                    // Update display
+                    displayMarketProperties();
+                    updateMarketStats(allProperties);
+                }
+            } catch (error) {
+                console.error('Error applying filters:', error);
+            }
+        }
+        
+        function sortProperties() {
+            const sortBy = document.getElementById('filterSort').value;
+            console.log('Sorting properties by:', sortBy);
+            
+            // Sort current tab's properties
+            const properties = PortalData.currentMarketTab === 'nearby' 
+                ? PortalData.nearbyProperties 
+                : PortalData.topRevenueProperties;
+            
+            switch(sortBy) {
+                case 'revenue':
+                    properties.sort((a, b) => (b.metrics?.revenue_annual || 0) - (a.metrics?.revenue_annual || 0));
+                    break;
+                case 'occupancy':
+                    properties.sort((a, b) => (b.metrics?.occupancy_rate || 0) - (a.metrics?.occupancy_rate || 0));
+                    break;
+                case 'distance':
+                    properties.sort((a, b) => (a.distance || 0) - (b.distance || 0));
+                    break;
+                case 'adr':
+                    properties.sort((a, b) => (b.metrics?.adr || 0) - (a.metrics?.adr || 0));
+                    break;
+            }
+            
+            displayMarketProperties();
+        }
+        
+        function togglePropertySelection(propertyId) {
+            if (PortalData.selectedProperties.has(propertyId)) {
+                PortalData.selectedProperties.delete(propertyId);
+            } else if (PortalData.selectedProperties.size < 10) {
+                PortalData.selectedProperties.add(propertyId);
+            } else {
+                alert('Maximum 10 properties can be selected');
+                return;
+            }
+            
+            // Update UI
+            displayMarketProperties();
+            updateSelectionPanel();
+        }
+        
+        function updateSelectionPanel() {
+            const panel = document.getElementById('selectionPanel');
+            const count = PortalData.selectedProperties.size;
+            
+            if (count > 0) {
+                panel.style.display = 'flex';
+                panel.querySelector('.selection-counter').textContent = `${count}/10 selected`;
+                panel.querySelector('.analyze-button').disabled = false;
+            } else {
+                panel.style.display = 'none';
+            }
+        }
+        
+        function clearAllSelections() {
+            PortalData.selectedProperties.clear();
+            displayMarketProperties();
+            updateSelectionPanel();
+        }
+        
+        function recalculateProjections() {
+            // Get selected properties
+            const allProperties = [...PortalData.nearbyProperties, ...PortalData.topRevenueProperties];
+            const selectedProps = allProperties.filter(p => 
+                PortalData.selectedProperties.has(p.property_id)
+            );
+            
+            if (selectedProps.length > 0) {
+                // Recalculate projections with selected properties
+                const projections = calculateProjections(selectedProps);
+                PortalData.projections = projections;
+                
+                // Update all displays
+                updateHeroMetrics(projections);
+                updateExecutiveSummary(projections, selectedProps);
+                initializeProjectionCharts(projections);
+                populateEvidenceTables(selectedProps);
+                
+                console.log('Projections recalculated with', selectedProps.length, 'selected properties');
+            }
+        }
+        
+        function updatePropertyCount(count) {
+            document.getElementById('totalProperties').textContent = count;
+        }
+        
+        function updateMarketStats(properties) {
+            if (!properties || properties.length === 0) return;
+            
+            const avgRevenue = properties.reduce((sum, p) => 
+                sum + (p.metrics?.revenue_annual || 0), 0) / properties.length / 12;
+            const avgOccupancy = properties.reduce((sum, p) => 
+                sum + (p.metrics?.occupancy_rate || 0), 0) / properties.length;
+            const avgAdr = properties.reduce((sum, p) => 
+                sum + (p.metrics?.adr || 0), 0) / properties.length;
+            
+            document.getElementById('totalProperties').textContent = properties.length;
+            document.getElementById('avgMonthlyRevenue').textContent = formatCurrency(avgRevenue);
+            document.getElementById('avgOccupancy').textContent = `${avgOccupancy.toFixed(1)}%`;
+            document.getElementById('avgNightlyRate').textContent = formatCurrency(avgAdr);
+        }
+        
+        // Market Explorer Functions
+        
+        // Auto-load market explorer after ClickUp data is fetched
+        async function loadMarketExplorer() {
+            console.log('🏠 Loading Market Explorer...');
+            
+            // Update filter display with ClickUp values
+            updateFilterDisplay();
+            
+            // Load both property types automatically
+            try {
+                await Promise.all([
+                    loadTopRevenueProperties(),
+                    loadNearbyProperties()
+                ]);
+                console.log('✅ Market Explorer loaded successfully');
+            } catch (error) {
+                console.error('❌ Error loading Market Explorer:', error);
+            }
+        }
+
+        // Modified from dashboard.html loadTopRevenue()
+        async function loadTopRevenueProperties() {
+            const container = document.getElementById('top-revenue-properties');
+            console.log('🏆 Loading top revenue properties...');
+            
+            try {
+                const response = await fetch('/api/properties/top-revenue', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        location: PortalData.propertyAddress,
+                        min_bedrooms: PortalData.compBedroomsMin || CONFIG.defaultCompMinBedrooms,
+                        max_bedrooms: PortalData.compBedroomsMax || CONFIG.defaultCompMaxBedrooms,
+                        radius_miles: PortalData.searchRadius || CONFIG.defaultSearchRadius
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('📊 Top revenue properties data:', data);
+                displayProperties(container, data.properties || [], 'revenue');
+            } catch (error) {
+                console.error('❌ Error loading top revenue properties:', error);
+                container.innerHTML = '<div class="error-message">Failed to load top revenue properties. Please check your connection and try again.</div>';
+            }
+        }
+
+        // Modified from dashboard.html loadNearbyProperties()
+        async function loadNearbyProperties() {
+            const container = document.getElementById('nearby-properties');
+            console.log('📍 Loading nearby properties...');
+            
+            try {
+                const response = await fetch('/api/properties/nearby', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        address: PortalData.propertyAddress,
+                        min_bedrooms: PortalData.compBedroomsMin || CONFIG.defaultCompMinBedrooms,
+                        max_bedrooms: PortalData.compBedroomsMax || CONFIG.defaultCompMaxBedrooms,
+                        radius_miles: PortalData.searchRadius || CONFIG.defaultSearchRadius
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('📊 Nearby properties data:', data);
+                displayProperties(container, data.properties || [], 'nearby');
+            } catch (error) {
+                console.error('❌ Error loading nearby properties:', error);
+                container.innerHTML = '<div class="error-message">Failed to load nearby properties. Please check your connection and try again.</div>';
+            }
+        }
+
+        // Display properties in the container
+        function displayProperties(container, properties, type) {
+            if (!properties || properties.length === 0) {
+                container.innerHTML = `<div class="error-message">No ${type} properties found matching your criteria.</div>`;
+                return;
+            }
+
+            const propertiesHtml = properties.map(property => createPropertyCard(property, type)).join('');
+            container.innerHTML = propertiesHtml;
+            
+            console.log(`✅ Displayed ${properties.length} ${type} properties`);
+        }
+
+        // Create property card HTML (adapted from dashboard)
+        function createPropertyCard(property, type) {
+            // Format currency
+            const formatCurrency = (amount) => {
+                if (!amount) return 'N/A';
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 0
+                }).format(amount);
+            };
+
+            // Extract property data (handle different API response formats)
+            const revenue = property.monthly_revenue || property.revenue || property.MonthlyRevenue || 0;
+            const occupancy = property.occupancy_rate || property.occupancy || property.OccupancyRate || 0;
+            const adr = property.average_daily_rate || property.adr || property.AverageDailyRate || 0;
+            const bedrooms = property.bedrooms || property.Bedrooms || 'N/A';
+            const bathrooms = property.bathrooms || property.Bathrooms || 'N/A';
+            const address = property.address || property.Address || 'Address not available';
+            const propertyType = property.property_type || property.PropertyType || 'Property';
+
+            return `
+                <div class="property-card" data-property-id="${property.id || property.PropertyID}">
+                    <div class="property-header">
+                        <div class="property-info">
+                            <div class="property-title">${bedrooms}BR ${propertyType}</div>
+                            <div class="property-address">${address}</div>
+                        </div>
+                        <div class="property-price">${formatCurrency(revenue)}/mo</div>
+                    </div>
+
+                    <div class="property-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Monthly Revenue</div>
+                            <div class="stat-value">${formatCurrency(revenue)}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Occupancy Rate</div>
+                            <div class="stat-value">${occupancy.toFixed(1)}%</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Average Daily Rate</div>
+                            <div class="stat-value">${formatCurrency(adr)}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Property Type</div>
+                            <div class="stat-value">${propertyType}</div>
+                        </div>
+                    </div>
+
+                    <div class="property-details">
+                        <div class="property-meta">
+                            <span>🛏️ ${bedrooms} bed</span>
+                            <span>🛁 ${bathrooms} bath</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Tab switching functionality
+        function switchTab(tabName) {
+            // Hide all property containers
+            document.querySelectorAll('.properties-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            
+            // Remove active from all buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected container
+            const targetContainer = document.getElementById(`${tabName}-properties`);
+            if (targetContainer) {
+                targetContainer.classList.add('active');
+            }
+            
+            // Activate clicked button
+            event.target.closest('.tab-button').classList.add('active');
+            
+            console.log(`🔄 Switched to ${tabName} tab`);
+        }
+
+        // Update filter display with ClickUp values
+        function updateFilterDisplay() {
+            const bedroomsMin = PortalData.compBedroomsMin || CONFIG.defaultCompMinBedrooms;
+            const bedroomsMax = PortalData.compBedroomsMax || CONFIG.defaultCompMaxBedrooms;
+            const radius = PortalData.searchRadius || CONFIG.defaultSearchRadius;
+            const location = PortalData.propertyAddress || 'Not specified';
+
+            document.getElementById('displayBedrooms').textContent = 
+                `${bedroomsMin} - ${bedroomsMax}`;
+            document.getElementById('displayRadius').textContent = 
+                `${radius} miles`;
+            document.getElementById('displayLocation').textContent = 
+                location.length > 50 ? location.substring(0, 50) + '...' : location;
+            
+            console.log(`🔧 Updated filter display: ${bedroomsMin}-${bedroomsMax} bedrooms, ${radius} mile radius`);
+        }
+
+        // Make switchTab globally accessible
+        window.switchTab = switchTab;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initPortal);
+    </script>
+
+    <!-- Interactive Market Explorer Section -->
+    <div class="market-explorer-section">
+        <div class="container">
+            <div class="market-explorer-header">
+                <h2 class="section-title">Interactive Market Explorer</h2>
+                <p class="section-subtitle">Comparable properties automatically loaded based on your ClickUp criteria</p>
+            </div>
+            
+            <!-- Property Filter Display (Read-only) -->
+            <div class="filter-display">
+                <div class="filter-item">
+                    <span class="filter-label">🛏️ Bedrooms:</span>
+                    <span class="filter-value" id="displayBedrooms">Loading...</span>
+                </div>
+                <div class="filter-item">
+                    <span class="filter-label">📍 Search Radius:</span>
+                    <span class="filter-value" id="displayRadius">Loading...</span>
+                </div>
+                <div class="filter-item">
+                    <span class="filter-label">🏠 Location:</span>
+                    <span class="filter-value" id="displayLocation">Loading...</span>
+                </div>
+            </div>
+
+            <!-- Property Tabs -->
+            <div class="property-tabs">
+                <button class="tab-button active" onclick="switchTab('top-revenue')">
+                    <span class="tab-icon">🏆</span>
+                    Top Revenue Properties
+                </button>
+                <button class="tab-button" onclick="switchTab('nearby')">
+                    <span class="tab-icon">📍</span>
+                    Nearby Properties
+                </button>
+            </div>
+
+            <!-- Properties Container -->
+            <div id="top-revenue-properties" class="properties-container active">
+                <div class="loading-properties">
+                    <div class="spinner"></div>
+                    <span>Loading top revenue properties...</span>
+                </div>
+            </div>
+            
+            <div id="nearby-properties" class="properties-container">
+                <div class="loading-properties">
+                    <div class="spinner"></div>
+                    <span>Loading nearby properties...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

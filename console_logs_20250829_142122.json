@@ -1,0 +1,80 @@
+[
+  {
+    "timestamp": "2025-08-29T14:21:07.766000",
+    "level": "INFO",
+    "message": "http://127.0.0.1:5004/copyJIC?taskId=868fd6tdt 1790:20 \"Initializing portal...\"",
+    "source": "console-api"
+  },
+  {
+    "timestamp": "2025-08-29T14:21:12.778000",
+    "level": "SEVERE",
+    "message": "http://127.0.0.1:5004/favicon.ico - Failed to load resource: the server responded with a status of 404 (NOT FOUND)",
+    "source": "network"
+  },
+  {
+    "timestamp": "2025-08-29T14:21:12.778000",
+    "level": "INFO",
+    "message": "http://127.0.0.1:5004/copyJIC?taskId=868fd6tdt 1945:20 \"Extracted property data:\" Object",
+    "source": "console-api"
+  },
+  {
+    "timestamp": "2025-08-29T14:21:12.778000",
+    "level": "INFO",
+    "message": "http://127.0.0.1:5004/copyJIC?taskId=868fd6tdt 1812:24 \"\ud83c\udfaf Selected Comp IDs from ClickUp:\" Array(0)",
+    "source": "console-api"
+  },
+  {
+    "timestamp": "2025-08-29T14:21:12.778000",
+    "level": "INFO",
+    "message": "http://127.0.0.1:5004/copyJIC?taskId=868fd6tdt 1847:28 \"No specific comps selected, fetching top 20 revenue properties\"",
+    "source": "console-api"
+  },
+  {
+    "timestamp": "2025-08-29T14:21:12.778000",
+    "level": "INFO",
+    "message": "http://127.0.0.1:5004/copyJIC?taskId=868fd6tdt 2020:20 \"\ud83c\udfc6 Loading top 20 revenue properties as comparables...\"",
+    "source": "console-api"
+  },
+  {
+    "timestamp": "2025-08-29T14:21:12.778000",
+    "level": "INFO",
+    "message": "http://127.0.0.1:5004/copyJIC?taskId=868fd6tdt 2044:28 \"\u2705 Loaded 20 top revenue properties as comparables\"",
+    "source": "console-api"
+  },
+  {
+    "timestamp": "2025-08-29T14:21:12.778000",
+    "level": "INFO",
+    "message": "http://127.0.0.1:5004/copyJIC?taskId=868fd6tdt 1857:24 \"Calculated projections:\" Object",
+    "source": "console-api"
+  },
+  {
+    "timestamp": "2025-08-29T14:21:12.778000",
+    "level": "INFO",
+    "message": "http://127.0.0.1:5004/copyJIC?taskId=868fd6tdt 2852:20 \"Initializing Market Explorer...\"",
+    "source": "console-api"
+  },
+  {
+    "timestamp": "2025-08-29T14:21:12.778000",
+    "level": "INFO",
+    "message": "http://127.0.0.1:5004/copyJIC?taskId=868fd6tdt 2864:20 \"Set default filters: 3-3 bedrooms, 5 mile radius (from ClickUp fields)\"",
+    "source": "console-api"
+  },
+  {
+    "timestamp": "2025-08-29T14:21:12.778000",
+    "level": "INFO",
+    "message": "http://127.0.0.1:5004/copyJIC?taskId=868fd6tdt 2916:28 \"Loaded 50 properties for Market Explorer\"",
+    "source": "console-api"
+  },
+  {
+    "timestamp": "2025-08-29T14:21:12.778000",
+    "level": "INFO",
+    "message": "http://127.0.0.1:5004/copyJIC?taskId=868fd6tdt 2917:28 \"Nearby properties:\" Array(3)",
+    "source": "console-api"
+  },
+  {
+    "timestamp": "2025-08-29T14:21:12.778000",
+    "level": "INFO",
+    "message": "http://127.0.0.1:5004/copyJIC?taskId=868fd6tdt 2918:28 \"Top revenue properties:\" Array(3)",
+    "source": "console-api"
+  }
+]

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Debug Projections</title>
+    <style>
+        body { 
+            font-family: monospace; 
+            padding: 20px; 
+            background: #1a1a1a; 
+            color: #26D086;
+        }
+        pre { 
+            background: #2a2a2a; 
+            padding: 10px; 
+            border-radius: 4px; 
+            overflow: auto;
+        }
+        button {
+            background: #26D086;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Debug Projections Issue</h1>
+    
+    <button onclick="runFullDebug()">Run Full Debug</button>
+    
+    <div id="output"></div>
+
+    <script>
+        async function runFullDebug() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<h2>Starting Debug...</h2>';
+            
+            // Step 1: Call top revenue API directly
+            output.innerHTML += '<h3>Step 1: Calling Top Revenue API</h3>';
+            const response = await fetch('/api/properties/top-revenue', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    location: '',
+                    min_beds: 0,
+                    max_beds: 10,
+                    limit: 20
+                })
+            });
+            
+            const data = await response.json();
+            output.innerHTML += `<pre>Response: ${JSON.stringify(data, null, 2).substring(0, 1000)}...</pre>`;
+            
+            // Step 2: Map the data as the code does
+            output.innerHTML += '<h3>Step 2: Mapping Data</h3>';
+            const properties = data.properties || [];
+            const mappedProps = properties.map(prop => {
+                const monthlyRevenue = prop.monthly_revenue || prop.revenue || prop.MonthlyRevenue || 0;
+                const occupancyRate = prop.occupancy_rate || prop.occupancy || prop.OccupancyRate || 0;
+                const adr = prop.average_daily_rate || prop.adr || prop.AverageDailyRate || 0;
+                
+                return {
+                    property_id: prop.property_id,
+                    monthly_revenue: monthlyRevenue,
+                    occupancy_rate: occupancyRate,
+                    average_daily_rate: adr,
+                    // Add metrics object for compatibility
+                    metrics: {
+                        revenue_annual: prop.metrics?.revenue_annual || (monthlyRevenue * 12),
+                        occupancy_rate: prop.metrics?.occupancy_rate || occupancyRate,
+                        adr: prop.metrics?.adr || adr
+                    },
+                    original_metrics: prop.metrics
+                };
+            });
+            
+            output.innerHTML += `<pre>First mapped property: ${JSON.stringify(mappedProps[0], null, 2)}</pre>`;
+            
+            // Step 3: Calculate projections
+            output.innerHTML += '<h3>Step 3: Calculating Projections</h3>';
+            
+            // Test with original data
+            const projections1 = calculateProjections(properties);
+            output.innerHTML += `<pre>Projections with original data: ${JSON.stringify(projections1, null, 2)}</pre>`;
+            
+            // Test with mapped data
+            const projections2 = calculateProjections(mappedProps);
+            output.innerHTML += `<pre>Projections with mapped data: ${JSON.stringify(projections2, null, 2)}</pre>`;
+            
+            // Step 4: Debug the calculation
+            output.innerHTML += '<h3>Step 4: Debug Calculation Details</h3>';
+            if (properties.length > 0) {
+                const firstProp = properties[0];
+                output.innerHTML += `<pre>
+First property structure:
+- Has metrics: ${!!firstProp.metrics}
+- metrics.revenue_annual: ${firstProp.metrics?.revenue_annual}
+- metrics.occupancy_rate: ${firstProp.metrics?.occupancy_rate}
+- metrics.adr: ${firstProp.metrics?.adr}
+
+Calculation test:
+- Total annual revenue: ${properties.reduce((sum, p) => sum + (p.metrics?.revenue_annual || 0), 0)}
+- Average annual: ${properties.reduce((sum, p) => sum + (p.metrics?.revenue_annual || 0), 0) / properties.length}
+- Average monthly: ${properties.reduce((sum, p) => sum + (p.metrics?.revenue_annual || 0), 0) / properties.length / 12}
+                </pre>`;
+            }
+        }
+        
+        function calculateProjections(comparables) {
+            if (!comparables || comparables.length === 0) {
+                return {
+                    monthlyRevenue: 0,
+                    annualRevenue: 0,
+                    occupancyRate: 0,
+                    adr: 0,
+                    confidence: 0,
+                    debug: 'No comparables'
+                };
+            }
+            
+            // Calculate averages - using the correct field names from API response
+            const monthlyRevenue = comparables.reduce((sum, c) => {
+                // API returns metrics.revenue_annual (not revenue_ltm)
+                const annual = c.metrics?.revenue_annual || 0;
+                return sum + annual;
+            }, 0) / comparables.length / 12;
+            
+            const occupancyRate = comparables.reduce((sum, c) => {
+                // API returns metrics.occupancy_rate already as percentage (not occ_ltm)
+                return sum + (c.metrics?.occupancy_rate || 0);
+            }, 0) / comparables.length;
+            
+            const adr = comparables.reduce((sum, c) => {
+                // API returns metrics.adr (not adr_ltm)
+                return sum + (c.metrics?.adr || 0);
+            }, 0) / comparables.length;
+            
+            // Calculate confidence based on sample size
+            const confidence = Math.min(95, 50 + (comparables.length * 5));
+            
+            return {
+                monthlyRevenue: Math.round(monthlyRevenue),
+                annualRevenue: Math.round(monthlyRevenue * 12),
+                occupancyRate: occupancyRate,
+                adr: Math.round(adr),
+                confidence: confidence,
+                sampleSize: comparables.length
+            };
+        }
+    </script>
+</body>
+</html>

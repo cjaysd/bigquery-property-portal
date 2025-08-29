@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 Annual Revenue & Occupancy Projections - AirDNA</title>
+    <style>
+        :root {
+            /* OODA Design System - Dark Theme */
+            --ooda-dark: #1a1a19;
+            --ooda-darker: #0e0e0d;
+            --ooda-darkest: #050505;
+            --ooda-mint: #26D086;
+            --ooda-mint-light: #4FE0A3;
+            --ooda-mint-dark: #1BA66A;
+            --ooda-mint-glow: rgba(38, 208, 134, 0.4);
+            
+            /* Extended Dark Palette */
+            --neutral-900: #1a1a19;
+            --neutral-800: #262625;
+            --neutral-700: #333332;
+            --neutral-600: #404040;
+            --neutral-500: #595959;
+            --neutral-400: #737373;
+            --neutral-300: #8C8C8C;
+            --neutral-200: #A6A6A6;
+            --neutral-100: #BFBFBF;
+            --neutral-50: #D9D9D9;
+            
+            /* Semantic colors for dark theme */
+            --bg-primary: #1a1a19;
+            --bg-secondary: #262625;
+            --bg-tertiary: #333332;
+            --bg-elevated: rgba(38, 38, 37, 0.8);
+            --bg-glass: rgba(26, 26, 25, 0.7);
+            --text-primary: #E5E5E4;
+            --text-secondary: #A6A6A6;
+            --text-muted: #737373;
+            --text-accent: #26D086;
+            --border-light: rgba(255, 255, 255, 0.1);
+            --border-medium: rgba(255, 255, 255, 0.15);
+            --border-accent: rgba(38, 208, 134, 0.3);
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(26, 26, 25, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-blur: 12px;
+            
+            /* Shadows for dark theme */
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.7);
+            --shadow-glow: 0 0 30px rgba(38, 208, 134, 0.3);
+            
+            /* Gradients */
+            --gradient-mint: linear-gradient(135deg, #26D086 0%, #1BA66A 100%);
+            --gradient-dark: linear-gradient(135deg, #333332 0%, #1a1a19 100%);
+            --gradient-glass: linear-gradient(135deg, rgba(38, 208, 134, 0.1) 0%, rgba(38, 208, 134, 0.05) 100%);
+            
+            /* Spacing */
+            --space-xs: 0.5rem;
+            --space-sm: 0.75rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --space-3xl: 4rem;
+            
+            /* Border Radius */
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+            --radius-full: 9999px;
+            
+            /* Transitions */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slower: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .analysis-header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            border-bottom: 1px solid var(--border-light);
+            padding: var(--space-xl) var(--space-lg);
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .analysis-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: var(--space-md);
+            background: var(--gradient-mint);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .analysis-meta {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-lg);
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .back-button {
+            position: absolute;
+            left: var(--space-lg);
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--glass-bg);
+            border: 1px solid var(--border-light);
+            color: var(--text-primary);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-lg);
+            text-decoration: none;
+            transition: all var(--transition-base);
+        }
+        
+        .back-button:hover {
+            border-color: var(--ooda-mint);
+            color: var(--ooda-mint);
+        }
+        
+        /* Header Actions */
+        .header-actions {
+            position: absolute;
+            right: var(--space-lg);
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+        
+        .pdf-download-btn {
+            background: var(--gradient-mint);
+            border: none;
+            color: white;
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .pdf-download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            background: linear-gradient(135deg, #1BA66A 0%, #26D086 100%);
+        }
+        
+        .pdf-download-btn:active {
+            transform: translateY(0);
+        }
+        
+        .pdf-download-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .pdf-icon {
+            font-size: 1.1rem;
+        }
+        
+        .pdf-loading {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .loading-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border-light);
+            border-top: 2px solid var(--ooda-mint);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Container */
+        .analysis-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--space-lg);
+        }
+        
+        /* Glass Panel */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: var(--space-xl);
+        }
+        
+        /* Summary Cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .summary-card {
+            background: var(--gradient-glass);
+            border: 1px solid var(--border-accent);
+            padding: var(--space-lg);
+            text-align: center;
+        }
+        
+        .summary-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--ooda-mint);
+            margin-bottom: var(--space-sm);
+        }
+        
+        .summary-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .summary-subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: var(--space-xs);
+        }
+        
+        /* Charts */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-xl);
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .chart-container {
+            position: relative;
+            padding: var(--space-xl);
+        }
+        
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: var(--space-lg);
+            color: var(--text-primary);
+        }
+        
+        .chart-canvas {
+            width: 100% !important;
+            height: 400px !important;
+        }
+        
+        /* View Controls */
+        .view-controls {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .view-button {
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+        
+        .view-button.active {
+            background: var(--gradient-mint);
+            border-color: var(--ooda-mint);
+            color: white;
+        }
+        
+        .view-button:not(.active):hover {
+            border-color: var(--border-accent);
+            color: var(--text-primary);
+        }
+        
+        /* Projections Table */
+        .projections-table-container {
+            overflow-x: auto;
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .projections-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .projections-table th {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: var(--space-md);
+            text-align: left;
+            border-bottom: 2px solid var(--border-medium);
+            font-weight: 600;
+        }
+        
+        .projections-table td {
+            padding: var(--space-md);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .projections-table tr:hover {
+            background: rgba(38, 208, 134, 0.05);
+        }
+        
+        .property-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .revenue-value {
+            font-weight: 600;
+            color: var(--ooda-mint);
+        }
+        
+        .confidence-high { color: var(--ooda-mint); }
+        .confidence-medium { color: #F59E0B; }
+        .confidence-low { color: #EF4444; }
+        
+        /* Seasonal Colors */
+        .season-winter { border-left: 4px solid #3B82F6; }
+        .season-spring { border-left: 4px solid #22C55E; }
+        .season-summer { border-left: 4px solid #F97316; }
+        .season-fall { border-left: 4px solid #A16207; }
+        
+        /* Monthly Expectations Table Styles */
+        .monthly-expectations-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .info-tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .info-icon {
+            cursor: help;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            padding: 4px;
+        }
+        
+        .tooltip-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            width: 320px;
+            z-index: 1000;
+            margin-top: 8px;
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .info-tooltip:hover .tooltip-content {
+            display: block;
+        }
+        
+        .tooltip-content ul {
+            margin: var(--space-sm) 0 0 var(--space-md);
+            padding: 0;
+        }
+        
+        .tooltip-content li {
+            margin-bottom: var(--space-xs);
+            font-size: 0.9rem;
+        }
+        
+        .monthly-expectations-container {
+            overflow-x: auto;
+        }
+        
+        .monthly-expectations-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .monthly-expectations-table th {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: var(--space-md);
+            text-align: left;
+            border-bottom: 2px solid var(--border-medium);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .monthly-expectations-table td {
+            padding: var(--space-md);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .monthly-expectations-table tr:hover {
+            background: rgba(38, 208, 134, 0.05);
+        }
+        
+        .month-name {
+            font-weight: 600;
+            padding-left: var(--space-md);
+            position: relative;
+        }
+        
+        .month-name.winter { border-left: 4px solid #3B82F6; }
+        .month-name.spring { border-left: 4px solid #22C55E; }
+        .month-name.summer { border-left: 4px solid #F97316; }
+        .month-name.fall { border-left: 4px solid #A16207; }
+        
+        .revenue-expected {
+            font-weight: 700;
+            color: var(--ooda-mint);
+            font-size: 1.05rem;
+        }
+        
+        .revenue-range {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .occupancy-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .confidence-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .confidence-badge.high {
+            background: rgba(38, 208, 134, 0.2);
+            color: var(--ooda-mint);
+        }
+        
+        .confidence-badge.medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: #F59E0B;
+        }
+        
+        .confidence-badge.low {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+        }
+        
+        .confidence-badge.no-data {
+            background: rgba(115, 115, 115, 0.2);
+            color: var(--text-muted);
+        }
+        
+        .sample-size {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .sample-size .excluded-info {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            cursor: help;
+        }
+        
+        .annual-total-row {
+            background: var(--bg-secondary);
+            font-weight: 700;
+        }
+        
+        .annual-total-row td {
+            padding: var(--space-lg) var(--space-md);
+            border-top: 2px solid var(--border-medium);
+            border-bottom: none;
+        }
+        
+        /* Selected Properties Section */
+        .selected-properties-section {
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .selected-properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--space-md);
+        }
+        
+        .selected-property-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: var(--space-md);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            transition: all var(--transition-base);
+        }
+        
+        .selected-property-card:hover {
+            border-color: var(--border-accent);
+            transform: translateY(-2px);
+        }
+        
+        .selected-property-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-mint);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 1.1rem;
+        }
+        
+        .selected-property-info {
+            flex: 1;
+        }
+        
+        .selected-property-info h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+        
+        .selected-property-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.2;
+        }
+        
+        .selected-property-metrics {
+            display: flex;
+            gap: var(--space-sm);
+            color: var(--text-accent);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        /* Expandable Table Styles */
+        .expandable-row {
+            cursor: pointer;
+            transition: background-color var(--transition-base);
+        }
+        
+        .expandable-row:hover {
+            background-color: rgba(38, 208, 134, 0.05) !important;
+        }
+        
+        .expand-indicator {
+            text-align: center;
+            color: var(--text-muted);
+            transition: transform var(--transition-base);
+        }
+        
+        .expandable-row.expanded .expand-indicator {
+            transform: rotate(180deg);
+        }
+        
+        .monthly-detail-row {
+            background: var(--bg-primary);
+            border-left: 3px solid var(--ooda-mint);
+        }
+        
+        .monthly-breakdown {
+            padding: var(--space-lg);
+        }
+        
+        .monthly-breakdown h4 {
+            color: var(--text-primary);
+            margin-bottom: var(--space-md);
+            font-weight: 600;
+        }
+        
+        .monthly-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--space-sm);
+        }
+        
+        .month-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: var(--space-sm);
+            text-align: center;
+            transition: all var(--transition-base);
+        }
+        
+        .month-card:hover {
+            border-color: var(--border-accent);
+            transform: translateY(-2px);
+        }
+        
+        .month-name {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+        
+        .month-revenue {
+            font-weight: 600;
+            color: var(--text-accent);
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+        
+        .month-occupancy {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Export Button */
+        .export-button {
+            background: var(--gradient-dark);
+            border: 1px solid var(--border-light);
+            color: var(--text-primary);
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            margin: var(--space-md);
+        }
+        
+        .export-button:hover {
+            border-color: var(--ooda-mint);
+            color: var(--ooda-mint);
+        }
+        
+        /* Loading State */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(38, 208, 134, 0.3);
+            border-top: 2px solid var(--ooda-mint);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .analysis-title {
+                font-size: 2rem;
+            }
+            
+            .analysis-meta {
+                flex-direction: column;
+                gap: var(--space-sm);
+            }
+            
+            .back-button {
+                position: relative;
+                left: auto;
+                top: auto;
+                transform: none;
+                margin-bottom: var(--space-md);
+            }
+            
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .view-controls {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='localStorage_management.js') }}"></script>
+</head>
+<body>
+    <header class="analysis-header">
+        <a href="/" class="back-button">← Back to Dashboard</a>
+        <h1 class="analysis-title">2025 Annual Revenue & Occupancy Projections</h1>
+        <div class="analysis-meta">
+            <span id="property-count">Loading...</span>
+            <span id="analysis-date">Generated today</span>
+        </div>
+        <div class="header-actions">
+            <button id="download-pdf-btn" class="pdf-download-btn" onclick="downloadPDF()">
+                <span class="pdf-icon">📄</span>
+                <span>Download PDF Report</span>
+            </button>
+            <div id="pdf-loading" class="pdf-loading" style="display: none;">
+                <div class="loading-spinner"></div>
+                <span>Generating PDF...</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="analysis-container">
+        <!-- Selected Properties Overview -->
+        <div class="glass-panel selected-properties-section">
+            <h3 style="margin-bottom: var(--space-lg); color: var(--text-primary); font-weight: 600;">Selected Properties for Analysis</h3>
+            <div class="selected-properties-grid" id="selectedPropertiesGrid">
+                <!-- Property cards will be dynamically populated -->
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-grid">
+            <div class="glass-panel summary-card">
+                <div class="summary-value" id="annual-revenue">$0</div>
+                <div class="summary-label">Annual Revenue Projection</div>
+                <div class="summary-subtitle" id="revenue-range">Range: $0 - $0</div>
+            </div>
+            
+            <div class="glass-panel summary-card">
+                <div class="summary-value" id="avg-occupancy">0%</div>
+                <div class="summary-label">Average Monthly Occupancy</div>
+                <div class="summary-subtitle" id="occupancy-range">Peak: 0% | Low: 0%</div>
+            </div>
+            
+            <div class="glass-panel summary-card">
+                <div class="summary-value" id="confidence-score">High</div>
+                <div class="summary-label">Confidence Score</div>
+                <div class="summary-subtitle" id="data-quality">Based on X properties</div>
+            </div>
+            
+            <div class="glass-panel summary-card">
+                <div class="summary-icon" style="font-size: 1.5rem; margin-bottom: 8px;">🌡️</div>
+                <div class="summary-value" id="peak-season">Summer</div>
+                <div class="summary-label">Peak Season</div>
+                <div class="summary-subtitle" id="peak-months">Jun - Aug</div>
+            </div>
+            
+            <div class="glass-panel summary-card">
+                <div class="summary-icon" style="font-size: 1.5rem; margin-bottom: 8px;">📊</div>
+                <div class="summary-value" id="market-position">Above Average</div>
+                <div class="summary-label">Market Position</div>
+                <div class="summary-subtitle" id="percentile">75th Percentile</div>
+            </div>
+            
+            <div class="glass-panel summary-card">
+                <div class="summary-icon" style="font-size: 1.5rem; margin-bottom: 8px;">📈</div>
+                <div class="summary-value" id="seasonal-variation">22.5%</div>
+                <div class="summary-label">Seasonal Variation</div>
+                <div class="summary-subtitle">Peak vs Low Season</div>
+            </div>
+        </div>
+
+        <!-- View Controls -->
+        <div class="view-controls">
+            <button class="view-button active" onclick="showView('revenue')">📈 Revenue</button>
+            <button class="view-button" onclick="showView('occupancy')">🏠 Occupancy</button>
+            <button class="view-button" onclick="showView('quarterly')">📊 Quarterly</button>
+            <button class="view-button" onclick="showView('seasonal')">🌡️ Seasonal</button>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <div class="glass-panel chart-container">
+                <h3 class="chart-title" id="chart-title">Monthly Revenue Projections</h3>
+                <canvas id="projections-chart" class="chart-canvas"></canvas>
+            </div>
+            
+            <div class="glass-panel chart-container" id="seasonal-chart-container" style="display: none;">
+                <h3 class="chart-title">Seasonal Revenue Distribution</h3>
+                <canvas id="seasonal-chart" class="chart-canvas"></canvas>
+            </div>
+        </div>
+
+        <!-- Projections Table -->
+        <div class="glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
+                <h3>Annual Projections Breakdown</h3>
+                <button class="export-button" onclick="exportProjections()">Export CSV</button>
+            </div>
+            
+            <div class="projections-table-container">
+                <table class="projections-table" id="projections-table">
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Q1 Revenue</th>
+                            <th>Q2 Revenue</th>
+                            <th>Q3 Revenue</th>
+                            <th>Q4 Revenue</th>
+                            <th>Annual Total</th>
+                            <th>Avg Occupancy</th>
+                            <th>Confidence</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projections-table-body">
+                        <tr>
+                            <td colspan="9" style="text-align: center; padding: var(--space-xl);">
+                                <div class="loading-spinner"></div>
+                                Loading projections...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Monthly Revenue & Occupancy Expectations Table -->
+        <div class="glass-panel monthly-expectations-panel" style="margin-top: var(--space-xl);">
+            <div class="panel-header" style="margin-bottom: var(--space-lg);">
+                <div>
+                    <h3 style="display: flex; align-items: center; gap: var(--space-sm);">
+                        <span>📊</span>
+                        <span>Monthly Revenue & Occupancy Expectations</span>
+                    </h3>
+                    <span class="subtitle" id="monthly-expectations-subtitle">
+                        Based on comparable properties • Offline months excluded
+                    </span>
+                </div>
+                <div class="info-tooltip">
+                    <span class="info-icon">ⓘ</span>
+                    <div class="tooltip-content">
+                        <p><strong>How we calculate expectations:</strong></p>
+                        <ul>
+                            <li>We analyze each month across all comparable properties</li>
+                            <li>Properties with no activity (offline) are automatically excluded</li>
+                            <li>Minimal activity months (< $500 or < 10% occupancy) are also excluded</li>
+                            <li>Expectations are based on the average of active properties only</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="monthly-expectations-container">
+                <table class="monthly-expectations-table" id="monthly-expectations-table">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Expected Revenue</th>
+                            <th>Revenue Range</th>
+                            <th>Expected Occupancy</th>
+                            <th>Confidence</th>
+                            <th>Sample Size</th>
+                        </tr>
+                    </thead>
+                    <tbody id="monthly-expectations-tbody">
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: var(--space-xl);">
+                                <div class="loading-spinner"></div>
+                                Loading monthly expectations...
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="annual-total-row">
+                            <td><strong>Annual Total</strong></td>
+                            <td colspan="2" id="annual-revenue-total">-</td>
+                            <td id="annual-occupancy-avg">-</td>
+                            <td id="overall-confidence">-</td>
+                            <td>-</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let analysisData = null;
+        let projectionsChart = null;
+        let currentView = 'revenue';
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAnalysisData();
+        });
+
+        // Storage manager is already initialized from localStorage_management.js
+        // Use window.storageManager to access it
+        
+        // Load analysis data from localStorage with freshness check
+        function loadAnalysisData() {
+            // Get data with 24-hour freshness check
+            analysisData = window.storageManager.getData('analysis_results', 24);
+            
+            if (!analysisData) {
+                showError('No analysis data found or data has expired. Please return to the dashboard and try again.');
+                return;
+            }
+
+            try {
+                renderAnalysisResults();
+            } catch (error) {
+                console.error('Error processing analysis data:', error);
+                showError('Invalid analysis data. Please try again.');
+                window.storageManager.clearAnalysisData('parse_error');
+            }
+        }
+
+        // Render analysis results
+        function renderAnalysisResults() {
+            if (!analysisData || !analysisData.success) {
+                showError('Analysis failed. Please return to the dashboard and try again.');
+                return;
+            }
+
+            // Update header
+            updateHeader();
+            
+            // Render selected properties overview
+            renderSelectedPropertiesOverview();
+            
+            // Update summary cards
+            updateSummaryCards();
+            
+            // Create chart
+            createProjectionsChart();
+            
+            // Update table
+            updateProjectionsTable();
+            
+            // Render monthly expectations table
+            renderMonthlyExpectations();
+        }
+
+        // Update header information
+        function updateHeader() {
+            const propertyCount = analysisData.property_count || 0;
+            const generatedAt = new Date(analysisData.generated_at).toLocaleDateString();
+            
+            document.getElementById('property-count').textContent = `${propertyCount} Properties Analyzed`;
+            document.getElementById('analysis-date').textContent = `Generated on ${generatedAt}`;
+        }
+
+        // Update summary cards with enhanced seasonal metrics
+        function updateSummaryCards() {
+            if (!analysisData.projections || analysisData.projections.length === 0) return;
+            
+            // Calculate totals and seasonal data
+            let totalRevenue = 0;
+            let minRevenue = Infinity;
+            let maxRevenue = 0;
+            let occupancySum = 0;
+            let highConfidenceCount = 0;
+            
+            // Seasonal calculations
+            const seasonTotals = { winter: 0, spring: 0, summer: 0, fall: 0 };
+            const seasonCounts = { winter: 0, spring: 0, summer: 0, fall: 0 };
+            const seasonOccupancy = { winter: 0, spring: 0, summer: 0, fall: 0 };
+            
+            analysisData.projections.forEach(proj => {
+                totalRevenue += proj.annual_total;
+                minRevenue = Math.min(minRevenue, proj.annual_total);
+                maxRevenue = Math.max(maxRevenue, proj.annual_total);
+                
+                // Calculate average occupancy from monthly data and seasonal breakdown
+                let monthlyOccupancy = 0;
+                // monthly_projections is an object with keys 1-12
+                Object.entries(proj.monthly_projections).forEach(([monthNum, month]) => {
+                    // Debug the month structure
+                    if (!window.debuggedMonth) {
+                        console.log('Month data structure:', monthNum, month);
+                        window.debuggedMonth = true;
+                    }
+                    const season = getSeasonFromMonth(parseInt(monthNum));
+                    monthlyOccupancy += month.occupancy;
+                    
+                    seasonTotals[season] += month.revenue;
+                    seasonOccupancy[season] += month.occupancy;
+                    seasonCounts[season]++;
+                });
+                occupancySum += monthlyOccupancy / 12;
+                
+                if (proj.confidence_level === 'High') {
+                    highConfidenceCount++;
+                }
+            });
+            
+            const avgRevenue = totalRevenue / analysisData.projections.length;
+            const avgOccupancy = occupancySum / analysisData.projections.length;
+            const confidenceLevel = highConfidenceCount > analysisData.projections.length / 2 ? 'High' : 'Medium';
+            
+            // Calculate seasonal averages
+            const seasonalAverages = {};
+            const seasonalOccupancyAvg = {};
+            Object.keys(seasonTotals).forEach(season => {
+                seasonalAverages[season] = seasonCounts[season] > 0 ? seasonTotals[season] / seasonCounts[season] : 0;
+                seasonalOccupancyAvg[season] = seasonCounts[season] > 0 ? seasonOccupancy[season] / seasonCounts[season] : 0;
+            });
+            
+            // Find peak season based on total revenue (not average)
+            // This gives us the season with highest overall performance
+            const peakSeason = Object.keys(seasonTotals).reduce((a, b) => 
+                seasonTotals[a] > seasonTotals[b] ? a : b);
+            
+            // Log for debugging
+            console.log('=== SEASONAL ANALYSIS DEBUG ===');
+            console.log('Seasonal Totals:', seasonTotals);
+            console.log('Seasonal Averages:', seasonalAverages);
+            console.log('Peak Season Calculated:', peakSeason);
+            console.log('Season Counts:', seasonCounts);
+            
+            // Also check if there's a peak_season in the API response
+            if (analysisData.projection_summary && analysisData.projection_summary.peak_season) {
+                console.log('Peak Season from API:', analysisData.projection_summary.peak_season);
+            }
+            
+            // Calculate seasonal variation (difference between peak and lowest season)
+            const maxSeasonRevenue = Math.max(...Object.values(seasonalAverages));
+            const minSeasonRevenue = Math.min(...Object.values(seasonalAverages));
+            const seasonalVariation = minSeasonRevenue > 0 
+                ? ((maxSeasonRevenue - minSeasonRevenue) / minSeasonRevenue) * 100
+                : 0;
+            
+            // Calculate peak and low occupancy
+            const maxOcc = Math.max(...Object.values(seasonalOccupancyAvg));
+            const minOcc = Math.min(...Object.values(seasonalOccupancyAvg));
+            const peakOccupancy = maxOcc > 1 ? maxOcc : maxOcc * 100;
+            const lowOccupancy = minOcc > 1 ? minOcc : minOcc * 100;
+            
+            // Calculate market position (simplified based on average revenue vs benchmark)
+            const marketBenchmark = 65000; // Market average benchmark
+            const marketPosition = avgRevenue > marketBenchmark * 1.15 ? 'Above Average' : 
+                                 avgRevenue > marketBenchmark * 0.85 ? 'Average' : 'Below Average';
+            const percentile = avgRevenue > marketBenchmark * 1.15 ? '75th' : 
+                             avgRevenue > marketBenchmark ? '60th' : '40th';
+            
+            // Update existing DOM elements
+            document.getElementById('annual-revenue').textContent = `$${Math.round(avgRevenue).toLocaleString()}`;
+            document.getElementById('revenue-range').textContent = `Range: $${Math.round(minRevenue).toLocaleString()} - $${Math.round(maxRevenue).toLocaleString()}`;
+            
+            // Check if occupancy is already in percentage format or decimal
+            const displayOccupancy = avgOccupancy > 1 ? avgOccupancy : avgOccupancy * 100;
+            document.getElementById('avg-occupancy').textContent = `${Math.round(displayOccupancy)}%`;
+            document.getElementById('occupancy-range').textContent = `Peak: ${Math.round(peakOccupancy)}% | Low: ${Math.round(lowOccupancy)}%`;
+            
+            document.getElementById('confidence-score').textContent = confidenceLevel;
+            document.getElementById('confidence-score').className = `summary-value confidence-${confidenceLevel.toLowerCase()}`;
+            document.getElementById('data-quality').textContent = `Based on ${analysisData.projections.length} properties`;
+            
+            // Update new seasonal metrics
+            const seasonMap = {
+                'winter': 'Dec - Feb',
+                'spring': 'Mar - May', 
+                'summer': 'Jun - Aug',
+                'fall': 'Sep - Nov'
+            };
+            
+            document.getElementById('peak-season').textContent = peakSeason.charAt(0).toUpperCase() + peakSeason.slice(1);
+            document.getElementById('peak-months').textContent = seasonMap[peakSeason] || 'Jun - Aug';
+            
+            document.getElementById('market-position').textContent = marketPosition;
+            document.getElementById('percentile').textContent = `${percentile} Percentile`;
+            
+            document.getElementById('seasonal-variation').textContent = `${seasonalVariation.toFixed(1)}%`;
+        }
+
+        // Create projections chart with different view types
+        function createProjectionsChart(viewType = 'revenue') {
+            const ctx = document.getElementById('projections-chart').getContext('2d');
+            
+            // Prepare data for chart
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            if (viewType === 'quarterly') {
+                createQuarterlyChart(ctx);
+                return;
+            }
+            
+            const datasets = [];
+            
+            // Create dataset for each property
+            analysisData.projections.forEach((proj, index) => {
+                let data, label, yAxisCallback;
+                
+                if (viewType === 'occupancy') {
+                    data = months.map((month, monthIndex) => {
+                        const monthData = proj.monthly_projections[monthIndex + 1];
+                        // Check if occupancy is already in percentage format (>1) or decimal (0-1)
+                        return monthData ? (monthData.occupancy > 1 ? monthData.occupancy : monthData.occupancy * 100) : 0;
+                    });
+                    label = 'Occupancy %';
+                    yAxisCallback = function(value) { return value.toFixed(0) + '%'; };
+                } else {
+                    data = months.map((month, monthIndex) => {
+                        const monthData = proj.monthly_projections[monthIndex + 1];
+                        return monthData ? monthData.revenue : 0;
+                    });
+                    label = 'Revenue';
+                    yAxisCallback = function(value) { return '$' + (value / 1000).toFixed(0) + 'K'; };
+                }
+                
+                // Add seasonal colors to points
+                const pointColors = months.map((month, monthIndex) => {
+                    const season = getSeasonFromMonth(monthIndex + 1);
+                    return getSeasonColor(season);
+                });
+                
+                datasets.push({
+                    label: proj.title || `Property ${index + 1}`,
+                    data: data,
+                    borderColor: getPropertyColor(index),
+                    backgroundColor: getPropertyColor(index, 0.1),
+                    pointBackgroundColor: pointColors,
+                    pointBorderColor: '#FFFFFF',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    fill: false,
+                    tension: 0.3
+                });
+            });
+            
+            projectionsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#E5E5E4' }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    const monthIndex = tooltipItems[0].dataIndex;
+                                    const season = getSeasonFromMonth(monthIndex + 1);
+                                    return `${tooltipItems[0].label} (${season.charAt(0).toUpperCase() + season.slice(1)})`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: viewType === 'occupancy' ? 'Occupancy Rate (%)' : 'Monthly Revenue ($)',
+                                color: '#A6A6A6'
+                            },
+                            ticks: { 
+                                color: '#A6A6A6',
+                                callback: viewType === 'occupancy' ? 
+                                    function(value) { return value.toFixed(0) + '%'; } :
+                                    function(value) { return '$' + (value / 1000).toFixed(0) + 'K'; }
+                            },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        x: {
+                            ticks: { color: '#A6A6A6' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Create quarterly chart
+        function createQuarterlyChart(ctx) {
+            const quarters = ['Q1 (Winter)', 'Q2 (Spring)', 'Q3 (Summer)', 'Q4 (Fall)'];
+            const quarterColors = ['#3B82F6', '#22C55E', '#F97316', '#A16207'];
+            
+            const datasets = analysisData.projections.map((proj, index) => {
+                const quarters = calculateQuarterlyTotals(proj.monthly_projections);
+                const data = [quarters.Q1, quarters.Q2, quarters.Q3, quarters.Q4];
+                
+                return {
+                    label: proj.title || `Property ${index + 1}`,
+                    data: data,
+                    backgroundColor: quarterColors.map(color => color + '40'),
+                    borderColor: quarterColors,
+                    borderWidth: 2
+                };
+            });
+            
+            projectionsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: quarters,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#E5E5E4' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Quarterly Revenue ($)',
+                                color: '#A6A6A6'
+                            },
+                            ticks: { 
+                                color: '#A6A6A6',
+                                callback: function(value) {
+                                    return '$' + (value / 1000).toFixed(0) + 'K';
+                                }
+                            },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        x: {
+                            ticks: { color: '#A6A6A6' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Create seasonal distribution chart
+        function createSeasonalChart() {
+            const ctx = document.getElementById('seasonal-chart').getContext('2d');
+            
+            // Calculate seasonal totals across all properties
+            const seasonTotals = { winter: 0, spring: 0, summer: 0, fall: 0 };
+            const seasonCounts = { winter: 0, spring: 0, summer: 0, fall: 0 };
+            
+            analysisData.projections.forEach(proj => {
+                Object.entries(proj.monthly_projections || {}).forEach(([monthNum, month]) => {
+                    const season = getSeasonFromMonth(parseInt(monthNum));
+                    seasonTotals[season] += month.revenue;
+                    seasonCounts[season]++;
+                });
+            });
+            
+            // Use totals for the chart to show actual seasonal distribution
+            const seasonalData = [
+                seasonTotals.winter,
+                seasonTotals.spring,
+                seasonTotals.summer,
+                seasonTotals.fall
+            ];
+            
+            console.log('Seasonal Chart Data:', { winter: seasonTotals.winter, spring: seasonTotals.spring, summer: seasonTotals.summer, fall: seasonTotals.fall });
+            
+            const seasonalChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Winter', 'Spring', 'Summer', 'Fall'],
+                    datasets: [{
+                        data: seasonalData,
+                        backgroundColor: ['#3B82F6', '#22C55E', '#F97316', '#A16207'],
+                        borderColor: '#1a1a19',
+                        borderWidth: 2,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#E5E5E4' },
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const total = seasonalData.reduce((sum, val) => sum + val, 0);
+                                    const percentage = ((context.raw / total) * 100).toFixed(1);
+                                    return `${context.label}: $${Math.round(context.raw).toLocaleString()} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Store chart reference
+            document.getElementById('seasonal-chart').chart = seasonalChart;
+        }
+        
+        // Get seasonal color
+        function getSeasonColor(season) {
+            const colors = {
+                winter: '#3B82F6',
+                spring: '#22C55E', 
+                summer: '#F97316',
+                fall: '#A16207'
+            };
+            return colors[season] || '#A6A6A6';
+        }
+
+        // Update projections table with expandable rows
+        function updateProjectionsTable() {
+            const tbody = document.getElementById('projections-table-body');
+            tbody.innerHTML = '';
+            
+            analysisData.projections.forEach((proj, index) => {
+                // Create main expandable row
+                const mainRow = createExpandableTableRow(proj, index);
+                tbody.appendChild(mainRow);
+                
+                // Create hidden detail row
+                const detailRow = createMonthlyDetailRow(proj, index);
+                tbody.appendChild(detailRow);
+            });
+        }
+        
+        // Create expandable table row
+        function createExpandableTableRow(proj, index) {
+            const row = document.createElement('tr');
+            row.className = 'expandable-row';
+            row.dataset.propertyId = `property_${index}`;
+            row.onclick = () => toggleMonthlyDetail(`property_${index}`);
+            
+            // Calculate quarterly totals
+            const quarters = calculateQuarterlyTotals(proj.monthly_projections);
+            const avgOccupancy = calculateAvgOccupancy(proj.monthly_projections);
+            
+            row.innerHTML = `
+                <td class="property-name">${proj.title || `Property ${index + 1}`}</td>
+                <td class="revenue-value season-winter">$${Math.round(quarters.Q1).toLocaleString()}</td>
+                <td class="revenue-value season-spring">$${Math.round(quarters.Q2).toLocaleString()}</td>
+                <td class="revenue-value season-summer">$${Math.round(quarters.Q3).toLocaleString()}</td>
+                <td class="revenue-value season-fall">$${Math.round(quarters.Q4).toLocaleString()}</td>
+                <td class="revenue-value" style="font-weight: 700;">$${proj.annual_total.toLocaleString()}</td>
+                <td>${Math.round(avgOccupancy)}%</td>
+                <td class="confidence-${proj.confidence_level.toLowerCase()}">${proj.confidence_level}</td>
+                <td class="expand-indicator">▼</td>
+            `;
+            
+            return row;
+        }
+        
+        // Create monthly detail row
+        function createMonthlyDetailRow(proj, index) {
+            const detailRow = document.createElement('tr');
+            detailRow.className = 'monthly-detail-row';
+            detailRow.id = `detail-property_${index}`;
+            detailRow.style.display = 'none';
+            
+            const monthlyCards = Object.entries(proj.monthly_projections || {}).map(([monthNum, month]) => {
+                const monthNumber = parseInt(monthNum);
+                const season = getSeasonFromMonth(monthNumber);
+                return `
+                    <div class="month-card season-${season}">
+                        <div class="month-name">${getMonthName(monthNumber)}</div>
+                        <div class="month-revenue">$${month.revenue.toLocaleString()}</div>
+                        <div class="month-occupancy">${(month.occupancy > 1 ? month.occupancy : month.occupancy * 100).toFixed(1)}%</div>
+                    </div>
+                `;
+            }).join('');
+            
+            detailRow.innerHTML = `
+                <td colspan="9">
+                    <div class="monthly-breakdown">
+                        <h4>Monthly Breakdown - ${proj.title || `Property ${index + 1}`}</h4>
+                        <div class="monthly-grid">${monthlyCards}</div>
+                    </div>
+                </td>
+            `;
+            
+            return detailRow;
+        }
+        
+        // Toggle monthly detail expansion
+        function toggleMonthlyDetail(propertyId) {
+            const detailRow = document.getElementById(`detail-${propertyId}`);
+            const expandRow = document.querySelector(`[data-property-id="${propertyId}"]`);
+            const expandIndicator = expandRow.querySelector('.expand-indicator');
+            
+            if (detailRow.style.display === 'none') {
+                detailRow.style.display = 'table-row';
+                expandIndicator.textContent = '▲';
+                expandRow.classList.add('expanded');
+            } else {
+                detailRow.style.display = 'none';
+                expandIndicator.textContent = '▼';
+                expandRow.classList.remove('expanded');
+            }
+        }
+        
+        // Calculate quarterly totals from monthly data
+        function calculateQuarterlyTotals(monthlyProjections) {
+            const monthlyArray = Object.values(monthlyProjections || {});
+            return {
+                Q1: monthlyArray.slice(0, 3).reduce((sum, month) => sum + month.revenue, 0),
+                Q2: monthlyArray.slice(3, 6).reduce((sum, month) => sum + month.revenue, 0),
+                Q3: monthlyArray.slice(6, 9).reduce((sum, month) => sum + month.revenue, 0),
+                Q4: monthlyArray.slice(9, 12).reduce((sum, month) => sum + month.revenue, 0)
+            };
+        }
+        
+        // Calculate average occupancy from monthly data
+        function calculateAvgOccupancy(monthlyProjections) {
+            const monthlyArray = Object.values(monthlyProjections || {});
+            const avgOcc = monthlyArray.reduce((sum, month) => sum + month.occupancy, 0) / monthlyArray.length;
+            // Return in percentage format
+            return avgOcc > 1 ? avgOcc : avgOcc * 100;
+        }
+        
+        // Get season from month number
+        function getSeasonFromMonth(monthNum) {
+            if (monthNum === 12 || monthNum <= 2) return 'winter';
+            if (monthNum >= 3 && monthNum <= 5) return 'spring';
+            if (monthNum >= 6 && monthNum <= 8) return 'summer';
+            return 'fall';
+        }
+        
+        // Render Monthly Revenue & Occupancy Expectations Table
+        function renderMonthlyExpectations() {
+            if (!analysisData || !analysisData.monthly_expectations) {
+                console.log('No monthly expectations data available');
+                return;
+            }
+            
+            const tbody = document.getElementById('monthly-expectations-tbody');
+            const monthlyData = analysisData.monthly_expectations;
+            const summary = analysisData.monthly_expectations_summary;
+            
+            // Clear loading message
+            tbody.innerHTML = '';
+            
+            // Update subtitle with property count
+            const propertyCount = analysisData.projections ? analysisData.projections.length : 0;
+            document.getElementById('monthly-expectations-subtitle').textContent = 
+                `Based on ${propertyCount} comparable properties • Offline months excluded`;
+            
+            // Render each month
+            for (let monthNum = 1; monthNum <= 12; monthNum++) {
+                const monthKey = monthNum.toString();
+                const monthData = monthlyData[monthKey];
+                
+                if (!monthData) continue;
+                
+                const row = document.createElement('tr');
+                const season = monthData.season;
+                
+                // Create month name cell with seasonal color
+                const monthCell = `<td class="month-name ${season}">${monthData.month}</td>`;
+                
+                // Expected revenue cell
+                const revenueCell = `<td class="revenue-expected">$${monthData.revenue.expected.toLocaleString()}</td>`;
+                
+                // Revenue range cell
+                const rangeCell = `<td class="revenue-range">$${monthData.revenue.min.toLocaleString()} - $${monthData.revenue.max.toLocaleString()}</td>`;
+                
+                // Occupancy cell
+                const occupancyCell = `<td class="occupancy-value">${monthData.occupancy.expected.toFixed(1)}%</td>`;
+                
+                // Confidence badge
+                const confidence = monthData.data_quality.confidence.toLowerCase();
+                const confidenceCell = `<td><span class="confidence-badge ${confidence}">${monthData.data_quality.confidence}</span></td>`;
+                
+                // Sample size with exclusion info
+                const included = monthData.data_quality.included_count;
+                const excluded = monthData.data_quality.excluded_count;
+                const total = monthData.data_quality.total_properties;
+                
+                let sampleSizeCell = `<td class="sample-size">`;
+                sampleSizeCell += `${included}/${total} properties`;
+                
+                // Add exclusion info if there are exclusions
+                if (excluded > 0) {
+                    const exclusionTitle = monthData.data_quality.excluded_properties
+                        .map(ex => `${ex.property}: ${ex.reason}`)
+                        .join('\n');
+                    sampleSizeCell += ` <span class="excluded-info" title="${exclusionTitle}">(${excluded} excluded)</span>`;
+                }
+                sampleSizeCell += `</td>`;
+                
+                row.innerHTML = monthCell + revenueCell + rangeCell + occupancyCell + confidenceCell + sampleSizeCell;
+                
+                // Add hover effect for rows with exclusions
+                if (excluded > 0) {
+                    row.style.cursor = 'help';
+                    row.title = `${excluded} properties excluded from ${monthData.month} calculations`;
+                }
+                
+                tbody.appendChild(row);
+            }
+            
+            // Update footer totals
+            if (summary) {
+                document.getElementById('annual-revenue-total').innerHTML = 
+                    `<strong>$${summary.total_revenue.toLocaleString()}</strong>`;
+                document.getElementById('annual-occupancy-avg').innerHTML = 
+                    `<strong>${summary.average_occupancy.toFixed(1)}%</strong>`;
+                
+                const overallConfidence = summary.overall_confidence.toLowerCase();
+                document.getElementById('overall-confidence').innerHTML = 
+                    `<span class="confidence-badge ${overallConfidence}">${summary.overall_confidence}</span>`;
+            }
+        }
+        
+        // Get month name from month number
+        function getMonthName(monthNum) {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return months[monthNum - 1] || `Month ${monthNum}`;
+        }
+        
+        // Render selected properties overview
+        function renderSelectedPropertiesOverview() {
+            const grid = document.getElementById('selectedPropertiesGrid');
+            if (!grid || !analysisData.projections) return;
+            
+            grid.innerHTML = '';
+            
+            analysisData.projections.forEach((proj, index) => {
+                const card = document.createElement('div');
+                card.className = 'selected-property-card';
+                
+                const avgOccupancy = calculateAvgOccupancy(proj.monthly_projections);
+                
+                card.innerHTML = `
+                    <div class="selected-property-avatar">${index + 1}</div>
+                    <div class="selected-property-info">
+                        <h4>${proj.title || `Property ${index + 1}`}</h4>
+                        <p>Annual: $${proj.annual_total.toLocaleString()} • Occupancy: ${Math.round(avgOccupancy)}%</p>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // Show different chart views
+        function showView(viewType) {
+            // Update active button
+            document.querySelectorAll('.view-button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            currentView = viewType;
+            
+            // Handle different view types
+            if (viewType === 'seasonal') {
+                // Show seasonal chart, hide main chart
+                document.getElementById('seasonal-chart-container').style.display = 'block';
+                document.querySelector('.chart-container:first-child').style.display = 'none';
+                
+                // Create seasonal chart if not exists
+                if (!document.getElementById('seasonal-chart').chart) {
+                    createSeasonalChart();
+                }
+            } else {
+                // Show main chart, hide seasonal chart
+                document.getElementById('seasonal-chart-container').style.display = 'none';
+                document.querySelector('.chart-container:first-child').style.display = 'block';
+                
+                // Update main chart based on view type
+                if (projectionsChart) {
+                    projectionsChart.destroy();
+                }
+                createProjectionsChart(viewType);
+                
+                // Update chart title
+                const titles = {
+                    'revenue': 'Monthly Revenue Projections',
+                    'occupancy': 'Monthly Occupancy Projections', 
+                    'quarterly': 'Quarterly Revenue Summary'
+                };
+                document.getElementById('chart-title').textContent = titles[viewType];
+            }
+        }
+
+        // Export projections to CSV
+        function exportProjections() {
+            if (!analysisData || !analysisData.projections) return;
+            
+            // Create CSV content
+            let csvContent = 'Property,Q1 Revenue,Q2 Revenue,Q3 Revenue,Q4 Revenue,Annual Total,Avg Occupancy,Confidence\n';
+            
+            analysisData.projections.forEach(proj => {
+                const q1 = Object.values(proj.monthly_projections).slice(0, 3).reduce((sum, month) => sum + month.revenue, 0);
+                const q2 = Object.values(proj.monthly_projections).slice(3, 6).reduce((sum, month) => sum + month.revenue, 0);
+                const q3 = Object.values(proj.monthly_projections).slice(6, 9).reduce((sum, month) => sum + month.revenue, 0);
+                const q4 = Object.values(proj.monthly_projections).slice(9, 12).reduce((sum, month) => sum + month.revenue, 0);
+                const avgOccupancy = Object.values(proj.monthly_projections).reduce((sum, month) => sum + month.occupancy, 0) / 12;
+                
+                csvContent += `"${proj.title}",${Math.round(q1)},${Math.round(q2)},${Math.round(q3)},${Math.round(q4)},${proj.annual_total},${Math.round(avgOccupancy)}%,${proj.confidence_level}\n`;
+            });
+            
+            // Download CSV
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '2025-annual-projections.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Get property color for chart
+        function getPropertyColor(index, alpha = 1) {
+            const colors = [
+                `rgba(38, 208, 134, ${alpha})`,   // Mint
+                `rgba(59, 130, 246, ${alpha})`,   // Blue  
+                `rgba(245, 158, 11, ${alpha})`,   // Orange
+                `rgba(236, 72, 153, ${alpha})`,   // Pink
+                `rgba(34, 197, 94, ${alpha})`,    // Green
+                `rgba(239, 68, 68, ${alpha})`,    // Red
+                `rgba(147, 51, 234, ${alpha})`,   // Purple
+                `rgba(14, 165, 233, ${alpha})`,   // Light Blue
+                `rgba(251, 146, 60, ${alpha})`,   // Light Orange
+                `rgba(168, 85, 247, ${alpha})`    // Light Purple
+            ];
+            return colors[index % colors.length];
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #EF4444, #DC2626);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+                z-index: 9999;
+                font-weight: 600;
+                max-width: 400px;
+            `;
+            errorDiv.textContent = message;
+            
+            document.body.appendChild(errorDiv);
+            
+            setTimeout(() => {
+                if (errorDiv.parentElement) {
+                    errorDiv.remove();
+                }
+            }, 8000);
+        }
+
+        // PDF Download Function
+        async function downloadPDF() {
+            // Check if we have analysis data loaded
+            if (!analysisData || !analysisData.success) {
+                showError('No analysis data available. Please run an analysis first.');
+                return;
+            }
+            
+            // Show loading state
+            const downloadBtn = document.getElementById('download-pdf-btn');
+            const loadingDiv = document.getElementById('pdf-loading');
+            
+            if (downloadBtn) downloadBtn.style.display = 'none';
+            if (loadingDiv) loadingDiv.style.display = 'flex';
+            
+            try {
+                // Get the first property from the analysis data
+                const projections = analysisData.projections || [];
+                if (projections.length === 0) {
+                    throw new Error('No property data available in analysis');
+                }
+                
+                const primaryProperty = projections[0];
+                const propertyId = primaryProperty.property_id;
+                
+                // Call PDF generation endpoint
+                const response = await fetch(`/api/analysis/${propertyId}/pdf`);
+                
+                if (!response.ok) {
+                    throw new Error(`PDF generation failed: ${response.statusText}`);
+                }
+                
+                // Download the PDF
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `OODA_Premium_Analysis_${new Date().toISOString().split('T')[0]}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+                // Show success message
+                showSuccessMessage('PDF downloaded successfully!');
+                
+            } catch (error) {
+                console.error('PDF download error:', error);
+                showError(`Failed to generate PDF: ${error.message}`);
+            } finally {
+                // Reset button state
+                if (downloadBtn) downloadBtn.style.display = 'flex';
+                if (loadingDiv) loadingDiv.style.display = 'none';
+            }
+        }
+
+        // Show success message
+        function showSuccessMessage(message) {
+            const successDiv = document.createElement('div');
+            successDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #26D086, #1BA66A);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+                z-index: 9999;
+                font-weight: 600;
+                max-width: 400px;
+            `;
+            successDiv.textContent = message;
+            
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                if (successDiv.parentElement) {
+                    successDiv.remove();
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

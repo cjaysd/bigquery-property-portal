@@ -1,0 +1,99 @@
+{
+  "test_timestamp": "2025-08-29T14:50:03.555200",
+  "selenium_test": {
+    "timestamp": "2025-08-29T14:49:50.047430",
+    "url": "http://127.0.0.1:5004/copyJIC?taskId=868fd6tdt",
+    "console_logs": [
+      {
+        "timestamp": 1756504192433,
+        "level": "SEVERE",
+        "message": "http://127.0.0.1:5004/favicon.ico - Failed to load resource: the server responded with a status of 404 (NOT FOUND)",
+        "source": "network"
+      }
+    ],
+    "network_calls": [],
+    "page_analysis": {
+      "comparable_elements_found": 2,
+      "page_title": "Property Investment Analysis Portal - OODA",
+      "url": "http://127.0.0.1:5004/copyJIC?taskId=868fd6tdt",
+      "location_mentions": [
+        {
+          "keyword": "mile",
+          "sentence": "Comparative market analysis using properties within 3-mile radius with similar characteristics"
+        },
+        {
+          "keyword": "mile",
+          "sentence": "1 mile"
+        },
+        {
+          "keyword": "mile",
+          "sentence": "3 miles"
+        },
+        {
+          "keyword": "mile",
+          "sentence": "5 miles"
+        },
+        {
+          "keyword": "mile",
+          "sentence": "10 miles"
+        },
+        {
+          "keyword": "miles",
+          "sentence": "3 miles"
+        },
+        {
+          "keyword": "miles",
+          "sentence": "5 miles"
+        },
+        {
+          "keyword": "miles",
+          "sentence": "10 miles"
+        },
+        {
+          "keyword": "distance",
+          "sentence": "Property Bedrooms Distance Annual Revenue Occupancy ADR Rating Reviews"
+        },
+        {
+          "keyword": "location",
+          "sentence": "**TOP LOCATION** 3BR Little Italy Home + Parking 3 N/A mi $251,555 97.8% $704 100 34"
+        },
+        {
+          "keyword": "location",
+          "sentence": "Similarity score based on bedrooms, location, and amenities"
+        },
+        {
+          "keyword": "San Diego",
+          "sentence": "3226 Lucinda St, San Diego, CA 92106, USA"
+        },
+        {
+          "keyword": "San Diego",
+          "sentence": "Lead: 3226 Lucinda, San Diego, CA 92106"
+        }
+      ],
+      "page_loaded": true
+    },
+    "test_results": {}
+  },
+  "api_analysis": {
+    "direct_api_test": {
+      "status": "success",
+      "status_code": 200,
+      "data_keys": [
+        "coordinates",
+        "properties",
+        "search_location",
+        "success",
+        "total_results"
+      ],
+      "properties_count": 0,
+      "locations_found": []
+    },
+    "api_call_analysis": {}
+  },
+  "summary": {
+    "page_loaded": true,
+    "console_logs_captured": 1,
+    "location_mentions": 13,
+    "api_test_success": true
+  }
+}

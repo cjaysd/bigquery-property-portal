@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Debug Test</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #444;
+            border-radius: 8px;
+        }
+        .test-title {
+            color: #26D086;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .result {
+            background: #2a2a2a;
+            padding: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .error {
+            color: #ff6b6b;
+        }
+        .success {
+            color: #26D086;
+        }
+        button {
+            background: #26D086;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <h1>API Response Debug Tool</h1>
+    
+    <div class="test-section">
+        <div class="test-title">Test 1: Nearby Properties API</div>
+        <button onclick="testNearbyAPI()">Test Nearby API</button>
+        <div id="nearbyResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <div class="test-title">Test 2: Top Revenue Properties API</div>
+        <button onclick="testTopRevenueAPI()">Test Top Revenue API</button>
+        <div id="topRevenueResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <div class="test-title">Test 3: Calculate Projections with Real Data</div>
+        <button onclick="testCalculateProjections()">Test Calculate Projections</button>
+        <div id="projectionsResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <div class="test-title">Test 4: Full Flow Test</div>
+        <button onclick="testFullFlow()">Test Full Flow</button>
+        <div id="fullFlowResult" class="result"></div>
+    </div>
+
+    <script>
+        // Test 1: Nearby Properties API
+        async function testNearbyAPI() {
+            const resultDiv = document.getElementById('nearbyResult');
+            resultDiv.innerHTML = 'Testing Nearby Properties API...';
+            
+            try {
+                const response = await fetch('/api/properties/nearby', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        address: '3226 Lucinda St, San Diego, CA 92106',
+                        min_beds: 2,
+                        max_beds: 4,
+                        radius_miles: 5,
+                        limit: 5
+                    })
+                });
+                
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+<span class="success">Response Status: ${response.status}</span>
+<strong>Data Structure:</strong>
+${JSON.stringify(data, null, 2)}
+
+<strong>First Property Structure (if available):</strong>
+${data.properties && data.properties[0] ? JSON.stringify(data.properties[0], null, 2) : 'No properties returned'}
+
+<strong>Key Fields Check:</strong>
+- data.success: ${data.success}
+- data.properties: ${data.properties ? 'EXISTS' : 'MISSING'}
+- First property fields: ${data.properties && data.properties[0] ? Object.keys(data.properties[0]).join(', ') : 'N/A'}
+- Metrics object exists? ${data.properties && data.properties[0] && data.properties[0].metrics ? 'YES' : 'NO'}
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+            }
+        }
+
+        // Test 2: Top Revenue Properties API
+        async function testTopRevenueAPI() {
+            const resultDiv = document.getElementById('topRevenueResult');
+            resultDiv.innerHTML = 'Testing Top Revenue Properties API...';
+            
+            try {
+                // Try with correct parameters
+                const response = await fetch('/api/properties/top-revenue', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        location: '',  // Empty location
+                        min_beds: 0,
+                        max_beds: 10,
+                        limit: 20
+                    })
+                });
+                
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+<span class="success">Response Status: ${response.status}</span>
+<strong>Data Structure:</strong>
+${JSON.stringify(data, null, 2)}
+
+<strong>First Property Structure (if available):</strong>
+${data.properties && data.properties[0] ? JSON.stringify(data.properties[0], null, 2) : 'No properties returned'}
+
+<strong>Key Fields Check:</strong>
+- data.properties: ${data.properties ? 'EXISTS' : 'MISSING'}
+- First property fields: ${data.properties && data.properties[0] ? Object.keys(data.properties[0]).join(', ') : 'N/A'}
+- Revenue field names: ${data.properties && data.properties[0] ? Object.keys(data.properties[0]).filter(k => k.toLowerCase().includes('revenue')).join(', ') : 'N/A'}
+- Occupancy field names: ${data.properties && data.properties[0] ? Object.keys(data.properties[0]).filter(k => k.toLowerCase().includes('occ')).join(', ') : 'N/A'}
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+            }
+        }
+
+        // Test 3: Calculate Projections with Real Data
+        async function testCalculateProjections() {
+            const resultDiv = document.getElementById('projectionsResult');
+            resultDiv.innerHTML = 'Testing Calculate Projections...';
+            
+            try {
+                // First get some real data
+                const response = await fetch('/api/properties/top-revenue', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        location: '',
+                        min_beds: 0,
+                        max_beds: 10,
+                        limit: 10
+                    })
+                });
+                
+                const data = await response.json();
+                const comparables = data.properties || [];
+                
+                // Now test the calculation function
+                const projections = calculateProjectionsTest(comparables);
+                
+                resultDiv.innerHTML = `
+<span class="success">Fetched ${comparables.length} properties</span>
+
+<strong>Sample Property Data:</strong>
+${comparables[0] ? JSON.stringify(comparables[0], null, 2) : 'No properties'}
+
+<strong>Projections Result:</strong>
+${JSON.stringify(projections, null, 2)}
+
+<strong>Debug Info:</strong>
+- Properties with metrics: ${comparables.filter(c => c.metrics).length}
+- Properties with revenue_annual: ${comparables.filter(c => c.metrics?.revenue_annual).length}
+- Properties with monthly_revenue: ${comparables.filter(c => c.monthly_revenue).length}
+- Properties with occupancy_rate in metrics: ${comparables.filter(c => c.metrics?.occupancy_rate).length}
+- Properties with occupancy_rate direct: ${comparables.filter(c => c.occupancy_rate).length}
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+            }
+        }
+
+        // Copy of the calculate projections function for testing
+        function calculateProjectionsTest(comparables) {
+            if (!comparables || comparables.length === 0) {
+                return {
+                    monthlyRevenue: 0,
+                    annualRevenue: 0,
+                    occupancyRate: 0,
+                    adr: 0,
+                    confidence: 0,
+                    debug: 'No comparables provided'
+                };
+            }
+            
+            // Debug: Check what fields are available
+            const firstComp = comparables[0];
+            const debugInfo = {
+                sampleProperty: firstComp,
+                hasMetrics: !!firstComp.metrics,
+                metricsFields: firstComp.metrics ? Object.keys(firstComp.metrics) : [],
+                directFields: Object.keys(firstComp)
+            };
+            
+            // Try different field paths
+            let monthlyRevenue = 0;
+            let occupancyRate = 0;
+            let adr = 0;
+            
+            // Calculate averages - try multiple field paths
+            monthlyRevenue = comparables.reduce((sum, c) => {
+                // Try different paths for revenue
+                const annual = c.metrics?.revenue_annual || 
+                              c.revenue_annual || 
+                              c.annual_revenue ||
+                              ((c.monthly_revenue || c.revenue || c.MonthlyRevenue || 0) * 12) ||
+                              0;
+                return sum + annual;
+            }, 0) / comparables.length / 12;
+            
+            occupancyRate = comparables.reduce((sum, c) => {
+                // Try different paths for occupancy
+                const occ = c.metrics?.occupancy_rate || 
+                           c.occupancy_rate || 
+                           c.occupancy || 
+                           c.OccupancyRate || 
+                           0;
+                return sum + occ;
+            }, 0) / comparables.length;
+            
+            adr = comparables.reduce((sum, c) => {
+                // Try different paths for ADR
+                const dailyRate = c.metrics?.adr || 
+                                 c.adr || 
+                                 c.average_daily_rate || 
+                                 c.AverageDailyRate || 
+                                 0;
+                return sum + dailyRate;
+            }, 0) / comparables.length;
+            
+            // Calculate confidence based on sample size
+            const confidence = Math.min(95, 50 + (comparables.length * 5));
+            
+            return {
+                monthlyRevenue: Math.round(monthlyRevenue),
+                annualRevenue: Math.round(monthlyRevenue * 12),
+                occupancyRate: occupancyRate,
+                adr: Math.round(adr),
+                confidence: confidence,
+                debug: debugInfo
+            };
+        }
+
+        // Test 4: Full Flow Test
+        async function testFullFlow() {
+            const resultDiv = document.getElementById('fullFlowResult');
+            resultDiv.innerHTML = 'Testing Full Flow...';
+            
+            try {
+                // Step 1: Try nearby with no address (should fail)
+                const nearbyResponse1 = await fetch('/api/properties/nearby', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        address: null,
+                        min_beds: 3,
+                        max_beds: 3,
+                        radius_miles: 5,
+                        limit: 20
+                    })
+                });
+                
+                // Step 2: Fallback to top revenue
+                const topRevenueResponse = await fetch('/api/properties/top-revenue', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        location: '',  // Empty location
+                        min_beds: 0,
+                        max_beds: 10,
+                        limit: 20
+                    })
+                });
+                
+                const topRevenueData = await topRevenueResponse.json();
+                
+                // Step 3: Process the data as the actual code would
+                const processedProperties = topRevenueData.properties ? topRevenueData.properties.map(prop => {
+                    const monthlyRevenue = prop.monthly_revenue || prop.revenue || prop.MonthlyRevenue || 0;
+                    const occupancyRate = prop.occupancy_rate || prop.occupancy || prop.OccupancyRate || 0;
+                    const adr = prop.average_daily_rate || prop.adr || prop.AverageDailyRate || 0;
+                    
+                    return {
+                        property_id: prop.id || prop.PropertyID,
+                        monthly_revenue: monthlyRevenue,
+                        occupancy_rate: occupancyRate,
+                        average_daily_rate: adr,
+                        metrics: {
+                            revenue_annual: prop.annual_revenue || (monthlyRevenue * 12),
+                            occupancy_rate: occupancyRate,
+                            adr: adr
+                        }
+                    };
+                }) : [];
+                
+                // Step 4: Calculate projections
+                const projections = calculateProjectionsTest(processedProperties);
+                
+                resultDiv.innerHTML = `
+<strong>Step 1: Nearby API with null address</strong>
+Status: ${nearbyResponse1.status} ${nearbyResponse1.status === 500 ? '(Expected to fail)' : ''}
+
+<strong>Step 2: Top Revenue API Fallback</strong>
+Status: ${topRevenueResponse.status}
+Properties returned: ${topRevenueData.properties ? topRevenueData.properties.length : 0}
+
+<strong>Step 3: Processed Properties (first one)</strong>
+${processedProperties[0] ? JSON.stringify(processedProperties[0], null, 2) : 'No properties'}
+
+<strong>Step 4: Final Projections</strong>
+${JSON.stringify(projections, null, 2)}
+
+<strong>Summary:</strong>
+${projections.monthlyRevenue > 0 ? 
+    `✅ SUCCESS: Projections calculated correctly
+    Monthly Revenue: $${projections.monthlyRevenue}
+    Occupancy: ${projections.occupancyRate.toFixed(1)}%
+    ADR: $${projections.adr}` : 
+    `❌ FAILURE: Projections still showing $0`}
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+            }
+        }
+    </script>
+</body>
+</html>

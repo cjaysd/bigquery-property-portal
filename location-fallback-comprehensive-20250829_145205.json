@@ -1,0 +1,211 @@
+{
+  "test_timestamp": "2025-08-29T14:52:05.222874",
+  "api_direct_tests": [
+    {
+      "test_name": "San Diego Location - 1 mile radius",
+      "endpoint": "/api/properties/nearby",
+      "status_code": 200,
+      "timestamp": "2025-08-29T14:51:43.784011",
+      "success": true,
+      "total_results": 0,
+      "properties_returned": 0,
+      "sample_locations": []
+    },
+    {
+      "test_name": "San Diego Location - 1 mile radius",
+      "endpoint": "/api/properties/top-revenue",
+      "status_code": 200,
+      "timestamp": "2025-08-29T14:51:44.587842",
+      "success": true,
+      "total_results": 20,
+      "properties_returned": 20,
+      "sample_locations": [
+        {
+          "location": {
+            "city": "San Diego",
+            "lat": 32.7119000189,
+            "lng": -117.1601292767,
+            "state": "California"
+          }
+        },
+        {
+          "location": {
+            "city": "San Diego",
+            "lat": 32.71345,
+            "lng": -117.15523,
+            "state": "California"
+          }
+        },
+        {
+          "location": {
+            "city": "San Diego",
+            "lat": 32.72784,
+            "lng": -117.16142,
+            "state": "California"
+          }
+        },
+        {
+          "location": {
+            "city": "San Diego",
+            "lat": 32.7228105,
+            "lng": -117.1663406,
+            "state": "California"
+          }
+        },
+        {
+          "location": {
+            "city": "San Diego",
+            "lat": 32.7119,
+            "lng": -117.1597,
+            "state": "California"
+          }
+        }
+      ]
+    },
+    {
+      "test_name": "San Diego Location - 3 mile radius",
+      "endpoint": "/api/properties/nearby",
+      "status_code": 200,
+      "timestamp": "2025-08-29T14:51:45.298005",
+      "success": true,
+      "total_results": 0,
+      "properties_returned": 0,
+      "sample_locations": []
+    },
+    {
+      "test_name": "San Diego Location - 3 mile radius",
+      "endpoint": "/api/properties/top-revenue",
+      "status_code": 200,
+      "timestamp": "2025-08-29T14:51:46.405846",
+      "success": true,
+      "total_results": 20,
+      "properties_returned": 20,
+      "sample_locations": [
+        {
+          "location": {
+            "city": "Coronado",
+            "lat": 32.6830477424,
+            "lng": -117.1777592971,
+            "state": "California"
+          }
+        },
+        {
+          "location": {
+            "city": "Coronado",
+            "lat": 32.68450165,
+            "lng": -117.1780014,
+            "state": "California"
+          }
+        },
+        {
+          "location": {
+            "city": "San Diego",
+            "lat": 32.74029,
+            "lng": -117.17646,
+            "state": "California"
+          }
+        },
+        {
+          "location": {
+            "city": "San Diego",
+            "lat": 32.71742,
+            "lng": -117.13718,
+            "state": "California"
+          }
+        },
+        {
+          "location": {
+            "city": "San Diego",
+            "lat": 32.73303,
+            "lng": -117.15971,
+            "state": "California"
+          }
+        }
+      ]
+    },
+    {
+      "test_name": "San Diego Location - 5 mile radius",
+      "endpoint": "/api/properties/nearby",
+      "status_code": 200,
+      "timestamp": "2025-08-29T14:51:47.081414",
+      "success": true,
+      "total_results": 0,
+      "properties_returned": 0,
+      "sample_locations": []
+    },
+    {
+      "test_name": "San Diego Location - 5 mile radius",
+      "endpoint": "/api/properties/top-revenue",
+      "status_code": 200,
+      "timestamp": "2025-08-29T14:51:48.259597",
+      "success": true,
+      "total_results": 20,
+      "properties_returned": 20,
+      "sample_locations": [
+        {
+          "location": {
+            "city": "Coronado",
+            "lat": 32.6830477424,
+            "lng": -117.1777592971,
+            "state": "California"
+          }
+        },
+        {
+          "location": {
+            "city": "Coronado",
+            "lat": 32.68450165,
+            "lng": -117.1780014,
+            "state": "California"
+          }
+        },
+        {
+          "location": {
+            "city": "San Diego",
+            "lat": 32.74029,
+            "lng": -117.17646,
+            "state": "California"
+          }
+        },
+        {
+          "location": {
+            "city": "San Diego",
+            "lat": 32.71742,
+            "lng": -117.13718,
+            "state": "California"
+          }
+        },
+        {
+          "location": {
+            "city": "San Diego",
+            "lat": 32.73303,
+            "lng": -117.15971,
+            "state": "California"
+          }
+        }
+      ]
+    }
+  ],
+  "browser_monitoring": {
+    "js_result": {
+      "comparablesCount": 20,
+      "portalDataExists": true,
+      "propertyAddress": "3226 Lucinda St, San Diego, CA 92106, USA"
+    },
+    "console_analysis": {
+      "total_logs": 1,
+      "api_related_logs": [],
+      "error_logs": [
+        "http://127.0.0.1:5004/favicon.ico - Failed to load resource: the server responded with a status of 404 (NOT FOUND)"
+      ],
+      "info_logs": []
+    },
+    "screenshot_path": "/Users/AIRBNB/Cursor_Projects/NewGoogleBigQuery/screenshot-network-test-20250829_145205.png"
+  },
+  "analysis": {
+    "total_api_tests": 6,
+    "successful_api_calls": 6,
+    "total_properties_found": 60,
+    "location_based_fallback_working": true,
+    "max_properties_in_single_call": 20
+  }
+}

@@ -1,0 +1,3168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Analytics - OODA Command Center</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Import OODA fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        :root {
+            /* OODA Core Colors */
+            --ooda-primary: #26D086;
+            --ooda-primary-dark: #1FA86C;
+            --ooda-primary-light: #4DE0A1;
+            --ooda-primary-glow: rgba(38, 208, 134, 0.6);
+            
+            /* OODA Dark Palette */
+            --ooda-base: #111110;
+            --ooda-surface-0: #111110;
+            --ooda-surface-1: #1A1A19;
+            --ooda-surface-2: #232322;
+            --ooda-surface-3: #2C2C2B;
+            --ooda-surface-4: #353534;
+            
+            /* OODA Text Colors */
+            --ooda-text-primary: rgba(255, 255, 255, 0.95);
+            --ooda-text-secondary: rgba(255, 255, 255, 0.7);
+            --ooda-text-tertiary: rgba(255, 255, 255, 0.5);
+            --ooda-text-muted: rgba(255, 255, 255, 0.3);
+            
+            /* OODA Borders */
+            --ooda-border-subtle: rgba(255, 255, 255, 0.08);
+            --ooda-border-default: rgba(255, 255, 255, 0.12);
+            --ooda-border-strong: rgba(255, 255, 255, 0.2);
+            
+            /* OODA Glass Effects */
+            --ooda-glass-bg: rgba(255, 255, 255, 0.04);
+            --ooda-glass-bg-elevated: rgba(255, 255, 255, 0.06);
+            --ooda-glass-bg-highlight: rgba(255, 255, 255, 0.08);
+            --ooda-glass-nav-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+            --ooda-glass-dashboard-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+            
+            /* OODA Shadows */
+            --ooda-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 1px rgba(38, 208, 134, 0.2);
+            --ooda-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 8px rgba(38, 208, 134, 0.15);
+            --ooda-shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 16px rgba(38, 208, 134, 0.1);
+            --ooda-shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 24px rgba(38, 208, 134, 0.15);
+            --ooda-shadow-cta: 0 8px 32px rgba(38, 208, 134, 0.3), 0 0 8px rgba(38, 208, 134, 0.4);
+            --ooda-shadow-hover: 0 12px 40px rgba(38, 208, 134, 0.4), 0 0 16px rgba(38, 208, 134, 0.5);
+            
+            /* OODA Glows */
+            --ooda-glow-sm: 0 0 8px rgba(38, 208, 134, 0.6);
+            --ooda-glow-md: 0 0 16px rgba(38, 208, 134, 0.5);
+            --ooda-glow-lg: 0 0 32px rgba(38, 208, 134, 0.4);
+            --ooda-glow-hero: radial-gradient(600px circle at var(--x) var(--y), rgba(38, 208, 134, 0.15), transparent 40%);
+            
+            /* OODA Gradients */
+            --ooda-gradient-primary: linear-gradient(135deg, #26D086 0%, #1FA86C 100%);
+            --ooda-gradient-dark: linear-gradient(180deg, #1A1A19 0%, #111110 100%);
+            --ooda-gradient-surface: linear-gradient(135deg, rgba(38, 208, 134, 0.05) 0%, transparent 100%);
+            --ooda-gradient-mint-text: linear-gradient(135deg, #4DE0A1 0%, #26D086 50%, #1FA86C 100%);
+            
+            /* OODA Overlays */
+            --ooda-overlay-bottom: linear-gradient(180deg, transparent 0%, rgba(17, 17, 16, 0.4) 50%, rgba(17, 17, 16, 0.9) 80%, rgba(17, 17, 16, 0.98) 100%);
+            --ooda-overlay-top: linear-gradient(180deg, rgba(17, 17, 16, 0.6) 0%, rgba(17, 17, 16, 0.2) 30%, transparent 100%);
+            
+            /* OODA Effects */
+            --ooda-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence baseFrequency='0.9' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E");
+            --ooda-shine: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.1) 50%, transparent 60%);
+            
+            /* OODA Animation Timings */
+            --ooda-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+            --ooda-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+            --ooda-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ooda-duration-fast: 200ms;
+            --ooda-duration-normal: 400ms;
+            --ooda-duration-slow: 600ms;
+            --ooda-duration-slower: 1000ms;
+            --ooda-duration-slowest: 1400ms;
+            
+            /* OODA Spacing */
+            --ooda-space-xs: 0.5rem;
+            --ooda-space-sm: 0.75rem;
+            --ooda-space-md: 1.5rem;
+            --ooda-space-lg: 2.5rem;
+            --ooda-space-xl: 4rem;
+            --ooda-space-2xl: 6rem;
+            
+            /* OODA Radius */
+            --ooda-radius-sm: 8px;
+            --ooda-radius-md: 12px;
+            --ooda-radius-lg: 16px;
+            --ooda-radius-xl: 24px;
+            
+            /* Chart colors */
+            --ooda-chart-grid: rgba(255, 255, 255, 0.06);
+            --ooda-chart-text: rgba(255, 255, 255, 0.5);
+            
+            /* Performance metrics colors */
+            --ooda-positive: #26D086;
+            --ooda-negative: #FF4757;
+            --ooda-warning: #FFA502;
+            --ooda-info: #26D086;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* OODA Dark Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--ooda-surface-1);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--ooda-surface-3);
+            border-radius: 5px;
+            border: 1px solid var(--ooda-border-subtle);
+            transition: all var(--ooda-duration-fast);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--ooda-surface-4);
+            box-shadow: var(--ooda-glow-sm);
+        }
+
+        /* Smooth scrolling with reduced motion support */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--ooda-base);
+            color: var(--ooda-text-primary);
+            line-height: 1.6;
+            font-size: 16px;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            letter-spacing: -0.011em;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Noise texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: var(--ooda-noise);
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.3;
+        }
+
+        /* OODA Typography System */
+        h1, h2, h3 {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--ooda-text-primary);
+        }
+        
+        .heading-xl { 
+            font-size: 3.5rem; 
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.04em;
+            background: var(--ooda-gradient-mint-text);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 60px var(--ooda-primary-glow);
+        }
+        .heading-lg { 
+            font-size: 2.5rem; 
+            font-weight: 800; 
+            line-height: 1.2;
+            letter-spacing: -0.03em;
+        }
+        .heading-md { 
+            font-size: 1.75rem; 
+            font-weight: 700; 
+            line-height: 1.3;
+            letter-spacing: -0.025em;
+        }
+        .heading-sm { 
+            font-size: 1.25rem; 
+            font-weight: 600; 
+            line-height: 1.4;
+            letter-spacing: -0.02em;
+        }
+        .body-lg { 
+            font-size: 1.125rem; 
+            line-height: 1.75; 
+            font-weight: 400;
+            letter-spacing: -0.011em;
+            color: var(--ooda-text-secondary);
+        }
+        .body-md { 
+            font-size: 1rem; 
+            line-height: 1.6; 
+            font-weight: 400;
+            letter-spacing: -0.011em;
+            color: var(--ooda-text-secondary);
+        }
+        .body-sm { 
+            font-size: 0.875rem; 
+            line-height: 1.5; 
+            font-weight: 400;
+            letter-spacing: -0.006em;
+            color: var(--ooda-text-tertiary);
+        }
+        .caption { 
+            font-size: 0.75rem; 
+            line-height: 1.5;
+            color: var(--ooda-text-muted); 
+            letter-spacing: 0.1em;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        /* OODA Glass Navigation */
+        .property-nav {
+            background: var(--ooda-glass-nav-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            padding: var(--ooda-space-md) var(--ooda-space-xl);
+            box-shadow: var(--ooda-shadow-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--ooda-border-subtle);
+            transition: all var(--ooda-duration-normal) var(--ooda-ease-out);
+        }
+
+        .back-button {
+            background: var(--ooda-glass-bg);
+            border: 1px solid var(--ooda-border-default);
+            padding: var(--ooda-space-xs) var(--ooda-space-md);
+            border-radius: var(--ooda-radius-xl);
+            cursor: pointer;
+            font-size: 0.813rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: var(--ooda-space-xs);
+            transition: all var(--ooda-duration-normal) var(--ooda-ease-spring);
+            color: var(--ooda-text-secondary);
+            letter-spacing: 0.025em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-button::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            background: var(--ooda-gradient-primary);
+            border-radius: inherit;
+            opacity: 0;
+            transition: opacity var(--ooda-duration-normal);
+            z-index: -1;
+        }
+
+        .back-button:hover {
+            background: var(--ooda-glass-bg-elevated);
+            border-color: var(--ooda-primary);
+            color: var(--ooda-text-primary);
+            transform: translateX(-3px) scale(1.02);
+            box-shadow: var(--ooda-shadow-cta);
+        }
+
+        .back-button:hover::before {
+            opacity: 0.1;
+        }
+
+        .back-button:active {
+            transform: translateX(-1px) scale(0.98);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: var(--ooda-space-sm);
+        }
+
+        .nav-actions button {
+            background: var(--ooda-gradient-primary);
+            color: var(--ooda-base);
+            border: none;
+            padding: var(--ooda-space-xs) var(--ooda-space-md);
+            border-radius: var(--ooda-radius-xl);
+            cursor: pointer;
+            font-size: 0.813rem;
+            font-weight: 600;
+            transition: all var(--ooda-duration-normal) var(--ooda-ease-spring);
+            display: flex;
+            align-items: center;
+            gap: var(--ooda-space-xs);
+            letter-spacing: 0.025em;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--ooda-shadow-cta);
+        }
+
+        .nav-actions button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--ooda-shine);
+            transition: left var(--ooda-duration-slow);
+        }
+
+        .nav-actions button:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: var(--ooda-shadow-hover);
+            filter: brightness(1.1);
+        }
+
+        .nav-actions button:hover::before {
+            left: 100%;
+        }
+
+        .nav-actions button:active {
+            transform: translateY(0) scale(0.98);
+            filter: brightness(0.9);
+        }
+
+        .nav-actions button:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--ooda-base), 0 0 0 5px var(--ooda-primary);
+        }
+
+        /* Gallery Layout */
+        .gallery-layout {
+            display: grid;
+            grid-template-columns: 65% 35%;
+            gap: 32px;
+            padding: 32px;
+            min-height: 600px;
+            max-width: 1600px;
+            margin: 0 auto var(--ooda-space-xl);
+            background: var(--ooda-bg-base);
+        }
+
+        /* Airbnb-style Photo Collage */
+        .photo-collage {
+            display: grid;
+            grid-template-columns: 50% 25% 25%;
+            grid-template-rows: 280px 280px;
+            gap: 8px;
+            border-radius: var(--ooda-radius-xl);
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 32px;
+            background: var(--ooda-bg-base);
+        }
+        
+        .collage-item {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            background: var(--ooda-bg-elevated-1);
+        }
+        
+        .collage-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all var(--ooda-duration-normal) var(--ooda-ease-smooth);
+            filter: brightness(1);
+        }
+        
+        .collage-item:hover img {
+            transform: scale(1.05);
+            filter: brightness(0.85);
+        }
+        
+        /* Show all photos overlay */
+        .show-all-photos-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            top: 0;
+            background: rgba(0, 0, 0, 0.65);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--ooda-duration-normal) var(--ooda-ease-smooth);
+        }
+        
+        .show-all-photos-overlay span {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            background: var(--ooda-bg-elevated-3);
+            padding: 12px 24px;
+            border-radius: var(--ooda-radius-md);
+            border: 1px solid var(--ooda-border-subtle);
+            transition: all var(--ooda-duration-normal) var(--ooda-ease-smooth);
+        }
+        
+        .show-all-photos-overlay:hover span {
+            background: var(--ooda-bg-elevated-2);
+            transform: scale(1.05);
+        }
+        
+        /* Main large image */
+        .collage-item:first-child {
+            grid-row: 1 / 3;
+            grid-column: 1;
+        }
+        
+        /* Show all photos button */
+        .show-all-overlay {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            background: white;
+            color: black;
+            padding: 8px 16px;
+            border-radius: var(--ooda-radius-md);
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid black;
+            transition: all var(--ooda-duration-fast) var(--ooda-ease-out);
+            z-index: 10;
+        }
+        
+        .show-all-overlay:hover {
+            background: #f7f7f7;
+            transform: scale(1.02);
+        }
+
+        .gallery-main {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .gallery-main img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform var(--ooda-duration-normal) var(--ooda-ease-smooth);
+        }
+
+        .gallery-main:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-counter {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            background: var(--ooda-glass-modal-bg);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: var(--ooda-radius-md);
+            color: var(--ooda-text-primary);
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid var(--ooda-border-subtle);
+        }
+
+        .gallery-thumbnails {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            padding: 8px;
+            background: var(--ooda-bg-base);
+            height: 140px;
+        }
+
+        .gallery-thumb {
+            aspect-ratio: 16/10;
+            overflow: hidden;
+            border-radius: var(--ooda-radius-md);
+            cursor: pointer;
+            position: relative;
+            transition: all var(--ooda-duration-fast) var(--ooda-ease-smooth);
+        }
+
+        .gallery-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-thumb:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--ooda-mint-glow);
+        }
+
+        .show-all-btn {
+            margin: 8px;
+            width: calc(100% - 16px);
+            padding: 12px;
+            background: var(--ooda-gradient-mint);
+            border: none;
+            border-radius: var(--ooda-radius-md);
+            color: var(--ooda-bg-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--ooda-duration-fast) var(--ooda-ease-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .show-all-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--ooda-shine);
+            transform: translateX(-100%);
+            transition: transform var(--ooda-duration-normal) var(--ooda-ease-smooth);
+        }
+
+        .show-all-btn:hover::before {
+            transform: translateX(100%);
+        }
+
+        .show-all-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--ooda-mint-glow);
+        }
+
+        /* Property Info Card */
+        .property-info-card {
+            background: var(--ooda-glass-dashboard-bg);
+            backdrop-filter: var(--ooda-glass-dashboard-blur);
+            border-radius: var(--ooda-radius-xl);
+            padding: 32px;
+            border: 1px solid var(--ooda-border-subtle);
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .property-header {
+            border-bottom: 1px solid var(--ooda-border-subtle);
+            padding-bottom: 24px;
+        }
+
+        .property-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--ooda-text-primary);
+            margin-bottom: 8px;
+            background: var(--ooda-gradient-mint-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .property-location {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--ooda-text-secondary);
+            font-size: 16px;
+        }
+
+        .property-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .property-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--ooda-bg-elevated-2);
+            border: 1px solid var(--ooda-border-subtle);
+            border-radius: var(--ooda-radius-full);
+            font-size: 14px;
+            color: var(--ooda-text-secondary);
+            backdrop-filter: blur(10px);
+        }
+
+        .property-badge.superhost {
+            background: var(--ooda-mint-background);
+            border-color: var(--ooda-mint-border);
+            color: var(--ooda-primary-light);
+        }
+
+        .property-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: var(--ooda-bg-elevated-1);
+            padding: 16px;
+            border-radius: var(--ooda-radius-md);
+            border: 1px solid var(--ooda-border-subtle);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--ooda-text-tertiary);
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--ooda-primary-light);
+        }
+
+        .stat-subtext {
+            font-size: 12px;
+            color: var(--ooda-text-secondary);
+            margin-top: 2px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: auto;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--ooda-radius-md);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all var(--ooda-duration-fast) var(--ooda-ease-smooth);
+            border: 1px solid var(--ooda-border-medium);
+            background: var(--ooda-bg-elevated-2);
+            color: var(--ooda-text-secondary);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border-color: var(--ooda-mint-border);
+            color: var(--ooda-primary-light);
+        }
+
+        .action-btn.primary {
+            background: var(--ooda-gradient-mint);
+            color: var(--ooda-bg-base);
+            border: none;
+        }
+
+        .action-btn.primary:hover {
+            box-shadow: 0 8px 24px var(--ooda-mint-glow);
+        }
+
+        .property-image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--ooda-surface-2) 0%, var(--ooda-surface-1) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 120px;
+            color: var(--ooda-text-tertiary);
+            position: relative;
+        }
+        
+        .property-image-placeholder::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--ooda-glow-hero);
+            --x: 50%;
+            --y: 50%;
+            opacity: 0.5;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--ooda-overlay-bottom);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .hero-overlay::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: var(--ooda-overlay-top);
+        }
+
+        .hero-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: var(--ooda-space-2xl) var(--ooda-space-xl) var(--ooda-space-xl);
+            color: var(--ooda-text-primary);
+            z-index: 2;
+            position: relative;
+        }
+        
+        .hero-content::before {
+            content: '';
+            position: absolute;
+            bottom: 20%;
+            left: 10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--ooda-primary-glow) 0%, transparent 70%);
+            opacity: 0.3;
+            z-index: -1;
+            filter: blur(60px);
+            animation: oodaPulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes oodaPulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
+        }
+
+        .hero-content h1 {
+            margin-bottom: var(--ooda-space-sm);
+            color: var(--ooda-text-primary);
+            text-shadow: 0 0 60px var(--ooda-primary-glow), 0 2px 4px rgba(0, 0, 0, 0.5);
+            max-width: 800px;
+            position: relative;
+        }
+
+        .hero-location {
+            font-size: 1.25rem;
+            color: var(--ooda-text-secondary);
+            margin-bottom: var(--ooda-space-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--ooda-space-sm);
+            font-weight: 300;
+            letter-spacing: 0.025em;
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: var(--ooda-space-sm);
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 10px 24px;
+            border-radius: var(--ooda-radius-xl);
+            font-size: 0.813rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all var(--ooda-duration-normal) var(--ooda-ease-spring);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .badge.property-type,
+        .badge.listing-type {
+            background: var(--ooda-glass-bg-elevated);
+            color: var(--ooda-text-secondary);
+            border: 1px solid var(--ooda-border-default);
+        }
+
+        .badge.superhost {
+            background: linear-gradient(135deg, rgba(38, 208, 134, 0.15) 0%, rgba(38, 208, 134, 0.05) 100%);
+            color: var(--ooda-primary);
+            border: 1px solid var(--ooda-primary);
+            box-shadow: var(--ooda-glow-sm);
+        }
+
+        .badge.tier-top {
+            background: var(--ooda-gradient-primary);
+            color: var(--ooda-base);
+            box-shadow: var(--ooda-shadow-cta);
+            border: none;
+        }
+
+        .badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--ooda-shine);
+            transition: left var(--ooda-duration-slow);
+        }
+
+        .badge:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: var(--ooda-shadow-cta);
+        }
+        
+        .badge:hover::before {
+            left: 100%;
+        }
+        
+        .badge.property-type:hover,
+        .badge.listing-type:hover {
+            background: var(--ooda-glass-bg-highlight);
+            border-color: var(--ooda-primary);
+            color: var(--ooda-text-primary);
+        }
+
+        /* OODA Metrics Section */
+        .metrics-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--ooda-space-lg);
+            margin: var(--ooda-space-xl) var(--ooda-space-xl) var(--ooda-space-xl);
+            position: relative;
+            z-index: 10;
+        }
+
+        .metric-card {
+            background: var(--ooda-glass-dashboard-bg);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            padding: var(--ooda-space-xl);
+            border-radius: var(--ooda-radius-lg);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15), 0 0 48px rgba(38, 208, 134, 0.1);
+            border: 1px solid var(--ooda-border-default);
+            transition: all var(--ooda-duration-normal) var(--ooda-ease-spring);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--ooda-gradient-primary);
+            opacity: 0;
+            transition: opacity var(--ooda-duration-normal);
+        }
+
+        .metric-card::after {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            background: radial-gradient(circle at center, var(--ooda-primary-glow) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity var(--ooda-duration-normal);
+            z-index: -1;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--ooda-shadow-hover);
+            border-color: var(--ooda-primary);
+        }
+
+        .metric-card:hover::before {
+            opacity: 1;
+        }
+
+        .metric-card:hover::after {
+            opacity: 0.15;
+        }
+
+        .metric-content {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .metric-value {
+            font-size: 3rem;
+            font-weight: 300;
+            color: var(--ooda-text-primary);
+            margin-bottom: var(--ooda-space-xs);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            opacity: 0;
+            animation: oodaRevealNumber var(--ooda-duration-slow) var(--ooda-ease-out) forwards;
+            animation-delay: 0.3s;
+            background: var(--ooda-gradient-mint-text);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        @keyframes oodaRevealNumber {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+                filter: blur(4px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--ooda-text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 600;
+            margin-bottom: var(--ooda-space-sm);
+        }
+
+        .metric-change {
+            margin-top: var(--ooda-space-sm);
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .metric-change .positive {
+            color: var(--ooda-positive);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            text-shadow: 0 0 20px rgba(38, 208, 134, 0.5);
+        }
+
+        .metric-change .negative {
+            color: var(--ooda-negative);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            text-shadow: 0 0 20px rgba(255, 71, 87, 0.5);
+        }
+
+        .metric-comparison,
+        .metric-trend {
+            margin-top: var(--ooda-space-xs);
+            font-size: 0.813rem;
+            color: var(--ooda-text-tertiary);
+            font-weight: 500;
+        }
+
+        .metric-reviews {
+            margin-top: 6px;
+            font-size: 0.813rem;
+            color: var(--ooda-text-secondary);
+            font-weight: 500;
+        }
+
+        /* Metric card glow colors based on performance */
+        .metric-card:nth-child(1):hover::after {
+            background: radial-gradient(circle at center, rgba(38, 208, 134, 0.3) 0%, transparent 70%);
+        }
+
+        .metric-card:nth-child(2):hover::after {
+            background: radial-gradient(circle at center, rgba(77, 224, 161, 0.3) 0%, transparent 70%);
+        }
+
+        .metric-card:nth-child(3):hover::after {
+            background: radial-gradient(circle at center, rgba(38, 208, 134, 0.3) 0%, transparent 70%);
+        }
+
+        .metric-card:nth-child(4):hover::after {
+            background: radial-gradient(circle at center, rgba(255, 165, 2, 0.3) 0%, transparent 70%);
+        }
+
+        /* OODA Insights Bar */
+        .insights-bar {
+            margin: 0 var(--ooda-space-xl) var(--ooda-space-xl);
+            display: flex;
+            gap: var(--ooda-space-md);
+            overflow-x: auto;
+            padding-bottom: var(--ooda-space-sm);
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .insights-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .insight-card {
+            background: var(--ooda-glass-bg-elevated);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            padding: var(--ooda-space-lg) var(--ooda-space-xl);
+            border-radius: var(--ooda-radius-lg);
+            box-shadow: var(--ooda-shadow-md);
+            min-width: 380px;
+            border: 1px solid var(--ooda-border-default);
+            border-left: 3px solid;
+            flex-shrink: 0;
+            transition: all var(--ooda-duration-normal) var(--ooda-ease-spring);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insight-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.02) 100%);
+            opacity: 0;
+            transition: opacity var(--ooda-duration-normal);
+        }
+
+        .insight-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--ooda-shadow-lg);
+            background: var(--ooda-glass-bg-highlight);
+        }
+
+        .insight-card:hover::before {
+            opacity: 1;
+        }
+
+        .insight-card.opportunity {
+            border-left-color: var(--ooda-warning);
+            background: linear-gradient(135deg, rgba(255, 165, 2, 0.05) 0%, transparent 100%);
+        }
+
+        .insight-card.opportunity:hover {
+            box-shadow: 0 8px 32px rgba(255, 165, 2, 0.2);
+        }
+
+        .insight-card.success {
+            border-left-color: var(--ooda-positive);
+            background: linear-gradient(135deg, rgba(38, 208, 134, 0.05) 0%, transparent 100%);
+        }
+
+        .insight-card.success:hover {
+            box-shadow: 0 8px 32px rgba(38, 208, 134, 0.2);
+        }
+
+        .insight-card.info {
+            border-left-color: var(--ooda-info);
+            background: linear-gradient(135deg, rgba(38, 208, 134, 0.05) 0%, transparent 100%);
+        }
+
+        .insight-card.info:hover {
+            box-shadow: 0 8px 32px rgba(38, 208, 134, 0.2);
+        }
+
+        .insight-title {
+            font-weight: 600;
+            margin-bottom: var(--ooda-space-xs);
+            color: var(--ooda-text-primary);
+            font-size: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .insight-message {
+            font-size: 0.875rem;
+            color: var(--ooda-text-secondary);
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        /* OODA Dashboard Section */
+        .dashboard-section {
+            margin: 0 var(--ooda-space-xl) var(--ooda-space-xl);
+        }
+
+        .chart-container {
+            background: var(--ooda-glass-dashboard-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            padding: var(--ooda-space-xl);
+            border-radius: var(--ooda-radius-xl);
+            box-shadow: var(--ooda-shadow-lg);
+            margin-bottom: var(--ooda-space-lg);
+            position: relative;
+            transition: all var(--ooda-duration-normal) var(--ooda-ease-spring);
+            border: 1px solid var(--ooda-border-default);
+            overflow: hidden;
+        }
+
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--ooda-gradient-primary);
+            opacity: 0.8;
+        }
+        
+        .chart-container::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, var(--ooda-primary-glow) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity var(--ooda-duration-normal);
+            z-index: -1;
+        }
+        
+        .chart-container:hover {
+            box-shadow: var(--ooda-shadow-xl);
+            transform: translateY(-4px);
+            border-color: var(--ooda-primary);
+        }
+        
+        .chart-container:hover::after {
+            opacity: 0.05;
+        }
+        
+        .chart-container canvas {
+            height: 420px !important;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .chart-grid .chart-container canvas {
+            height: 320px !important;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--ooda-space-lg);
+        }
+
+        .chart-header h2, .chart-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ooda-text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 2px;
+            background: var(--ooda-glass-bg);
+            padding: 3px;
+            border-radius: var(--ooda-radius-xl);
+            border: 1px solid var(--ooda-border-subtle);
+        }
+
+        .chart-controls button {
+            background: transparent;
+            border: none;
+            padding: 8px 20px;
+            border-radius: var(--ooda-radius-xl);
+            cursor: pointer;
+            font-size: 0.813rem;
+            font-weight: 500;
+            color: var(--ooda-text-tertiary);
+            transition: all var(--ooda-duration-fast) var(--ooda-ease-out);
+            letter-spacing: 0.025em;
+            position: relative;
+        }
+        
+        .chart-controls button:hover {
+            background: var(--ooda-glass-bg-elevated);
+            color: var(--ooda-text-primary);
+        }
+
+        .chart-controls button.active {
+            background: var(--ooda-gradient-primary);
+            color: var(--ooda-base);
+            box-shadow: var(--ooda-glow-sm);
+        }
+
+        .chart-controls button.active::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--ooda-shine);
+            border-radius: inherit;
+            animation: oodaShine 2s ease-in-out infinite;
+        }
+
+        @keyframes oodaShine {
+            0% { transform: translateX(-100%); }
+            50%, 100% { transform: translateX(200%); }
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--ooda-space-lg);
+            margin-bottom: var(--ooda-space-lg);
+        }
+
+        .chart-grid h3 {
+            margin-bottom: var(--ooda-space-md);
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--ooda-text-primary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .gallery-layout {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            
+            .gallery-section {
+                max-height: 600px;
+            }
+            
+            .property-info-card {
+                position: static;
+                max-width: 800px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .gallery-layout {
+                margin: 0 16px 16px;
+            }
+            
+            .gallery-main {
+                height: 300px;
+            }
+            
+            .gallery-thumbnails {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 4px;
+                padding: 4px;
+            }
+            
+            .property-info-card {
+                padding: 20px;
+                position: relative;
+                top: 0;
+            }
+            
+            .property-title {
+                font-size: 24px;
+            }
+            
+            .property-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .lightbox-nav {
+                font-size: 32px;
+            }
+            
+            .lightbox-prev {
+                left: 10px;
+            }
+            
+            .lightbox-next {
+                right: 10px;
+            }
+        }
+
+        canvas {
+            max-height: 420px;
+        }
+
+        /* OODA Details Section */
+        .details-section {
+            margin: 0 var(--ooda-space-xl) var(--ooda-space-xl);
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: var(--ooda-space-lg);
+        }
+
+        .detail-card {
+            background: var(--ooda-glass-bg-elevated);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            padding: var(--ooda-space-xl);
+            border-radius: var(--ooda-radius-xl);
+            box-shadow: var(--ooda-shadow-md);
+            border: 1px solid var(--ooda-border-default);
+            transition: all var(--ooda-duration-normal) var(--ooda-ease-spring);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .detail-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--ooda-gradient-primary);
+            opacity: 0;
+            transition: opacity var(--ooda-duration-normal);
+        }
+
+        .detail-card:hover {
+            box-shadow: var(--ooda-shadow-lg);
+            transform: translateY(-4px);
+            background: var(--ooda-glass-bg-highlight);
+            border-color: var(--ooda-primary);
+        }
+
+        .detail-card:hover::before {
+            opacity: 1;
+        }
+
+        .detail-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: var(--ooda-space-lg);
+            color: var(--ooda-text-primary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: var(--ooda-space-sm);
+            letter-spacing: -0.02em;
+        }
+
+        .detail-content {
+            font-size: 0.9375rem;
+        }
+
+        .spec-item, .info-item, .policy-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--ooda-space-md) 0;
+            border-bottom: 1px solid var(--ooda-border-subtle);
+            transition: all var(--ooda-duration-fast) var(--ooda-ease-out);
+            position: relative;
+        }
+
+        .spec-item::after, .info-item::after, .policy-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--ooda-gradient-primary);
+            transition: width var(--ooda-duration-normal);
+        }
+
+        .spec-item:hover::after, .info-item:hover::after, .policy-item:hover::after {
+            width: 100%;
+        }
+
+        .spec-item:hover, .info-item:hover, .policy-item:hover {
+            background: var(--ooda-glass-bg);
+            margin: 0 calc(var(--ooda-space-sm) * -1);
+            padding: var(--ooda-space-md) var(--ooda-space-sm);
+            border-radius: var(--ooda-radius-sm);
+        }
+
+        .spec-item:last-child, .info-item:last-child, .policy-item:last-child {
+            border-bottom: none;
+        }
+
+        .spec-label, .info-label, .policy-label {
+            color: var(--ooda-text-tertiary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            letter-spacing: 0.025em;
+        }
+
+        .spec-value, .info-value, .policy-value {
+            font-weight: 600;
+            color: var(--ooda-text-primary);
+            font-size: 0.9375rem;
+        }
+
+        /* OODA Amenities Grid */
+        .amenities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: var(--ooda-space-sm);
+        }
+
+        .amenity-item {
+            padding: var(--ooda-space-sm) var(--ooda-space-md);
+            background: var(--ooda-glass-bg);
+            border: 1px solid var(--ooda-border-default);
+            border-radius: var(--ooda-radius-xl);
+            text-align: center;
+            font-size: 0.813rem;
+            font-weight: 500;
+            color: var(--ooda-text-secondary);
+            transition: all var(--ooda-duration-fast) var(--ooda-ease-spring);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--ooda-space-xs);
+            letter-spacing: 0.025em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .amenity-item.available {
+            background: linear-gradient(135deg, rgba(38, 208, 134, 0.1) 0%, rgba(38, 208, 134, 0.05) 100%);
+            border-color: var(--ooda-primary);
+            color: var(--ooda-primary);
+            font-weight: 600;
+            box-shadow: var(--ooda-glow-sm);
+        }
+
+        .amenity-item.unavailable {
+            opacity: 0.3;
+            text-decoration: line-through;
+            color: var(--ooda-text-muted);
+        }
+
+        .amenity-item:hover:not(.unavailable) {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: var(--ooda-shadow-cta);
+            background: var(--ooda-gradient-primary);
+            color: var(--ooda-base);
+            border-color: var(--ooda-primary);
+        }
+
+        .amenity-item:hover:not(.unavailable)::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--ooda-shine);
+            animation: oodaShine 1s ease-in-out;
+        }
+
+        .superhost-item, .instant-book {
+            background: var(--ooda-gradient-primary);
+            border-radius: var(--ooda-radius-md);
+            padding: var(--ooda-space-sm) var(--ooda-space-md);
+            margin-top: var(--ooda-space-md);
+            text-align: center;
+            font-weight: 600;
+            color: var(--ooda-base);
+            box-shadow: var(--ooda-shadow-cta);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: 0.813rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .superhost-item::before, .instant-book::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--ooda-shine);
+            animation: oodaShine 3s ease-in-out infinite;
+        }
+
+        /* Lightbox Styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            backdrop-filter: blur(20px);
+        }
+
+        .lightbox.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            transition: all var(--ooda-duration-fast) var(--ooda-ease-smooth);
+        }
+
+        .lightbox-close:hover {
+            color: var(--ooda-primary-light);
+            transform: rotate(90deg);
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 48px;
+            cursor: pointer;
+            padding: 20px;
+            transition: all var(--ooda-duration-fast) var(--ooda-ease-smooth);
+        }
+
+        .lightbox-nav:hover {
+            color: var(--ooda-primary-light);
+        }
+
+        .lightbox-prev {
+            left: 40px;
+        }
+
+        .lightbox-next {
+            right: 40px;
+        }
+
+        .lightbox-counter {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            background: var(--ooda-glass-modal-bg);
+            padding: 12px 24px;
+            border-radius: var(--ooda-radius-full);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* View Toggle Styles */
+        .lightbox-view-toggle {
+            position: absolute;
+            top: 20px;
+            right: 80px;
+            display: flex;
+            gap: 8px;
+            z-index: 1001;
+            background: var(--ooda-glass-modal-bg);
+            padding: 4px;
+            border-radius: var(--ooda-radius-lg);
+            border: 1px solid var(--ooda-border-subtle);
+        }
+        
+        .view-toggle-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            color: var(--ooda-text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: var(--ooda-radius-md);
+            transition: all var(--ooda-duration-fast) var(--ooda-ease-smooth);
+        }
+        
+        .view-toggle-btn:hover {
+            background: var(--ooda-bg-elevated-2);
+            color: var(--ooda-text-primary);
+        }
+        
+        .view-toggle-btn.active {
+            background: var(--ooda-gradient-mint);
+            color: var(--ooda-bg-base);
+        }
+        
+        /* Lightbox Collage View */
+        .lightbox-collage-view {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .lightbox-collage {
+            display: grid;
+            grid-template-columns: 50% 25% 25%;
+            grid-template-rows: 50% 50%;
+            gap: 8px;
+            width: 90vw;
+            max-width: 1400px;
+            height: 80vh;
+            max-height: 800px;
+        }
+        
+        .lightbox-collage-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--ooda-radius-md);
+            cursor: pointer;
+            background: var(--ooda-bg-elevated-1);
+        }
+        
+        .lightbox-collage-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all var(--ooda-duration-normal) var(--ooda-ease-smooth);
+        }
+        
+        .lightbox-collage-item:hover img {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+        
+        .lightbox-collage-item:first-child {
+            grid-row: span 2;
+        }
+        
+        .lightbox-collage-item.more-photos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--ooda-bg-elevated-2);
+            color: var(--ooda-text-primary);
+            font-size: 24px;
+            font-weight: 600;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .lightbox-collage-item.more-photos span {
+            font-size: 16px;
+            color: var(--ooda-text-secondary);
+        }
+        
+        /* Lightbox Single View */
+        .lightbox-single-view {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* OODA Data Section */
+        .data-section {
+            margin: 0 var(--ooda-space-xl) var(--ooda-space-2xl);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--ooda-space-lg);
+            background: var(--ooda-glass-bg-elevated);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            padding: var(--ooda-space-lg);
+            border-radius: var(--ooda-radius-xl);
+            box-shadow: var(--ooda-shadow-md);
+            border: 1px solid var(--ooda-border-default);
+        }
+
+        .section-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--ooda-text-primary);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .toggle-button {
+            background: var(--ooda-glass-bg);
+            border: 1px solid var(--ooda-border-default);
+            padding: var(--ooda-space-xs) var(--ooda-space-lg);
+            border-radius: var(--ooda-radius-xl);
+            cursor: pointer;
+            font-size: 0.813rem;
+            font-weight: 500;
+            transition: all var(--ooda-duration-fast) var(--ooda-ease-spring);
+            display: flex;
+            align-items: center;
+            gap: var(--ooda-space-xs);
+            color: var(--ooda-text-secondary);
+            letter-spacing: 0.025em;
+            position: relative;
+        }
+
+        .toggle-button:hover {
+            background: var(--ooda-gradient-primary);
+            color: var(--ooda-base);
+            border-color: var(--ooda-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--ooda-shadow-cta);
+        }
+
+        .monthly-table-container {
+            background: var(--ooda-glass-bg-elevated);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            padding: var(--ooda-space-xl);
+            border-radius: var(--ooda-radius-xl);
+            box-shadow: var(--ooda-shadow-lg);
+            overflow-x: auto;
+            border: 1px solid var(--ooda-border-default);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        th, td {
+            padding: var(--ooda-space-md);
+            text-align: left;
+        }
+
+        th {
+            background: var(--ooda-surface-1);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            color: var(--ooda-text-primary);
+            font-size: 0.813rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-bottom: 2px solid var(--ooda-border-default);
+        }
+
+        td {
+            border-bottom: 1px solid var(--ooda-border-subtle);
+            color: var(--ooda-text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        tr:hover td {
+            background: var(--ooda-glass-bg);
+        }
+
+        /* OODA Loading States */
+        .loading {
+            text-align: center;
+            padding: var(--ooda-space-2xl);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--ooda-base);
+            position: relative;
+            z-index: 2;
+        }
+
+        .spinner {
+            border: 2px solid var(--ooda-border-subtle);
+            border-top: 2px solid var(--ooda-primary);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: oodaSpin 1.2s var(--ooda-ease-in-out) infinite;
+            margin: 0 auto var(--ooda-space-lg);
+            position: relative;
+            box-shadow: var(--ooda-glow-md);
+        }
+
+        .spinner::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px solid transparent;
+            border-top: 2px solid var(--ooda-primary-light);
+            border-radius: 50%;
+            animation: oodaSpin 0.8s linear infinite reverse;
+        }
+
+        @keyframes oodaSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            color: var(--ooda-text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.025em;
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, rgba(255, 71, 87, 0.1) 0%, rgba(255, 71, 87, 0.05) 100%);
+            color: var(--ooda-negative);
+            padding: var(--ooda-space-lg);
+            border-radius: var(--ooda-radius-lg);
+            margin: var(--ooda-space-lg);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            font-weight: 500;
+            box-shadow: 0 8px 32px rgba(255, 71, 87, 0.2);
+        }
+
+        /* OODA Page entrance animation */
+        @keyframes oodaFadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+                filter: blur(4px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        #mainContent > * {
+            animation: oodaFadeInUp var(--ooda-duration-slow) var(--ooda-ease-out) forwards;
+            opacity: 0;
+        }
+
+        #mainContent > *:nth-child(1) { animation-delay: 0.1s; }
+        #mainContent > *:nth-child(2) { animation-delay: 0.2s; }
+        #mainContent > *:nth-child(3) { animation-delay: 0.3s; }
+        #mainContent > *:nth-child(4) { animation-delay: 0.4s; }
+        #mainContent > *:nth-child(5) { animation-delay: 0.5s; }
+        #mainContent > *:nth-child(6) { animation-delay: 0.6s; }
+        
+        /* OODA Focus states */
+        button:focus,
+        a:focus,
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--ooda-base), 0 0 0 5px var(--ooda-primary);
+        }
+        
+        /* OODA Selection */
+        ::selection {
+            background: var(--ooda-primary);
+            color: var(--ooda-base);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="property-nav">
+        <button onclick="navigateBack()" class="back-button">
+            ← Back to Search Results
+        </button>
+        <div class="nav-actions">
+            <button onclick="exportPDF()">📄 Export PDF</button>
+            <button onclick="shareProperty()">🔗 Share</button>
+        </div>
+    </nav>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="loading">
+        <div class="spinner"></div>
+        <p>Loading property details...</p>
+    </div>
+
+    <!-- Main Content (hidden initially) -->
+    <div id="mainContent" style="display: none;">
+        <!-- Gallery Layout -->
+        <section class="gallery-layout">
+            <!-- Photo Collage -->
+            <div class="photo-collage" id="photoCollage">
+                <!-- Dynamically populated -->
+            </div>
+            
+            <!-- Property Content -->
+            <div class="property-content">
+                <!-- Property Main Info -->
+                <div class="property-main">
+                    <!-- Property Info Card -->
+                    <div class="property-info-card">
+                <div class="property-header">
+                    <h1 id="propertyTitle" class="property-title">Loading...</h1>
+                    <div class="property-location">
+                        <span>📍</span>
+                        <span id="locationText"></span>
+                    </div>
+                    <div class="property-badges">
+                        <span class="property-badge" id="propertyType"></span>
+                        <span class="property-badge" id="listingType"></span>
+                        <span class="property-badge superhost" id="superhostBadge" style="display:none">⭐ Superhost</span>
+                        <span class="property-badge" id="performanceTier" style="display:none"></span>
+                    </div>
+                </div>
+                
+                <div class="property-stats">
+                    <div class="stat-card">
+                        <div class="stat-label">Monthly Revenue</div>
+                        <div class="stat-value" id="monthlyRevenue">$0</div>
+                        <div class="stat-subtext" id="monthlyRevenueChange"></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Occupancy Rate</div>
+                        <div class="stat-value" id="occupancyRateStat">0%</div>
+                        <div class="stat-subtext">Last 12 months</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Guest Rating</div>
+                        <div class="stat-value" id="guestRatingStat">N/A</div>
+                        <div class="stat-subtext" id="reviewCountStat">0 reviews</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Price per Night</div>
+                        <div class="stat-value" id="avgDailyRateStat">$0</div>
+                        <div class="stat-subtext" id="adrComparisonStat"></div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="action-btn primary" onclick="scrollToMetrics()">View Full Analytics</button>
+                    <button class="action-btn" onclick="shareProperty()">Share</button>
+                    <button class="action-btn" onclick="exportPDF()">Export</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Lightbox -->
+        <div class="lightbox" id="lightbox">
+            <div class="lightbox-content">
+                <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+                
+                <!-- View toggle -->
+                <div class="lightbox-view-toggle">
+                    <button class="view-toggle-btn active" id="collageViewBtn" onclick="showLightboxCollage()">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <rect x="1" y="1" width="6" height="6" rx="1"/>
+                            <rect x="9" y="1" width="6" height="6" rx="1"/>
+                            <rect x="1" y="9" width="6" height="6" rx="1"/>
+                            <rect x="9" y="9" width="6" height="6" rx="1"/>
+                        </svg>
+                        Grid View
+                    </button>
+                    <button class="view-toggle-btn" id="singleViewBtn" onclick="showSingleImageView()">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <rect x="2" y="2" width="12" height="12" rx="1"/>
+                        </svg>
+                        Single View
+                    </button>
+                </div>
+                
+                <!-- Collage view -->
+                <div class="lightbox-collage-view" id="lightboxCollageView">
+                    <div class="lightbox-collage" id="lightboxCollage">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+                
+                <!-- Single image view -->
+                <div class="lightbox-single-view" id="lightboxSingleView" style="display: none;">
+                    <span class="lightbox-nav lightbox-prev" onclick="navigateImage(-1)">&#10094;</span>
+                    <span class="lightbox-nav lightbox-next" onclick="navigateImage(1)">&#10095;</span>
+                    <img class="lightbox-image" id="lightboxImage" src="" alt="Property Image">
+                    <div class="lightbox-counter" id="lightboxCounter">1 / 1</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Metrics Cards -->
+        <section class="metrics-section">
+            <div class="metric-card">
+                <div class="metric-content">
+                    <div class="metric-value" id="totalRevenue">$0</div>
+                    <div class="metric-label">Annual Revenue</div>
+                    <div class="metric-change" id="revenueChange"></div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-content">
+                    <div class="metric-value" id="occupancyRate">0%</div>
+                    <div class="metric-label">Occupancy Rate</div>
+                    <div class="metric-trend" id="occupancyTrend"></div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-content">
+                    <div class="metric-value" id="avgDailyRate">$0</div>
+                    <div class="metric-label">Average Daily Rate</div>
+                    <div class="metric-comparison" id="adrComparison"></div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-content">
+                    <div class="metric-value" id="guestRating">N/A</div>
+                    <div class="metric-label">Guest Rating</div>
+                    <div class="metric-reviews" id="reviewCount"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Insights Bar -->
+        <section class="insights-bar" id="insightsBar">
+            <!-- Dynamically populated -->
+        </section>
+
+        <!-- Performance Dashboard -->
+        <section class="dashboard-section">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h2>Revenue & Occupancy Trends</h2>
+                    <div class="chart-controls">
+                        <button onclick="changeTimeframe('12m')" class="active">12 Months</button>
+                        <button onclick="changeTimeframe('24m')">24 Months</button>
+                        <button onclick="changeTimeframe('all')">All Time</button>
+                    </div>
+                </div>
+                <canvas id="revenueChart"></canvas>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <h3>Pricing Optimization</h3>
+                    <canvas id="pricingChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Seasonal Performance</h3>
+                    <canvas id="seasonalChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Property Details Grid -->
+        <section class="details-section">
+            <div class="details-grid">
+                <div class="detail-card">
+                    <h3>🏠 Property Details</h3>
+                    <div class="detail-content" id="propertySpecs"></div>
+                </div>
+                <div class="detail-card">
+                    <h3>✨ Amenities</h3>
+                    <div class="amenities-grid" id="amenitiesList"></div>
+                </div>
+                <div class="detail-card">
+                    <h3>👤 Host Information</h3>
+                    <div class="detail-content" id="hostInfo"></div>
+                </div>
+                <div class="detail-card">
+                    <h3>📋 Booking Policies</h3>
+                    <div class="detail-content" id="bookingPolicies"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Monthly Data Table (Collapsible) -->
+        <section class="data-section">
+            <div class="section-header">
+                <h2>Detailed Monthly Performance</h2>
+                <button onclick="toggleMonthlyData()" class="toggle-button" id="toggleButton">
+                    Show Details ▼
+                </button>
+            </div>
+            <div class="monthly-table-container" id="monthlyTableContainer" style="display:none">
+                <table id="monthlyDataTable">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Revenue</th>
+                            <th>Potential</th>
+                            <th>Gap</th>
+                            <th>Occupancy</th>
+                            <th>ADR</th>
+                            <th>Bookings</th>
+                            <th>Available Days</th>
+                            <th>YoY Change</th>
+                        </tr>
+                    </thead>
+                    <tbody id="monthlyTableBody">
+                        <!-- Dynamically populated -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Global variables
+        const propertyId = '{{ property_id }}';
+        const returnUrl = '{{ return_url }}';
+        const filters = '{{ filters }}';
+        let propertyData = {};
+        let revenueChart, pricingChart, seasonalChart;
+        let currentTimeframe = '12m';
+
+        // Load property data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPropertyData(propertyId);
+        });
+
+        async function loadPropertyData(propertyId) {
+            try {
+                const response = await fetch(`/api/properties/${propertyId}/full`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    propertyData = data;
+                    
+                    // Hide loading, show content
+                    document.getElementById('loadingState').style.display = 'none';
+                    document.getElementById('mainContent').style.display = 'block';
+                    
+                    // Populate all sections
+                    populateHeroSection(data.property);
+                    
+                    // Initialize gallery with images
+                    if (data.property.listing_images && data.property.listing_images.length > 0) {
+                        initializeGallery(data.property.listing_images);
+                    } else if (data.property.listing_main_image_url) {
+                        initializeGallery([data.property.listing_main_image_url]);
+                    } else {
+                        document.querySelector('.photo-collage').style.display = 'none';
+                    }
+                    
+                    populateMetricsCards(data.property, data.monthly);
+                    populateInsights(data.insights);
+                    createCharts(data.monthly);
+                    populatePropertyDetails(data.property);
+                    populateMonthlyTable(data.monthly.records);
+                } else {
+                    showError(data.error || 'Failed to load property data');
+                }
+            } catch (error) {
+                console.error('Error loading property data:', error);
+                showError('Failed to load property data. Please try again.');
+            }
+        }
+
+        // Gallery variables
+        let propertyImages = [];
+        let currentImageIndex = 0;
+
+        function populateHeroSection(property) {
+            // Set title and location
+            document.getElementById('propertyTitle').textContent = 
+                property.listing_title || `${property.bedrooms}BR in ${property.city}`;
+            
+            document.getElementById('locationText').textContent = 
+                `${property.city}, ${property.state} ${property.postal_code || ''}${property.neighborhood ? ' • ' + property.neighborhood : ''}`;
+            
+            // Set badges - Format property type properly
+            const propertyType = formatPropertyType(property.property_type);
+            document.getElementById('propertyType').textContent = propertyType;
+            document.getElementById('listingType').textContent = property.listing_type;
+            
+            if (property.is_superhost) {
+                document.getElementById('superhostBadge').style.display = 'inline-flex';
+            }
+            
+            // Set performance tier based on market data
+            if (propertyData.market && property.revenue_ltm > propertyData.market.p90_revenue) {
+                const tierBadge = document.getElementById('performanceTier');
+                tierBadge.textContent = '🏆 Top 10% Performer';
+                tierBadge.style.display = 'inline-flex';
+            } else if (propertyData.market && property.revenue_ltm > propertyData.market.p75_revenue) {
+                const tierBadge = document.getElementById('performanceTier');
+                tierBadge.textContent = '⭐ Top 25% Performer';
+                tierBadge.style.display = 'inline-flex';
+            }
+            
+            // Update stats in property card
+            const monthlyRev = property.revenue_ltm / 12;
+            document.getElementById('monthlyRevenue').textContent = `$${Math.round(monthlyRev).toLocaleString()}`;
+            document.getElementById('occupancyRateStat').textContent = `${(property.occupancy_ltm * 100).toFixed(1)}%`;
+            document.getElementById('avgDailyRateStat').textContent = `$${Math.round(property.adr_ltm)}`;
+            
+            // Rating
+            const rating = property.overall_rating;
+            document.getElementById('guestRatingStat').innerHTML = 
+                rating ? `${rating.toFixed(1)} ${'⭐'.repeat(Math.min(5, Math.max(1, Math.round(rating))))}` : 'N/A';
+            document.getElementById('reviewCountStat').textContent = 
+                `${property.review_count || 0} reviews`;
+        }
+
+        // Lightbox functions
+        function openLightbox(index) {
+            currentImageIndex = index;
+            const lightbox = document.getElementById('lightbox');
+            
+            // Show collage view by default
+            createLightboxCollage();
+            showLightboxCollage();
+            
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function createLightboxCollage() {
+            const collageContainer = document.getElementById('lightboxCollage');
+            collageContainer.innerHTML = '';
+            
+            // Determine how many images to show in collage (max 5)
+            const maxImages = Math.min(5, propertyImages.length);
+            
+            for (let i = 0; i < maxImages; i++) {
+                const item = document.createElement('div');
+                item.className = 'lightbox-collage-item';
+                
+                if (i === 0) {
+                    // First image spans 2 rows
+                    item.style.gridRow = 'span 2';
+                }
+                
+                const img = document.createElement('img');
+                img.src = propertyImages[i];
+                img.alt = `Property photo ${i + 1}`;
+                img.onclick = () => {
+                    currentImageIndex = i;
+                    showSingleImageView();
+                };
+                
+                item.appendChild(img);
+                collageContainer.appendChild(item);
+            }
+            
+            // If more than 5 images, add a "more photos" indicator
+            if (propertyImages.length > 5) {
+                const moreItem = document.createElement('div');
+                moreItem.className = 'lightbox-collage-item more-photos';
+                moreItem.innerHTML = `
+                    <div>+${propertyImages.length - 5}</div>
+                    <span>More Photos</span>
+                `;
+                moreItem.onclick = () => {
+                    currentImageIndex = 5;
+                    showSingleImageView();
+                };
+                collageContainer.appendChild(moreItem);
+            }
+        }
+        
+        function showLightboxCollage() {
+            // Hide single view
+            document.getElementById('lightboxSingleView').style.display = 'none';
+            
+            // Show collage view
+            document.getElementById('lightboxCollageView').style.display = 'flex';
+            
+            // Update toggle buttons
+            document.getElementById('collageViewBtn').classList.add('active');
+            document.getElementById('singleViewBtn').classList.remove('active');
+        }
+        
+        function showSingleImageView() {
+            // Hide collage view
+            document.getElementById('lightboxCollageView').style.display = 'none';
+            
+            // Show single view
+            document.getElementById('lightboxSingleView').style.display = 'flex';
+            
+            // Update image
+            document.getElementById('lightboxImage').src = propertyImages[currentImageIndex];
+            updateLightboxCounter();
+            
+            // Update toggle buttons
+            document.getElementById('singleViewBtn').classList.add('active');
+            document.getElementById('collageViewBtn').classList.remove('active');
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function changeImage(direction) {
+            currentImageIndex = (currentImageIndex + direction + propertyImages.length) % propertyImages.length;
+            document.getElementById('lightboxImage').src = propertyImages[currentImageIndex];
+            document.getElementById('lightboxCounter').textContent = 
+                `${currentImageIndex + 1} / ${propertyImages.length}`;
+        }
+
+        // Keyboard navigation for lightbox
+        document.addEventListener('keydown', (e) => {
+            const lightbox = document.getElementById('lightbox');
+            if (lightbox.classList.contains('active')) {
+                if (e.key === 'Escape') {
+                    closeLightbox();
+                } else if (document.getElementById('lightboxSingleView').style.display === 'flex') {
+                    // Only navigate in single view mode
+                    if (e.key === 'ArrowLeft') changeImage(-1);
+                    else if (e.key === 'ArrowRight') changeImage(1);
+                }
+            }
+        });
+
+        function scrollToMetrics() {
+            document.querySelector('.metrics-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function populateMetricsCards(property, monthly) {
+            // Revenue card
+            document.getElementById('totalRevenue').textContent = 
+                `$${property.revenue_ltm.toLocaleString()}`;
+            
+            // Add YoY change if available
+            if (monthly.records.length > 0 && monthly.records[0].yoy_revenue_change !== null) {
+                const change = monthly.records[0].yoy_revenue_change;
+                const changeEl = document.getElementById('revenueChange');
+                changeEl.innerHTML = change > 0 ? 
+                    `<span class="positive">↑ ${change.toFixed(1)}% YoY</span>` :
+                    `<span class="negative">↓ ${Math.abs(change).toFixed(1)}% YoY</span>`;
+            }
+            
+            // Occupancy card
+            document.getElementById('occupancyRate').textContent = 
+                `${(property.occupancy_ltm * 100).toFixed(1)}%`;
+            
+            // ADR card
+            document.getElementById('avgDailyRate').textContent = 
+                `$${Math.round(property.adr_ltm)}`;
+            
+            // Compare to market if available
+            if (propertyData.market && propertyData.market.avg_adr) {
+                const diff = ((property.adr_ltm - propertyData.market.avg_adr) / propertyData.market.avg_adr * 100).toFixed(0);
+                document.getElementById('adrComparison').innerHTML = 
+                    diff > 0 ? `<span class="positive" style="text-shadow: 0 0 10px rgba(38, 208, 134, 0.5);">+${diff}% vs market</span>` : 
+                    `<span class="negative" style="text-shadow: 0 0 10px rgba(255, 71, 87, 0.5);">${diff}% vs market</span>`;
+            }
+            
+            // Rating card
+            const rating = property.overall_rating;
+            document.getElementById('guestRating').innerHTML = 
+                rating ? `${rating.toFixed(1)} ${'⭐'.repeat(Math.min(5, Math.max(1, Math.round(rating))))}` : 'N/A';
+            document.getElementById('reviewCount').textContent = 
+                `${property.review_count || 0} reviews`;
+        }
+
+        function populateInsights(insights) {
+            const insightsBar = document.getElementById('insightsBar');
+            insightsBar.innerHTML = insights.map(insight => `
+                <div class="insight-card ${insight.type}">
+                    <div class="insight-title">${insight.title}</div>
+                    <div class="insight-message">${insight.message}</div>
+                </div>
+            `).join('');
+        }
+
+        function createCharts(monthlyData) {
+            // Configure Chart.js defaults for OODA aesthetics
+            Chart.defaults.font.family = 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            Chart.defaults.font.size = 12;
+            Chart.defaults.color = 'rgba(255, 255, 255, 0.5)';
+            Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.08)';
+            
+            // Revenue & Occupancy Chart with OODA design
+            const ctx1 = document.getElementById('revenueChart').getContext('2d');
+            const monthlyRecords = monthlyData.records.slice(0, 12).reverse();
+            
+            // Create gradient for revenue bars with OODA mint
+            const revenueGradient = ctx1.createLinearGradient(0, 0, 0, 400);
+            revenueGradient.addColorStop(0, 'rgba(38, 208, 134, 0.8)');
+            revenueGradient.addColorStop(1, 'rgba(38, 208, 134, 0.4)');
+            
+            // Calculate revenue potential for comparison
+            const revenuePotentialData = monthlyRecords.map(m => m.revenue_potential);
+            
+            revenueChart = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: monthlyRecords.map(m => formatMonth(m.month)),
+                    datasets: [{
+                        label: 'Actual Revenue',
+                        data: monthlyRecords.map(m => m.revenue),
+                        backgroundColor: revenueGradient,
+                        borderColor: '#26D086',
+                        borderWidth: 0,
+                        borderRadius: 8,
+                        yAxisID: 'y-revenue',
+                        order: 2
+                    }, {
+                        label: 'Revenue Potential',
+                        data: revenuePotentialData,
+                        backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                        borderColor: 'rgba(255, 255, 255, 0.2)',
+                        borderWidth: 1,
+                        borderRadius: 8,
+                        yAxisID: 'y-revenue',
+                        order: 3
+                    }, {
+                        label: 'Occupancy %',
+                        data: monthlyRecords.map(m => m.occupancy_rate),
+                        type: 'line',
+                        borderColor: '#4DE0A1',
+                        backgroundColor: 'rgba(77, 224, 161, 0.1)',
+                        borderWidth: 3,
+                        pointRadius: 6,
+                        pointBackgroundColor: '#111110',
+                        pointBorderColor: '#4DE0A1',
+                        pointBorderWidth: 2,
+                        pointHoverRadius: 8,
+                        tension: 0.4,
+                        yAxisID: 'y-occupancy',
+                        order: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    scales: {
+                        'y-revenue': {
+                            type: 'linear',
+                            position: 'left',
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.06)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.5)',
+                                callback: value => `$${(value/1000).toFixed(0)}k`,
+                                padding: 10,
+                                font: {
+                                    weight: '500'
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Revenue (USD)',
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                padding: 16,
+                                font: {
+                                    weight: '600',
+                                    size: 13
+                                }
+                            }
+                        },
+                        'y-occupancy': {
+                            type: 'linear',
+                            position: 'right',
+                            max: 100,
+                            min: 0,
+                            grid: {
+                                drawOnChartArea: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.5)',
+                                callback: value => `${value}%`,
+                                padding: 8
+                            },
+                            title: {
+                                display: true,
+                                text: 'Occupancy Rate',
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                padding: 10
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.5)',
+                                padding: 8
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            align: 'end',
+                            labels: {
+                                boxWidth: 12,
+                                boxHeight: 12,
+                                padding: 15,
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(26, 26, 25, 0.95)',
+                            titleColor: 'rgba(255, 255, 255, 0.95)',
+                            bodyColor: 'rgba(255, 255, 255, 0.7)',
+                            borderColor: 'rgba(38, 208, 134, 0.3)',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            padding: 12,
+                            displayColors: true,
+                            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.dataset.label;
+                                    const value = context.parsed.y;
+                                    
+                                    if (label.includes('Revenue')) {
+                                        return `${label}: $${value.toLocaleString()}`;
+                                    } else if (label === 'Occupancy %') {
+                                        return `${label}: ${value.toFixed(1)}%`;
+                                    }
+                                    return `${label}: ${value}`;
+                                },
+                                afterLabel: function(context) {
+                                    if (context.dataset.label === 'Actual Revenue') {
+                                        const potential = revenuePotentialData[context.dataIndex];
+                                        const gap = potential - context.parsed.y;
+                                        const gapPercent = ((gap / potential) * 100).toFixed(1);
+                                        return gap > 0 ? `Gap: $${gap.toLocaleString()} (${gapPercent}%)` : 'Exceeding potential!';
+                                    }
+                                    return '';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Pricing Optimization Chart with enhanced visualization
+            const ctx2 = document.getElementById('pricingChart').getContext('2d');
+            
+            // Calculate optimal price point (where revenue is maximized)
+            const avgRevenue = monthlyData.summary.avg_monthly_revenue;
+            const optimalPoint = monthlyRecords.reduce((max, m) => 
+                m.revenue > max.revenue ? m : max, monthlyRecords[0]);
+            
+            pricingChart = new Chart(ctx2, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Monthly Performance',
+                        data: monthlyRecords.map(m => ({
+                            x: m.adr,
+                            y: m.occupancy_rate,
+                            revenue: m.revenue,
+                            month: formatMonth(m.month)
+                        })),
+                        backgroundColor: monthlyRecords.map(m => {
+                            if (m.revenue > avgRevenue * 1.2) return 'rgba(38, 208, 134, 0.8)';
+                            if (m.revenue > avgRevenue) return 'rgba(77, 224, 161, 0.8)';
+                            return 'rgba(255, 165, 2, 0.8)';
+                        }),
+                        borderColor: monthlyRecords.map(m => {
+                            if (m.revenue > avgRevenue * 1.2) return '#26D086';
+                            if (m.revenue > avgRevenue) return '#4DE0A1';
+                            return '#FFA502';
+                        }),
+                        borderWidth: 2,
+                        pointRadius: monthlyRecords.map(m => 
+                            m.adr === optimalPoint.adr && m.occupancy_rate === optimalPoint.occupancy_rate ? 12 : 8
+                        ),
+                        pointHoverRadius: monthlyRecords.map(m => 
+                            m.adr === optimalPoint.adr && m.occupancy_rate === optimalPoint.occupancy_rate ? 14 : 10
+                        )
+                    }, {
+                        label: 'Optimal Zone',
+                        type: 'bubble',
+                        data: [{
+                            x: optimalPoint.adr,
+                            y: optimalPoint.occupancy_rate,
+                            r: 20
+                        }],
+                        backgroundColor: 'rgba(38, 208, 134, 0.15)',
+                        borderColor: '#26D086',
+                        borderWidth: 2,
+                        borderDash: [5, 5]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            backgroundColor: 'rgba(26, 26, 25, 0.95)',
+                            titleColor: 'rgba(255, 255, 255, 0.95)',
+                            bodyColor: 'rgba(255, 255, 255, 0.7)',
+                            borderColor: 'rgba(38, 208, 134, 0.3)',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            padding: 12,
+                            callbacks: {
+                                title: (context) => {
+                                    if (context[0].dataset.label === 'Monthly Performance') {
+                                        return context[0].raw.month;
+                                    }
+                                    return 'Optimal Performance Zone';
+                                },
+                                label: (context) => {
+                                    if (context.dataset.label === 'Monthly Performance') {
+                                        const point = context.raw;
+                                        return [
+                                            `ADR: $${point.x.toFixed(0)}`,
+                                            `Occupancy: ${point.y.toFixed(1)}%`,
+                                            `Revenue: $${point.revenue.toLocaleString()}`
+                                        ];
+                                    }
+                                    return 'Peak revenue performance';
+                                },
+                                afterLabel: (context) => {
+                                    if (context.dataset.label === 'Monthly Performance') {
+                                        const point = context.raw;
+                                        const revenueVsAvg = ((point.revenue - avgRevenue) / avgRevenue * 100).toFixed(1);
+                                        return revenueVsAvg > 0 ? 
+                                            `📈 ${revenueVsAvg}% above average` : 
+                                            `📉 ${Math.abs(revenueVsAvg)}% below average`;
+                                    }
+                                    return '';
+                                }
+                            }
+                        },
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            align: 'end',
+                            labels: {
+                                filter: (legendItem) => legendItem.text !== 'Optimal Zone',
+                                boxWidth: 12,
+                                boxHeight: 12,
+                                padding: 15,
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                usePointStyle: true
+                            }
+                        },
+                        annotation: {
+                            annotations: {
+                                optimalLine: {
+                                    type: 'line',
+                                    xMin: optimalPoint.adr,
+                                    xMax: optimalPoint.adr,
+                                    borderColor: 'rgba(38, 208, 134, 0.3)',
+                                    borderDash: [2, 2],
+                                    borderWidth: 1
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Average Daily Rate ($)',
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                padding: 10
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.06)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.5)',
+                                padding: 8
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Occupancy Rate (%)',
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                padding: 10
+                            },
+                            max: 100,
+                            min: 0,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#5f6368',
+                                padding: 8,
+                                callback: value => `${value}%`
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Seasonal Performance Chart with enhanced polar area design
+            const ctx3 = document.getElementById('seasonalChart').getContext('2d');
+            const seasonalData = monthlyData.seasonal_patterns || [];
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                               'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            // Find peak and low seasons
+            const maxRevenue = Math.max(...seasonalData.map(s => s.avg_revenue));
+            const minRevenue = Math.min(...seasonalData.map(s => s.avg_revenue));
+            
+            // Create gradient colors based on performance
+            const seasonalColors = seasonalData.map(s => {
+                const performance = (s.avg_revenue - minRevenue) / (maxRevenue - minRevenue);
+                if (performance > 0.75) return 'rgba(38, 208, 134, 0.7)';
+                if (performance > 0.5) return 'rgba(77, 224, 161, 0.7)';
+                if (performance > 0.25) return 'rgba(255, 165, 2, 0.7)';
+                return 'rgba(255, 71, 87, 0.7)';
+            });
+            
+            const borderColors = seasonalData.map(s => {
+                const performance = (s.avg_revenue - minRevenue) / (maxRevenue - minRevenue);
+                if (performance > 0.75) return '#26D086';
+                if (performance > 0.5) return '#4DE0A1';
+                if (performance > 0.25) return '#FFA502';
+                return '#FF4757';
+            });
+            
+            seasonalChart = new Chart(ctx3, {
+                type: 'polarArea',
+                data: {
+                    labels: seasonalData.map(s => monthNames[s.month_num - 1]),
+                    datasets: [{
+                        label: 'Average Revenue',
+                        data: seasonalData.map(s => s.avg_revenue),
+                        backgroundColor: seasonalColors,
+                        borderColor: borderColors,
+                        borderWidth: 2,
+                        hoverBorderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(26, 26, 25, 0.95)',
+                            titleColor: 'rgba(255, 255, 255, 0.95)',
+                            bodyColor: 'rgba(255, 255, 255, 0.7)',
+                            borderColor: 'rgba(38, 208, 134, 0.3)',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    const month = context.label;
+                                    const revenue = context.parsed.r;
+                                    const seasonIndex = context.dataIndex;
+                                    const occupancy = seasonalData[seasonIndex].avg_occupancy;
+                                    
+                                    return [
+                                        `Revenue: $${revenue.toLocaleString()}`,
+                                        `Occupancy: ${(occupancy * 100).toFixed(1)}%`
+                                    ];
+                                },
+                                afterLabel: function(context) {
+                                    const revenue = context.parsed.r;
+                                    const performance = (revenue - minRevenue) / (maxRevenue - minRevenue);
+                                    
+                                    if (performance > 0.75) return '🔥 Peak Season';
+                                    if (performance > 0.5) return '📈 High Season';
+                                    if (performance > 0.25) return '📊 Regular Season';
+                                    return '📉 Low Season';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.06)',
+                                circular: true
+                            },
+                            pointLabels: {
+                                display: true,
+                                centerPointLabels: true,
+                                font: {
+                                    size: 11,
+                                    weight: '500'
+                                },
+                                color: 'rgba(255, 255, 255, 0.5)',
+                                padding: 5
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.5)',
+                                backdropColor: 'transparent',
+                                stepSize: Math.ceil(maxRevenue / 4 / 1000) * 1000,
+                                callback: value => `$${(value/1000).toFixed(0)}k`
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function populatePropertyDetails(property) {
+            // Property specs
+            document.getElementById('propertySpecs').innerHTML = `
+                <div class="spec-item">
+                    <span class="spec-label">Bedrooms:</span>
+                    <span class="spec-value">${property.bedrooms || 'Studio'}</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Bathrooms:</span>
+                    <span class="spec-value">${property.bathrooms ? 
+                        `${property.bathrooms}${property.bathrooms === 1 ? ' Bath' : ' Baths'}` : 
+                        'Not specified'}</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Max Guests:</span>
+                    <span class="spec-value">${property.max_guests || 'Not specified'}</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Property Type:</span>
+                    <span class="spec-value">${formatPropertyType(property.property_type)}</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">License:</span>
+                    <span class="spec-value">${property.license ? 
+                        `✅ Licensed (${property.license})` : 
+                        '❌ Not Licensed'}</span>
+                </div>
+            `;
+            
+            // Amenities - Complete list with proper checks
+            const amenityMap = {
+                has_pool: { icon: '🏊', label: 'Pool' },
+                has_hot_tub: { icon: '🛁', label: 'Hot Tub' },
+                has_air_con: { icon: '❄️', label: 'Air Conditioning' },
+                has_kitchen: { icon: '🍳', label: 'Kitchen' },
+                has_parking: { icon: '🚗', label: 'Parking' },
+                pets_allowed: { icon: '🐕', label: 'Pet Friendly' },
+                has_gym: { icon: '🏋️', label: 'Gym/Fitness' }
+            };
+            
+            const amenitiesHTML = [];
+            Object.entries(amenityMap).forEach(([key, amenity]) => {
+                const value = property[key];
+                if (value === true || value === 'Yes') {
+                    amenitiesHTML.push(`<div class="amenity-item available">${amenity.icon} ${amenity.label}</div>`);
+                } else if (value === false || value === 'No') {
+                    amenitiesHTML.push(`<div class="amenity-item unavailable">${amenity.icon} ${amenity.label}</div>`);
+                }
+            });
+            
+            document.getElementById('amenitiesList').innerHTML = 
+                amenitiesHTML.length > 0 ? amenitiesHTML.join('') :
+                '<div class="amenity-item">No amenity information available</div>';
+            
+            // Host info - with better formatting
+            document.getElementById('hostInfo').innerHTML = `
+                <div class="info-item">
+                    <span class="info-label">Host Type:</span>
+                    <span class="info-value">${property.host_type || 'Not specified'}</span>
+                </div>
+                ${property.property_manager ? `
+                <div class="info-item">
+                    <span class="info-label">Manager:</span>
+                    <span class="info-value">${property.property_manager}</span>
+                </div>` : ''}
+                <div class="info-item">
+                    <span class="info-label">Response Rate:</span>
+                    <span class="info-value">${formatResponseRate(property.response_rate)}</span>
+                </div>
+                ${property.is_superhost ? `
+                <div class="info-item superhost-item">
+                    ⭐ Superhost Status
+                </div>` : ''}
+            `;
+            
+            // Booking policies - with better formatting
+            document.getElementById('bookingPolicies').innerHTML = `
+                <div class="policy-item">
+                    <span class="policy-label">Minimum Stay:</span>
+                    <span class="policy-value">${property.minimum_stay ? 
+                        `${property.minimum_stay} night${property.minimum_stay > 1 ? 's' : ''}` : 
+                        'No minimum'}</span>
+                </div>
+                <div class="policy-item">
+                    <span class="policy-label">Check-in:</span>
+                    <span class="policy-value">${property.check_in || 'Flexible'}</span>
+                </div>
+                <div class="policy-item">
+                    <span class="policy-label">Check-out:</span>
+                    <span class="policy-value">${property.check_out || 'Flexible'}</span>
+                </div>
+                <div class="policy-item">
+                    <span class="policy-label">Cancellation:</span>
+                    <span class="policy-value">${formatCancellationPolicy(property.cancellation_policy)}</span>
+                </div>
+                ${property.instantbook ? `
+                <div class="policy-item instant-book">
+                    ⚡ Instant Book Enabled
+                </div>` : ''}
+            `;
+        }
+        
+        // Helper functions for formatting
+        function formatPropertyType(type) {
+            if (!type) return 'Property';
+            if (type.includes('6-20 Units')) return 'Multi-Unit Building';
+            if (type.includes('21-50 Units')) return 'Large Multi-Unit Building';
+            if (type.includes('50+ Units')) return 'Large Complex';
+            return type;
+        }
+        
+        function formatResponseRate(rate) {
+            if (!rate) return 'Not specified';
+            // If it's already a percentage
+            if (rate.includes('%')) return rate;
+            // If it's a number, add %
+            if (!isNaN(rate)) return `${rate}%`;
+            return rate;
+        }
+        
+        function formatCancellationPolicy(policy) {
+            if (!policy) return 'Standard';
+            // Capitalize first letter
+            return policy.charAt(0).toUpperCase() + policy.slice(1).toLowerCase();
+        }
+
+        function populateMonthlyTable(records) {
+            const tbody = document.getElementById('monthlyTableBody');
+            tbody.innerHTML = records.map(month => `
+                <tr>
+                    <td>${formatMonth(month.month)}</td>
+                    <td>$${month.revenue.toLocaleString()}</td>
+                    <td>$${month.revenue_potential.toLocaleString()}</td>
+                    <td style="color: ${month.revenue_gap > 0 ? '#FF4757' : '#26D086'}">
+                        $${Math.abs(month.revenue_gap).toLocaleString()}
+                    </td>
+                    <td>${month.occupancy_rate.toFixed(1)}%</td>
+                    <td>$${month.adr.toFixed(0)}</td>
+                    <td>${month.reservations}</td>
+                    <td>${month.available_days}</td>
+                    <td>
+                        ${month.yoy_revenue_change !== null ? 
+                            (month.yoy_revenue_change > 0 ? 
+                                `<span style="color: #26D086; text-shadow: 0 0 10px rgba(38, 208, 134, 0.5);">↑ ${month.yoy_revenue_change.toFixed(1)}%</span>` :
+                                `<span style="color: #FF4757; text-shadow: 0 0 10px rgba(255, 71, 87, 0.5);">↓ ${Math.abs(month.yoy_revenue_change).toFixed(1)}%</span>`) :
+                            'N/A'
+                        }
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function changeTimeframe(timeframe) {
+            currentTimeframe = timeframe;
+            
+            // Update button states
+            document.querySelectorAll('.chart-controls button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update chart data based on timeframe
+            let monthlyRecords;
+            if (timeframe === '12m') {
+                monthlyRecords = propertyData.monthly.records.slice(0, 12).reverse();
+            } else if (timeframe === '24m') {
+                monthlyRecords = propertyData.monthly.records.slice(0, 24).reverse();
+            } else {
+                monthlyRecords = propertyData.monthly.records.slice().reverse();
+            }
+            
+            const avgRevenue = propertyData.monthly.summary.avg_monthly_revenue;
+            const optimalPoint = monthlyRecords.reduce((max, m) => 
+                m.revenue > max.revenue ? m : max, monthlyRecords[0]);
+            
+            // Update revenue chart
+            revenueChart.data.labels = monthlyRecords.map(m => formatMonth(m.month));
+            revenueChart.data.datasets[0].data = monthlyRecords.map(m => m.revenue);
+            revenueChart.data.datasets[1].data = monthlyRecords.map(m => m.revenue_potential);
+            revenueChart.data.datasets[2].data = monthlyRecords.map(m => m.occupancy_rate);
+            revenueChart.update();
+            
+            // Update pricing chart
+            pricingChart.data.datasets[0].data = monthlyRecords.map(m => ({
+                x: m.adr,
+                y: m.occupancy_rate,
+                revenue: m.revenue,
+                month: formatMonth(m.month)
+            }));
+            
+            // Update colors based on performance
+            pricingChart.data.datasets[0].backgroundColor = monthlyRecords.map(m => {
+                if (m.revenue > avgRevenue * 1.2) return 'rgba(38, 208, 134, 0.8)';
+                if (m.revenue > avgRevenue) return 'rgba(77, 224, 161, 0.8)';
+                return 'rgba(255, 165, 2, 0.8)';
+            });
+            
+            pricingChart.data.datasets[0].borderColor = monthlyRecords.map(m => {
+                if (m.revenue > avgRevenue * 1.2) return '#26D086';
+                if (m.revenue > avgRevenue) return '#4DE0A1';
+                return '#FFA502';
+            });
+            
+            // Update optimal point
+            pricingChart.data.datasets[1].data = [{
+                x: optimalPoint.adr,
+                y: optimalPoint.occupancy_rate,
+                r: 20
+            }];
+            
+            pricingChart.update();
+        }
+
+        function toggleMonthlyData() {
+            const container = document.getElementById('monthlyTableContainer');
+            const button = document.getElementById('toggleButton');
+            
+            if (container.style.display === 'none') {
+                container.style.display = 'block';
+                button.textContent = 'Hide Details ▲';
+            } else {
+                container.style.display = 'none';
+                button.textContent = 'Show Details ▼';
+            }
+        }
+
+        function navigateBack() {
+            // Debug logging
+            console.log('Return URL:', returnUrl);
+            console.log('Filters:', filters);
+            
+            // Ensure returnUrl is valid
+            const backUrl = returnUrl || '/';
+            
+            // Preserve filters when going back
+            if (filters && filters !== 'None') {
+                window.location.href = `${backUrl}?filters=${filters}`;
+            } else {
+                window.location.href = backUrl;
+            }
+        }
+
+        function exportPDF() {
+            // Placeholder for PDF export functionality
+            alert('PDF export functionality coming soon!');
+        }
+
+        function shareProperty() {
+            // Copy current URL to clipboard
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert('Property link copied to clipboard!');
+            });
+        }
+
+        function showError(message) {
+            document.getElementById('loadingState').innerHTML = `
+                <div class="error-message">${message}</div>
+            `;
+        }
+
+        // Gallery functionality
+        
+        function initializeGallery(images) {
+            propertyImages = images;
+            const photoCollage = document.getElementById('photoCollage');
+            
+            if (!images || images.length === 0) {
+                photoCollage.style.display = 'none';
+                return;
+            }
+            
+            // Clear existing content
+            photoCollage.innerHTML = '';
+            
+            // Create collage items (max 5 images)
+            const maxImages = Math.min(5, images.length);
+            
+            for (let i = 0; i < maxImages; i++) {
+                const collageItem = document.createElement('div');
+                collageItem.className = 'collage-item';
+                
+                // First image spans 2 rows
+                if (i === 0) {
+                    collageItem.style.gridRow = 'span 2';
+                }
+                
+                // Last image (5th) gets the "Show all photos" overlay
+                if (i === 4 && images.length > 5) {
+                    collageItem.innerHTML = `
+                        <img src="${images[i]}" alt="Property photo">
+                        <div class="show-all-photos-overlay" onclick="openLightbox(0)">
+                            <span>Show all ${images.length} photos</span>
+                        </div>
+                    `;
+                } else {
+                    collageItem.innerHTML = `<img src="${images[i]}" alt="Property photo">`;
+                    collageItem.onclick = () => openLightbox(i);
+                }
+                
+                photoCollage.appendChild(collageItem);
+            }
+            
+            // Show single image if only one available
+            if (images.length === 1) {
+                photoCollage.style.gridTemplateColumns = '100%';
+                photoCollage.style.gridTemplateRows = '560px';
+            }
+        }
+        
+        function navigateImage(direction) {
+            currentImageIndex += direction;
+            
+            if (currentImageIndex < 0) {
+                currentImageIndex = propertyImages.length - 1;
+            } else if (currentImageIndex >= propertyImages.length) {
+                currentImageIndex = 0;
+            }
+            
+            document.getElementById('lightboxImage').src = propertyImages[currentImageIndex];
+            updateLightboxCounter();
+        }
+        
+        function updateLightboxCounter() {
+            document.getElementById('lightboxCounter').textContent = 
+                `${currentImageIndex + 1} / ${propertyImages.length}`;
+        }
+
+        // Utility functions
+        function formatMonth(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+        }
+    </script>
+</body>
+</html>

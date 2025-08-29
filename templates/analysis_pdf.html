@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 Annual Revenue & Occupancy Projections - OODA Analysis</title>
+    <style>
+        /* Premium OODA PDF Styles - Museum Quality Design */
+        @page {
+            size: A4;
+            margin: 15mm;
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f4 100%);
+        }
+        
+        @page:first {
+            margin: 10mm;
+            background: linear-gradient(135deg, #1a1a19 0%, #0e0e0d 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            font-size: 11pt;
+            line-height: 1.6;
+            color: #1a1a19;
+            background: transparent;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+        }
+        
+        /* Premium OODA Design System */
+        :root {
+            /* Core Brand Colors */
+            --ooda-mint: #26D086;
+            --ooda-mint-light: #4FE0A3;
+            --ooda-mint-dark: #1BA66A;
+            --ooda-mint-glow: rgba(38, 208, 134, 0.4);
+            --ooda-dark: #1a1a19;
+            --ooda-darker: #0e0e0d;
+            --ooda-darkest: #050505;
+            
+            /* Extended Premium Palette */
+            --neutral-900: #1a1a19;
+            --neutral-800: #262625;
+            --neutral-700: #333332;
+            --neutral-600: #404040;
+            --neutral-500: #595959;
+            --neutral-400: #737373;
+            --neutral-300: #8C8C8C;
+            --neutral-200: #A6A6A6;
+            --neutral-100: #BFBFBF;
+            --neutral-50: #D9D9D9;
+            --neutral-25: #E5E5E4;
+            --neutral-10: #F7F7F6;
+            --neutral-5: #FAFAFA;
+            
+            /* Semantic Colors - Enhanced for WCAG AA Compliance */
+            --text-primary: #2c3e50;      /* Dark blue-gray for better readability */
+            --text-secondary: #5a6c7d;    /* Medium gray with improved contrast */
+            --text-muted: #687583;        /* Darker shade for WCAG AA (4.5:1+ ratio) */
+            --text-accent: #26D086;
+            --text-emphasis: #1a252f;     /* Extra dark for important values */
+            --text-on-mint: #ffffff;      /* White text on mint backgrounds */
+            --border-light: #E5E5E4;
+            --border-medium: #D9D9D9;
+            --border-accent: rgba(38, 208, 134, 0.3);
+            --bg-light: #F7F7F6;
+            --bg-elevated: #FAFAFA;
+            --bg-premium: linear-gradient(135deg, #FAFAFA 0%, #F7F7F6 100%);
+            
+            /* Premium Gradients */
+            --gradient-mint: linear-gradient(135deg, #26D086 0%, #1BA66A 100%);
+            --gradient-dark: linear-gradient(135deg, #333332 0%, #1a1a19 100%);
+            --gradient-surface: linear-gradient(135deg, #FAFAFA 0%, #F5F5F4 100%);
+            --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+            
+            /* Luxury Shadows */
+            --shadow-soft: 0 2px 8px rgba(26, 26, 25, 0.08);
+            --shadow-medium: 0 4px 16px rgba(26, 26, 25, 0.12);
+            --shadow-bold: 0 8px 32px rgba(26, 26, 25, 0.16);
+            --shadow-glow: 0 0 24px rgba(38, 208, 134, 0.25);
+            
+            /* Spacing System */
+            --space-xs: 4pt;
+            --space-sm: 8pt;
+            --space-md: 12pt;
+            --space-lg: 20pt;
+            --space-xl: 32pt;
+            --space-2xl: 48pt;
+            --space-3xl: 64pt;
+            
+            /* Typography Scale */
+            --font-xs: 9pt;
+            --font-sm: 10pt;
+            --font-base: 11pt;
+            --font-lg: 13pt;
+            --font-xl: 16pt;
+            --font-2xl: 20pt;
+            --font-3xl: 24pt;
+            --font-4xl: 32pt;
+            --font-5xl: 40pt;
+        }
+        
+        /* Premium Typography System */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+            margin-bottom: var(--space-md);
+        }
+        
+        h1 { font-size: var(--font-4xl); font-weight: 700; }
+        h2 { font-size: var(--font-3xl); }
+        h3 { font-size: var(--font-xl); }
+        h4 { font-size: var(--font-lg); }
+        
+        p {
+            margin-bottom: var(--space-md);
+            line-height: 1.6;
+        }
+        
+        /* Page Break Utilities */
+        .page-break {
+            page-break-after: always;
+            break-after: page;
+        }
+        
+        .avoid-break {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        
+        /* Smart page break handling */
+        .smart-break {
+            page-break-before: auto;
+            page-break-after: avoid;
+            break-before: auto;
+            break-after: avoid;
+        }
+        
+        /* Optimize dark sections */
+        .dark-section {
+            background: var(--ooda-dark);
+            padding: var(--space-md) 0;  /* Reduced padding */
+            margin: 0;  /* Remove margins */
+            page-break-inside: avoid;
+        }
+        
+        /* Fill empty space with gradient */
+        .page-filler {
+            background: linear-gradient(180deg, 
+                var(--ooda-dark) 0%, 
+                var(--ooda-darker) 50%, 
+                var(--ooda-darkest) 100%);
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        /* Premium Cover Page */
+        .cover-page {
+            height: 100vh;
+            background: var(--gradient-dark);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            padding: var(--space-3xl);
+        }
+        
+        .logo-section {
+            position: absolute;
+            top: 60pt;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .ooda-logo {
+            width: 140pt;
+            height: auto;
+            margin-bottom: var(--space-lg);
+            filter: drop-shadow(var(--shadow-glow));
+        }
+        
+        .cover-title {
+            font-size: var(--font-5xl);
+            font-weight: 700;
+            color: white;
+            margin-bottom: var(--space-sm);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        
+        .cover-subtitle {
+            font-size: var(--font-2xl);
+            color: var(--ooda-mint-light);
+            font-weight: 600;
+            margin-bottom: var(--space-xl);
+            text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        }
+        
+        .property-info {
+            background: var(--gradient-glass);
+            backdrop-filter: blur(12pt);
+            padding: var(--space-xl) var(--space-2xl);
+            border-radius: 16pt;
+            border: 1px solid rgba(255,255,255,0.2);
+            margin: var(--space-xl) auto;
+            max-width: 80%;
+            box-shadow: var(--shadow-bold);
+        }
+        
+        .property-address {
+            font-size: var(--font-xl);
+            font-weight: 600;
+            color: var(--text-emphasis);  /* Changed from white to dark text */
+            margin-bottom: var(--space-md);
+            line-height: 1.3;
+        }
+        
+        .property-meta {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-xl);
+            color: var(--text-primary);  /* Changed from white to dark text */
+            font-size: var(--font-sm);
+            margin-top: var(--space-md);
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            background: rgba(255,255,255,0.95);  /* More opaque white background */
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 8pt;
+            backdrop-filter: blur(4pt);
+            color: var(--text-primary);  /* Ensure dark text */
+            font-weight: 500;  /* Slightly bolder for better readability */
+        }
+        
+        .meta-item span {
+            color: var(--text-primary) !important;  /* Override inherited white color */
+        }
+        
+        .powered-by {
+            position: absolute;
+            bottom: 40pt;
+            font-size: var(--font-xs);
+            color: rgba(255,255,255,0.6);
+            letter-spacing: 0.5pt;
+        }
+        
+        /* Premium Executive Summary */
+        .executive-summary {
+            padding: var(--space-2xl) 0;
+            background: var(--bg-premium);
+        }
+        
+        .section-title {
+            font-size: var(--font-3xl);
+            font-weight: 700;
+            color: var(--ooda-dark);
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-md);
+            border-bottom: 4pt solid var(--ooda-mint);
+            position: relative;
+            letter-spacing: -0.01em;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2pt;
+            left: 0;
+            width: 60pt;
+            height: 2pt;
+            background: var(--gradient-mint);
+            border-radius: 1pt;
+        }
+        
+        .key-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-lg);
+            margin: var(--space-2xl) 0;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: var(--space-xl);
+            border-radius: 12pt;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-soft);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4pt;
+            background: var(--gradient-mint);
+        }
+        
+        .metric-label {
+            font-size: var(--font-xs);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1pt;
+            margin-bottom: var(--space-sm);
+            font-weight: 600;
+        }
+        
+        .metric-value {
+            font-size: var(--font-3xl);
+            font-weight: 700;
+            color: var(--ooda-dark);
+            line-height: 1.1;
+            margin-bottom: var(--space-xs);
+        }
+        
+        .metric-value.mint {
+            background: var(--gradient-mint);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .metric-change {
+            font-size: var(--font-sm);
+            color: var(--text-secondary);
+            margin-top: var(--space-xs);
+            font-weight: 500;
+        }
+        
+        /* Premium Data Presentation */
+        .data-section {
+            margin: var(--space-2xl) 0;
+            background: white;
+            border-radius: 16pt;
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-light);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: var(--space-lg);
+            border-radius: 12pt;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+        }
+        
+        .data-table thead {
+            background: var(--gradient-dark);
+            color: white;
+        }
+        
+        .data-table th {
+            padding: var(--space-md) var(--space-lg);
+            text-align: left;
+            font-weight: 600;
+            font-size: var(--font-xs);
+            text-transform: uppercase;
+            letter-spacing: 1pt;
+            border: none;
+        }
+        
+        .data-table th:first-child {
+            border-top-left-radius: 12pt;
+        }
+        
+        .data-table th:last-child {
+            border-top-right-radius: 12pt;
+        }
+        
+        .data-table td {
+            padding: var(--space-md) var(--space-lg);
+            border-bottom: 1px solid var(--border-light);
+            font-size: var(--font-base);
+            background: white;
+        }
+        
+        .data-table tbody tr:nth-child(even) td {
+            background: var(--neutral-10);
+        }
+        
+        .data-table tbody tr:hover td {
+            background: rgba(38, 208, 134, 0.05);
+        }
+        
+        .confidence-high {
+            color: var(--ooda-mint);
+            font-weight: 600;
+            background: rgba(38, 208, 134, 0.1);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 6pt;
+            font-size: var(--font-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.5pt;
+        }
+        
+        .confidence-medium {
+            color: #F59E0B;
+            font-weight: 600;
+            background: rgba(245, 158, 11, 0.1);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 6pt;
+            font-size: var(--font-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.5pt;
+        }
+        
+        .confidence-low {
+            color: #EF4444;
+            font-weight: 600;
+            background: rgba(239, 68, 68, 0.1);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 6pt;
+            font-size: var(--font-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.5pt;
+        }
+        
+        /* Premium Charts Section */
+        .chart-container {
+            margin: var(--space-lg) 0;  /* Reduced from xl */
+            padding: var(--space-lg);  /* Reduced from xl */
+            background: white;
+            border-radius: 16pt;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-medium);
+            position: relative;
+            overflow: hidden;
+            max-height: 280pt;  /* Constrain height */
+            min-height: 200pt;  /* Ensure minimum visibility */
+        }
+        
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4pt;
+            background: var(--gradient-mint);
+        }
+        
+        .chart-title {
+            font-size: var(--font-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-lg);
+            padding-top: var(--space-sm);
+            letter-spacing: -0.01em;
+        }
+        
+        .chart-image {
+            width: 100%;
+            height: auto;
+            max-height: 250pt;  /* Reduced from 350pt */
+            object-fit: contain;
+            border-radius: 8pt;
+            box-shadow: var(--shadow-soft);
+        }
+        
+        /* Premium Seasonal Analysis */
+        .seasonal-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-lg);
+            margin-top: var(--space-xl);
+        }
+        
+        .season-card {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 12pt;
+            padding: var(--space-lg);
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .season-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3pt;
+            background: var(--border-light);
+        }
+        
+        .season-card.peak {
+            border-color: var(--ooda-mint);
+            background: linear-gradient(135deg, rgba(38, 208, 134, 0.02) 0%, rgba(38, 208, 134, 0.08) 100%);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .season-card.peak::before {
+            background: var(--gradient-mint);
+        }
+        
+        .season-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+            font-size: var(--font-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5pt;
+        }
+        
+        .season-revenue {
+            font-size: var(--font-xl);
+            font-weight: 700;
+            color: var(--ooda-dark);
+            margin-bottom: var(--space-xs);
+            line-height: 1.1;
+        }
+        
+        .season-card.peak .season-revenue {
+            color: var(--ooda-mint);
+        }
+        
+        .season-occupancy {
+            font-size: var(--font-xs);
+            color: var(--text-secondary);
+            margin-top: var(--space-xs);
+            font-weight: 500;
+        }
+        
+        /* Premium Market Insights */
+        .insights-section {
+            margin-top: var(--space-2xl);
+        }
+        
+        .insight-box {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-left: 4pt solid var(--ooda-mint);
+            padding: var(--space-lg) var(--space-xl);
+            margin-bottom: var(--space-lg);
+            border-radius: 0 12pt 12pt 0;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+        }
+        
+        .insight-box::before {
+            content: '';
+            position: absolute;
+            left: -1px;
+            top: 0;
+            bottom: 0;
+            width: 4pt;
+            background: var(--gradient-mint);
+            border-radius: 0 2pt 2pt 0;
+        }
+        
+        .insight-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+            font-size: var(--font-lg);
+            letter-spacing: -0.01em;
+        }
+        
+        .insight-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: var(--font-base);
+        }
+        
+        /* Premium Recommendations */
+        .recommendations {
+            margin-top: var(--space-2xl);
+        }
+        
+        .recommendation-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .recommendation-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: var(--space-lg);
+            padding: var(--space-md) var(--space-lg) var(--space-md) var(--space-2xl);
+            position: relative;
+            background: white;
+            border-radius: 12pt;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-soft);
+            line-height: 1.6;
+            color: var(--text-primary);  /* Ensure proper text color */
+            font-size: 11pt;              /* Readable font size */
+            font-weight: 400;             /* Regular weight for readability */
+        }
+        
+        .recommendation-item::before {
+            content: "✓";
+            position: absolute;
+            left: var(--space-md);
+            top: var(--space-md);
+            width: 24pt;
+            height: 24pt;
+            background: var(--gradient-mint);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-sm);
+            font-weight: 600;
+            box-shadow: var(--shadow-soft);
+        }
+        
+        /* Premium Footer */
+        .pdf-footer {
+            margin-top: var(--space-3xl);
+            padding-top: var(--space-xl);
+            border-top: 2pt solid var(--border-light);
+            text-align: center;
+            font-size: var(--font-xs);
+            color: var(--text-muted);
+            background: var(--neutral-10);
+            border-radius: 12pt 12pt 0 0;
+            padding: var(--space-xl);
+        }
+        
+        .page-number {
+            position: fixed;
+            bottom: 15pt;
+            right: 20pt;
+            font-size: var(--font-xs);
+            color: var(--text-muted);
+            background: white;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 6pt;
+            border: 1px solid var(--border-light);
+        }
+        
+        /* Premium Methodology Section */
+        .methodology {
+            background: white;
+            border: 1px solid var(--border-light);
+            padding: var(--space-xl);
+            border-radius: 16pt;
+            margin-top: var(--space-2xl);
+            font-size: var(--font-sm);
+            color: var(--text-secondary);
+            box-shadow: var(--shadow-soft);
+            line-height: 1.6;
+        }
+        
+        .methodology h3 {
+            font-size: var(--font-lg);
+            color: var(--text-primary);
+            margin-bottom: var(--space-md);
+            font-weight: 600;
+        }
+        
+        .methodology ul {
+            margin: var(--space-md) 0;
+            padding-left: var(--space-lg);
+        }
+        
+        .methodology li {
+            margin-bottom: var(--space-xs);
+            line-height: 1.6;
+        }
+        
+        /* Premium Property Details */
+        .property-details {
+            margin-top: var(--space-2xl);
+        }
+        
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 0;
+            margin-top: var(--space-lg);
+            border-radius: 12pt;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-soft);
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding: var(--space-md) var(--space-lg);
+            background: var(--neutral-10);
+            border-bottom: 1px solid var(--border-light);
+            font-size: var(--font-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.5pt;
+        }
+        
+        .detail-value {
+            padding: var(--space-md) var(--space-lg);
+            color: var(--text-primary);
+            background: white;
+            border-bottom: 1px solid var(--border-light);
+            font-weight: 500;
+        }
+        
+        .detail-label:last-of-type,
+        .detail-value:last-of-type {
+            border-bottom: none;
+        }
+        /* Print Optimization */
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            
+            .page-break {
+                page-break-after: always;
+                break-after: page;
+            }
+            
+            .avoid-break {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+        }
+        
+        /* High-Quality Image Rendering */
+        img {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+    </style>
+</head>
+<body>
+    <!-- Premium Cover Page -->
+    <div class="cover-page page-break">
+        <div class="logo-section">
+            <svg class="ooda-logo" viewBox="0 0 160 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Luxury OODA Logo with Glow Effect -->
+                <defs>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                        <feMerge> 
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/> 
+                        </feMerge>
+                    </filter>
+                    <linearGradient id="mintGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#4FE0A3;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#26D086;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <circle cx="25" cy="25" r="22" stroke="url(#mintGradient)" stroke-width="3" fill="none" filter="url(#glow)"/>
+                <circle cx="25" cy="25" r="12" fill="url(#mintGradient)" filter="url(#glow)"/>
+                <text x="60" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="28" font-weight="700" fill="white">OODA</text>
+            </svg>
+        </div>
+        
+        <div style="margin-top: 140pt;">
+            <h1 class="cover-title">2025 Annual Revenue</h1>
+            <h2 class="cover-subtitle">& Occupancy Projections</h2>
+            
+            <div class="property-info">
+                <div class="property-address">{{ property_address }}</div>
+                <div class="property-meta">
+                    <div class="meta-item">
+                        <span style="font-size: 12pt;">📍</span>
+                        <span>{{ property_city }}, {{ property_state }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span style="font-size: 12pt;">📅</span>
+                        <span>{{ analysis_date }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span style="font-size: 12pt;">🔍</span>
+                        <span>{{ analysis_id }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="powered-by">
+            POWERED BY AIRDNA • COMPREHENSIVE MARKET INTELLIGENCE
+        </div>
+    </div>
+    
+    <!-- Premium Executive Summary -->
+    <div class="executive-summary page-break">
+        <h2 class="section-title">Executive Summary</h2>
+        
+        <div class="key-metrics">
+            <div class="metric-card avoid-break">
+                <div class="metric-label">Annual Revenue Projection</div>
+                <div class="metric-value mint">${{ annual_revenue }}</div>
+                <div class="metric-change">{{ revenue_confidence }}% confidence level</div>
+            </div>
+            <div class="metric-card avoid-break">
+                <div class="metric-label">Average Occupancy Rate</div>
+                <div class="metric-value">{{ avg_occupancy }}%</div>
+                <div class="metric-change">{{ occupancy_trend }}</div>
+            </div>
+            <div class="metric-card avoid-break">
+                <div class="metric-label">Average Daily Rate</div>
+                <div class="metric-value">${{ avg_adr }}</div>
+                <div class="metric-change">Market avg: ${{ market_avg_adr }}</div>
+            </div>
+            <div class="metric-card avoid-break">
+                <div class="metric-label">Peak Season Performance</div>
+                <div class="metric-value">{{ peak_season }}</div>
+                <div class="metric-change">{{ peak_months }}</div>
+            </div>
+        </div>
+        
+        <div class="insights-section">
+            <div class="insight-box avoid-break">
+                <div class="insight-title">🎯 Market Position Analysis</div>
+                <div class="insight-text">{{ market_position_text }}</div>
+            </div>
+            <div class="insight-box avoid-break">
+                <div class="insight-title">💰 Revenue Optimization Opportunity</div>
+                <div class="insight-text">{{ revenue_opportunity_text }}</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Premium Monthly Projections -->
+    <div class="data-section page-break">
+        <h2 class="section-title">📊 Monthly Revenue & Occupancy Projections</h2>
+        
+        <div class="avoid-break">
+            <table class="data-table">
+                <thead style="background: var(--gradient-dark);">
+                    <tr>
+                        <th style="color: white; font-weight: 700; padding: 12pt; font-size: 12pt; text-align: center;">Month</th>
+                        <th style="color: white; font-weight: 700; padding: 12pt; font-size: 12pt; text-align: center;">Projected Revenue</th>
+                        <th style="color: white; font-weight: 700; padding: 12pt; font-size: 12pt; text-align: center;">Occupancy Rate</th>
+                        <th style="color: white; font-weight: 700; padding: 12pt; font-size: 12pt; text-align: center;">Average Daily Rate</th>
+                        <th style="color: white; font-weight: 700; padding: 12pt; font-size: 12pt; text-align: center;">Confidence Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for month in monthly_data %}
+                    <tr>
+                        <td style="font-weight: 700; color: var(--text-emphasis); font-size: 14pt; padding: 8pt;">{{ month.name }}</td>
+                        <td style="font-weight: 800; color: var(--text-emphasis); font-size: 14pt; padding: 8pt;">${{ month.revenue }}</td>
+                        <td style="font-weight: 700; color: var(--text-emphasis); font-size: 14pt; padding: 8pt;">{{ month.occupancy }}%</td>
+                        <td style="font-weight: 700; color: var(--text-emphasis); font-size: 14pt; padding: 8pt;">${{ month.adr }}</td>
+                        <td style="padding: 8pt;"><span class="confidence-{{ month.confidence_level }}" style="font-weight: 700; color: #D97706; background: #FEF3C7; padding: 4pt 8pt; border-radius: 4pt; border: 1px solid #F59E0B;">{{ month.confidence }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="chart-container avoid-break">
+            <h3 class="chart-title">📈 Revenue Performance Trend</h3>
+            <img src="{{ revenue_chart }}" alt="Revenue Trend Analysis" class="chart-image">
+        </div>
+    </div>
+    
+    <!-- Premium Seasonal Analysis -->
+    <div class="data-section page-break">
+        <h2 class="section-title">🌡️ Seasonal Performance Analysis</h2>
+        
+        <div class="seasonal-grid avoid-break">
+            {% for season in seasonal_data %}
+            <div class="season-card {% if season.is_peak %}peak{% endif %}">
+                <div class="season-name">{{ season.name }}</div>
+                <div class="season-revenue">${{ season.avg_revenue }}</div>
+                <div class="season-occupancy">{{ season.avg_occupancy }}% occupancy</div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="chart-container avoid-break">
+            <h3 class="chart-title">🗓️ Occupancy Performance Heatmap</h3>
+            <img src="{{ occupancy_heatmap }}" alt="Monthly Occupancy Performance Analysis" class="chart-image">
+        </div>
+        
+        <div class="insights-section">
+            <div class="insight-box avoid-break">
+                <div class="insight-title">🔍 Seasonal Pattern Insights</div>
+                <div class="insight-text">{{ seasonal_insights }}</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Premium Market Comparison -->
+    <div class="data-section page-break">
+        <h2 class="section-title">📈 Market Comparison & Competitive Positioning</h2>
+        
+        <div class="chart-container avoid-break">
+            <h3 class="chart-title">🏆 Performance vs Market Comparables</h3>
+            <img src="{{ comparison_chart }}" alt="Competitive Market Analysis" class="chart-image">
+        </div>
+        
+        <div class="avoid-break">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Performance Metric</th>
+                        <th>Your Property</th>
+                        <th>Market Average</th>
+                        <th>Top 25% Performers</th>
+                        <th>Market Position</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for metric in market_metrics %}
+                    <tr>
+                        <td class="metric-label">{{ metric.name }}</td>
+                        <td class="property-value">{{ metric.subject }}</td>
+                        <td class="metric-value">{{ metric.average }}</td>
+                        <td class="metric-value">{{ metric.top25 }}</td>
+                        <td class="{% if 'Above' in metric.position %}status-above-average{% elif 'Market' in metric.position %}status-market-level{% else %}status-below-average{% endif %}">{{ metric.position }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Premium Strategic Recommendations -->
+    <div class="data-section page-break">
+        <h2 class="section-title">🎯 Strategic Recommendations</h2>
+        
+        <div class="recommendations">
+            <h3 style="margin-bottom: var(--space-lg); color: var(--ooda-mint); font-size: var(--font-xl); font-weight: 600;">💰 Revenue Optimization Strategies</h3>
+            <ul class="recommendation-list">
+                {% for rec in revenue_recommendations %}
+                <li class="recommendation-item avoid-break">{{ rec }}</li>
+                {% endfor %}
+            </ul>
+            
+            <h3 style="margin: var(--space-2xl) 0 var(--space-lg); color: var(--ooda-mint); font-size: var(--font-xl); font-weight: 600;">🏠 Occupancy Enhancement Tactics</h3>
+            <ul class="recommendation-list">
+                {% for rec in occupancy_recommendations %}
+                <li class="recommendation-item avoid-break">{{ rec }}</li>
+                {% endfor %}
+            </ul>
+            
+            <h3 style="margin: var(--space-2xl) 0 var(--space-lg); color: #F59E0B; font-size: var(--font-xl); font-weight: 600;">⚠️ Risk Mitigation Considerations</h3>
+            <ul class="recommendation-list">
+                {% for risk in risk_factors %}
+                <li class="recommendation-item avoid-break" style="border-left: 4pt solid #F59E0B;">{{ risk }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Premium Property Details & Methodology -->
+    <div class="data-section">
+        <h2 class="section-title">🏡 Property Details & Analysis Methodology</h2>
+        
+        <div class="property-details avoid-break">
+            <h3 style="margin-bottom: var(--space-md); font-size: var(--font-xl); font-weight: 600;">Property Characteristics</h3>
+            <div class="details-grid">
+                <div class="detail-label">Property Type</div>
+                <div class="detail-value">{{ property_type }}</div>
+                <div class="detail-label">Bedrooms</div>
+                <div class="detail-value">{{ bedrooms }}</div>
+                <div class="detail-label">Bathrooms</div>
+                <div class="detail-value">{{ bathrooms }}</div>
+                <div class="detail-label">Maximum Guests</div>
+                <div class="detail-value">{{ max_guests }}</div>
+                <div class="detail-label">Listing Type</div>
+                <div class="detail-value">{{ listing_type }}</div>
+                <div class="detail-label">Analysis Generated</div>
+                <div class="detail-value">{{ full_analysis_date }}</div>
+            </div>
+        </div>
+        
+        <div class="methodology avoid-break">
+            <h3>🔬 Professional Analysis Methodology</h3>
+            <p>This comprehensive analysis utilizes OODA's proprietary algorithms in partnership with AirDNA's market intelligence platform to generate precise revenue and occupancy projections. Our methodology incorporates:</p>
+            <ul>
+                <li><strong>Comparable Properties Analysis:</strong> {{ num_comparables }} similar properties in your market</li>
+                <li><strong>Historical Trend Analysis:</strong> {{ months_analyzed }} months of performance data</li>
+                <li><strong>Seasonal Demand Modeling:</strong> Local market dynamics and seasonal patterns</li>
+                <li><strong>Statistical Validation:</strong> 2-sigma outlier detection for data accuracy</li>
+                <li><strong>Confidence Modeling:</strong> 90% confidence intervals for all projections</li>
+                <li><strong>Market Intelligence:</strong> Real-time data from major STR platforms</li>
+            </ul>
+            <p><strong>Data Sources:</strong> AirDNA Market Intelligence Platform aggregating performance data from Airbnb, Vrbo, and other major short-term rental platforms.</p>
+        </div>
+        
+        <div class="pdf-footer">
+            <p style="font-weight: 600; margin-bottom: var(--space-sm);">This report is proprietary and confidential. Generated by OODA Analytics for authorized users only.</p>
+            <p style="font-size: var(--font-xs);">© 2025 OODA Analytics. Powered by AirDNA. All rights reserved.</p>
+            <p style="font-size: var(--font-xs); margin-top: var(--space-xs);">For questions or support, contact: analytics@ooda.co | www.ooda.co</p>
+        </div>
+    </div>
+</body>
+</html>

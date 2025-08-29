@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Monthly Expectations Fix</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #1a1a19;
+            color: #e2e2e0;
+            padding: 20px;
+        }
+        button {
+            background: #26D086;
+            color: #0e0e0d;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        #result {
+            background: #0e0e0d;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success { color: #26D086; }
+        .error { color: #ff4444; }
+    </style>
+</head>
+<body>
+    <h1>Test Monthly Expectations Fix</h1>
+    <button onclick="testAPI()">Test API with Real Properties</button>
+    <button onclick="clearCache()">Clear LocalStorage & Test</button>
+    <div id="result"></div>
+
+    <script>
+        const result = document.getElementById('result');
+        
+        function log(msg, type = '') {
+            result.innerHTML += `<span class="${type}">${msg}</span>\n`;
+        }
+        
+        async function testAPI() {
+            result.innerHTML = '';
+            log('Testing API with comparable properties...\n');
+            
+            try {
+                // Use property IDs that might exist in the database
+                const testData = {
+                    property_ids: ['ab-1234567', 'ab-2345678', 'ab-3456789'],
+                    analysis_type: 'standard'
+                };
+                
+                const response = await fetch('http://localhost:5003/api/comps/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(testData)
+                });
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    log(`API Error: ${data.error}`, 'error');
+                    return;
+                }
+                
+                log(`✅ API Response Success: ${data.success}`, 'success');
+                log(`📊 Properties analyzed: ${data.property_count}`);
+                
+                // Check monthly expectations
+                if (data.monthly_expectations) {
+                    log('\n📈 Monthly Expectations Found!', 'success');
+                    
+                    const months = Object.keys(data.monthly_expectations);
+                    log(`   Months with data: ${months.length}`);
+                    
+                    // Check January data
+                    if (data.monthly_expectations['1']) {
+                        const jan = data.monthly_expectations['1'];
+                        log('\n🗓️ January Data:', 'success');
+                        log(`   Expected Revenue: $${jan.revenue.expected.toLocaleString()}`);
+                        log(`   Expected Occupancy: ${jan.occupancy.expected}%`);
+                        log(`   Properties Included: ${jan.data_quality.included_count}`);
+                        log(`   Properties Excluded: ${jan.data_quality.excluded_count}`);
+                        log(`   Confidence: ${jan.data_quality.confidence}`);
+                        
+                        if (jan.data_quality.excluded_properties.length > 0) {
+                            log('\n   Excluded Properties:');
+                            jan.data_quality.excluded_properties.forEach(ex => {
+                                log(`     - ${ex.property}: ${ex.reason}`);
+                            });
+                        }
+                    }
+                    
+                    // Check if all months have data
+                    let emptyMonths = 0;
+                    let totalIncluded = 0;
+                    
+                    for (const monthKey of months) {
+                        const monthData = data.monthly_expectations[monthKey];
+                        if (monthData.data_quality.included_count === 0) {
+                            emptyMonths++;
+                        }
+                        totalIncluded += monthData.data_quality.included_count;
+                    }
+                    
+                    log(`\n📊 Summary:`, 'success');
+                    log(`   Months with no data: ${emptyMonths}/12`);
+                    log(`   Total data points: ${totalIncluded}`);
+                    
+                    if (emptyMonths === 12) {
+                        log('\n⚠️ All months are empty - check if properties have monthly_projections', 'error');
+                        
+                        // Debug projections
+                        if (data.projections && data.projections.length > 0) {
+                            const firstProj = data.projections[0];
+                            log('\nFirst projection structure:');
+                            log(`  Has monthly_projections: ${firstProj.monthly_projections ? 'YES' : 'NO'}`);
+                            
+                            if (firstProj.monthly_projections) {
+                                const monthKeys = Object.keys(firstProj.monthly_projections);
+                                log(`  Monthly keys: ${monthKeys.slice(0, 5).join(', ')}...`);
+                                
+                                if (monthKeys.length > 0) {
+                                    const firstMonth = firstProj.monthly_projections[monthKeys[0]];
+                                    log(`  First month data: revenue=${firstMonth.revenue}, occupancy=${firstMonth.occupancy}`);
+                                }
+                            }
+                        }
+                    } else {
+                        log('\n✅ Monthly expectations are being populated correctly!', 'success');
+                    }
+                    
+                    // Show annual summary
+                    if (data.monthly_expectations_summary) {
+                        log('\n📈 Annual Summary:', 'success');
+                        log(`   Total Revenue: $${data.monthly_expectations_summary.total_revenue?.toLocaleString() || 0}`);
+                        log(`   Average Occupancy: ${data.monthly_expectations_summary.average_occupancy || 0}%`);
+                        log(`   Confidence: ${data.monthly_expectations_summary.overall_confidence || 'N/A'}`);
+                    }
+                    
+                } else {
+                    log('\n❌ No monthly_expectations in response!', 'error');
+                    log('Response keys: ' + Object.keys(data).join(', '));
+                }
+                
+            } catch (error) {
+                log(`Error: ${error.message}`, 'error');
+            }
+        }
+        
+        function clearCache() {
+            localStorage.clear();
+            log('✅ LocalStorage cleared\n', 'success');
+            testAPI();
+        }
+    </script>
+</body>
+</html>

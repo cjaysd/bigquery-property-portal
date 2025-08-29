@@ -1,0 +1,3484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AirDNA Property Analytics Dashboard</title>
+    <style>
+        :root {
+            /* OODA Design System - Dark Theme */
+            --ooda-dark: #1a1a19;
+            --ooda-darker: #0e0e0d;
+            --ooda-darkest: #050505;
+            --ooda-mint: #26D086;
+            --ooda-mint-light: #4FE0A3;
+            --ooda-mint-dark: #1BA66A;
+            --ooda-mint-glow: rgba(38, 208, 134, 0.4);
+            
+            /* Extended Dark Palette */
+            --neutral-900: #1a1a19;
+            --neutral-800: #262625;
+            --neutral-700: #333332;
+            --neutral-600: #404040;
+            --neutral-500: #595959;
+            --neutral-400: #737373;
+            --neutral-300: #8C8C8C;
+            --neutral-200: #A6A6A6;
+            --neutral-100: #BFBFBF;
+            --neutral-50: #D9D9D9;
+            
+            /* Semantic colors for dark theme */
+            --bg-primary: #1a1a19;
+            --bg-secondary: #262625;
+            --bg-tertiary: #333332;
+            --bg-elevated: rgba(38, 38, 37, 0.8);
+            --bg-glass: rgba(26, 26, 25, 0.7);
+            --text-primary: #E5E5E4;
+            --text-secondary: #A6A6A6;
+            --text-muted: #737373;
+            --text-accent: #26D086;
+            --border-light: rgba(255, 255, 255, 0.1);
+            --border-medium: rgba(255, 255, 255, 0.15);
+            --border-accent: rgba(38, 208, 134, 0.3);
+            
+            /* Data Visualization Colors */
+            --chart-primary: #26D086;
+            --chart-secondary: #3B82F6;
+            --chart-tertiary: #F59E0B;
+            --chart-quaternary: #EC4899;
+            --success-green: #26D086;
+            --warning-amber: #F59E0B;
+            --danger-red: #EF4444;
+            --info-blue: #3B82F6;
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(26, 26, 25, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-blur: 12px;
+            
+            /* Shadows for dark theme */
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.7);
+            --shadow-glow: 0 0 30px rgba(38, 208, 134, 0.3);
+            
+            /* Gradients */
+            --gradient-mint: linear-gradient(135deg, #26D086 0%, #1BA66A 100%);
+            --gradient-dark: linear-gradient(135deg, #333332 0%, #1a1a19 100%);
+            --gradient-glass: linear-gradient(135deg, rgba(38, 208, 134, 0.1) 0%, rgba(38, 208, 134, 0.05) 100%);
+            
+            /* Spacing */
+            --space-xs: 0.5rem;
+            --space-sm: 0.75rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --space-3xl: 4rem;
+            
+            /* Border Radius */
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+            --radius-full: 9999px;
+            
+            /* Transitions */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slower: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Scrollbar styling for dark theme */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--neutral-600);
+            border-radius: var(--radius-md);
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neutral-500);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Background gradient effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(38, 208, 134, 0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* Typography system - OODA Dark Theme */
+        .heading-xl { 
+            font-size: 3rem; 
+            font-weight: 800; 
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            background: var(--gradient-mint);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .heading-lg { 
+            font-size: 2.25rem; 
+            font-weight: 700; 
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+        .heading-md { 
+            font-size: 1.5rem; 
+            font-weight: 600; 
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+        }
+        .heading-sm { 
+            font-size: 1.125rem; 
+            font-weight: 600; 
+            line-height: 1.4;
+            color: var(--text-primary);
+        }
+        .body-lg { 
+            font-size: 1.125rem; 
+            line-height: 1.75; 
+            color: var(--text-secondary);
+        }
+        .body-md { 
+            font-size: 1rem; 
+            line-height: 1.6; 
+            color: var(--text-secondary);
+        }
+        .body-sm { 
+            font-size: 0.875rem; 
+            line-height: 1.5; 
+            color: var(--text-secondary);
+        }
+        .caption { 
+            font-size: 0.75rem; 
+            line-height: 1.5;
+            color: var(--text-muted); 
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px var(--ooda-mint-glow); }
+            50% { box-shadow: 0 0 30px var(--ooda-mint-glow), 0 0 40px var(--ooda-mint-glow); }
+        }
+        
+        /* Header - OODA Premium Glass Design */
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all var(--transition-base);
+            animation: slideIn var(--transition-slower) ease-out;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--ooda-mint-glow) 20%, 
+                var(--ooda-mint-glow) 80%, 
+                transparent);
+            opacity: 0.6;
+        }
+        
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: var(--space-lg) var(--space-xl);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+            animation: fadeIn var(--transition-slower) ease-out;
+        }
+        
+        .logo {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-mint);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            color: var(--ooda-dark);
+            font-weight: 800;
+            box-shadow: 0 4px 12px var(--ooda-mint-glow);
+            position: relative;
+            overflow: hidden;
+            transition: all var(--transition-base);
+        }
+        
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px var(--ooda-mint-glow);
+        }
+        
+        .logo:hover::before {
+            animation: shine 0.6s ease-out;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            margin: 0;
+            display: flex;
+            align-items: baseline;
+            gap: var(--space-sm);
+        }
+        
+        .header h1 span {
+            background: var(--gradient-mint);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            opacity: 0.8;
+        }
+        
+        /* Header Stats Bar */
+        .header-stats {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xl);
+            animation: fadeIn var(--transition-slower) ease-out 0.2s both;
+        }
+        
+        .header-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        
+        .header-stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+        
+        .header-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 2px;
+        }
+        
+        .header-stat.positive .header-stat-value {
+            color: var(--success-green);
+        }
+        
+        .header-stat.negative .header-stat-value {
+            color: var(--danger-red);
+        }
+        
+        /* Tabs - Modern Segmented Control */
+        .tabs {
+            background: transparent;
+            padding: var(--space-lg) 0 0;
+            margin-bottom: var(--space-xl);
+        }
+        
+        .tabs-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 var(--space-xl);
+        }
+        
+        .tab-buttons {
+            display: inline-flex;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-xl);
+            padding: 4px;
+            position: relative;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tab-button {
+            padding: var(--space-sm) var(--space-lg);
+            background: none;
+            border: none;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            cursor: pointer;
+            position: relative;
+            transition: all var(--transition-base);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            border-radius: calc(var(--radius-xl) - 4px);
+            z-index: 1;
+            white-space: nowrap;
+        }
+        
+        .tab-button:hover:not(.active) {
+            color: var(--text-primary);
+        }
+        
+        .tab-button.active {
+            color: var(--ooda-dark);
+            font-weight: 600;
+        }
+        
+        /* Sliding indicator */
+        .tab-indicator {
+            position: absolute;
+            height: calc(100% - 8px);
+            background: var(--gradient-mint);
+            border-radius: calc(var(--radius-xl) - 4px);
+            transition: all var(--transition-slow) cubic-bezier(0.4, 0, 0.2, 1);
+            top: 4px;
+            box-shadow: 0 2px 8px var(--ooda-mint-glow);
+        }
+        
+        .tab-icon {
+            font-size: 1.125rem;
+            transition: transform var(--transition-base);
+        }
+        
+        .tab-button.active .tab-icon {
+            transform: scale(1.1);
+        }
+        
+        /* Main Content Container */
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 var(--space-xl) var(--space-3xl);
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Search Section - Glassmorphic Card */
+        .search-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            padding: var(--space-2xl);
+            margin-bottom: var(--space-2xl);
+            border-radius: var(--radius-2xl);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            transition: all var(--transition-base);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn var(--transition-slower) ease-out;
+        }
+        
+        .search-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-glass);
+            opacity: 0;
+            transition: opacity var(--transition-base);
+        }
+        
+        .search-section:hover::before {
+            opacity: 1;
+        }
+        
+        .search-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 40px var(--ooda-mint-glow);
+            border-color: var(--border-accent);
+        }
+        
+        .search-header {
+            margin-bottom: var(--space-xl);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .search-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+            letter-spacing: -0.01em;
+        }
+        
+        .search-header p {
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
+            opacity: 0.9;
+        }
+        
+        .search-grid {
+            display: grid;
+            grid-template-columns: 1fr 180px 180px 160px;
+            gap: var(--space-lg);
+            align-items: end;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @media (max-width: 1024px) {
+            .search-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .form-group label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.9;
+        }
+        
+        .form-group label .label-icon {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        .form-group input,
+        .form-group select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            font-size: 0.9375rem;
+            font-family: inherit;
+            transition: all var(--transition-base);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            height: 48px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .form-group input:hover,
+        .form-group select:hover {
+            border-color: var(--border-medium);
+            background: var(--bg-tertiary);
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--ooda-mint);
+            box-shadow: 0 0 0 3px var(--ooda-mint-glow), inset 0 1px 2px rgba(0, 0, 0, 0.2);
+            background: var(--bg-tertiary);
+        }
+        
+        .form-group input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+        
+        /* Custom select styling */
+        .form-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23A6A6A6' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+        
+        /* Buttons - OODA Premium Design */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+            font-family: inherit;
+            height: 48px;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-mint);
+            color: var(--ooda-dark);
+            box-shadow: 0 4px 12px var(--ooda-mint-glow);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity var(--transition-base);
+            z-index: -1;
+        }
+        
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--ooda-mint-glow), 0 0 30px var(--ooda-mint-glow);
+        }
+        
+        .btn-primary:hover::before {
+            opacity: 1;
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .btn-primary:active::after {
+            width: 300px;
+            height: 300px;
+            opacity: 0;
+            transition: width 0.6s, height 0.6s, opacity 0.6s;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+            background: var(--neutral-600);
+        }
+        
+        /* Results Stats - Premium Analytics Cards */
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-2xl);
+            animation: fadeIn var(--transition-slower) ease-out 0.3s both;
+        }
+        
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            padding: var(--space-xl);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--glass-border);
+            text-align: center;
+            transition: all var(--transition-base);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-mint);
+            transform: scaleX(0);
+            transition: transform var(--transition-base);
+            transform-origin: left;
+        }
+        
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, var(--ooda-mint-glow) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity var(--transition-base);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 20px var(--ooda-mint-glow);
+            border-color: var(--border-accent);
+        }
+        
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .stat-card:hover::after {
+            opacity: 0.1;
+        }
+        
+        .stat-value {
+            font-size: 2.25rem;
+            font-weight: 800;
+            background: var(--gradient-mint);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+            margin-bottom: var(--space-xs);
+            letter-spacing: -0.02em;
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+        
+        .stat-trend {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            margin-top: var(--space-sm);
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .stat-trend.positive {
+            color: var(--success-green);
+        }
+        
+        .stat-trend.negative {
+            color: var(--danger-red);
+        }
+        
+        /* Property Grid - Premium Analytics Grid */
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+            gap: var(--space-xl);
+            margin-bottom: var(--space-3xl);
+            animation: fadeIn var(--transition-slower) ease-out 0.4s both;
+        }
+        
+        @media (max-width: 1024px) {
+            .property-grid {
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .property-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .property-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+            transition: all var(--transition-slow) cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            will-change: transform;
+        }
+        
+        .property-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(38, 208, 134, 0.05) 0%, 
+                transparent 50%,
+                rgba(59, 130, 246, 0.05) 100%);
+            opacity: 0;
+            transition: opacity var(--transition-base);
+            z-index: 1;
+        }
+        
+        .property-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4), 0 0 32px var(--ooda-mint-glow);
+            border-color: var(--border-accent);
+        }
+        
+        .property-card:hover::before {
+            opacity: 1;
+        }
+        
+        .property-card:hover .property-image img {
+            transform: scale(1.1);
+        }
+        
+        .property-card:hover .revenue-sparkline {
+            opacity: 1;
+        }
+        
+        .property-rank {
+            position: absolute;
+            top: var(--space-md);
+            left: var(--space-md);
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            padding: 8px 16px;
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--ooda-mint);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            border: 1px solid var(--border-accent);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .property-rank::before {
+            content: '🏆';
+            font-size: 1rem;
+        }
+        
+        .property-image {
+            width: 100%;
+            height: 260px;
+            overflow: hidden;
+            position: relative;
+            background: var(--bg-secondary);
+        }
+        
+        .property-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(to top, rgba(26, 26, 25, 0.8) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+        
+        .property-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform var(--transition-slower) ease;
+        }
+        
+        .property-image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neutral-600);
+            font-size: 80px;
+            opacity: 0.5;
+        }
+        
+        /* Revenue Sparkline Overlay */
+        .revenue-sparkline {
+            position: absolute;
+            bottom: var(--space-md);
+            left: var(--space-md);
+            right: var(--space-md);
+            height: 60px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border-radius: var(--radius-md);
+            padding: var(--space-sm);
+            border: 1px solid var(--glass-border);
+            opacity: 0;
+            transition: opacity var(--transition-base);
+            z-index: 3;
+        }
+        
+        .sparkline-canvas {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .card-content {
+            padding: var(--space-xl);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .card-header {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+        }
+        
+        .card-location {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            opacity: 0.9;
+        }
+        
+        .distance-badge {
+            background: var(--gradient-glass);
+            color: var(--ooda-mint);
+            padding: 6px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: auto;
+            border: 1px solid var(--border-accent);
+            backdrop-filter: blur(4px);
+        }
+        
+        .card-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid var(--border-light);
+            position: relative;
+        }
+        
+        .metric {
+            text-align: center;
+            position: relative;
+        }
+        
+        .metric::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 20%;
+            bottom: 20%;
+            width: 1px;
+            background: var(--border-light);
+            opacity: 0.5;
+        }
+        
+        .metric:last-child::after {
+            display: none;
+        }
+        
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .metric-value.revenue {
+            background: linear-gradient(135deg, var(--success-green) 0%, var(--ooda-mint-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .metric-value.occupancy {
+            background: linear-gradient(135deg, var(--info-blue) 0%, var(--chart-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .metric-value.adr {
+            background: linear-gradient(135deg, var(--warning-amber) 0%, var(--chart-tertiary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+        
+        /* Metric Progress Bars */
+        .metric-progress {
+            width: 100%;
+            height: 3px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-full);
+            margin-top: var(--space-xs);
+            overflow: hidden;
+        }
+        
+        .metric-progress-bar {
+            height: 100%;
+            border-radius: var(--radius-full);
+            transition: width var(--transition-slower) ease-out;
+        }
+        
+        .metric-progress-bar.revenue {
+            background: var(--gradient-mint);
+        }
+        
+        .metric-progress-bar.occupancy {
+            background: linear-gradient(90deg, var(--info-blue) 0%, var(--chart-secondary) 100%);
+        }
+        
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+        
+        .property-details {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            opacity: 0.9;
+        }
+        
+        .property-badges {
+            display: flex;
+            gap: var(--space-xs);
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        
+        .badge {
+            padding: 6px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid transparent;
+            transition: all var(--transition-base);
+        }
+        
+        .badge.superhost {
+            background: linear-gradient(135deg, #FFE168 0%, #FFD93D 100%);
+            color: var(--ooda-dark);
+            box-shadow: 0 2px 8px rgba(255, 217, 61, 0.3);
+        }
+        
+        .badge.licensed {
+            background: var(--gradient-glass);
+            color: var(--success-green);
+            border-color: var(--border-accent);
+            backdrop-filter: blur(4px);
+        }
+        
+        .performance-badge {
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all var(--transition-base);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .performance-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+        
+        .property-card:hover .performance-badge::before {
+            left: 100%;
+        }
+        
+        .performance-badge.top-10 {
+            background: var(--gradient-mint);
+            color: var(--ooda-dark);
+            box-shadow: 0 2px 8px var(--ooda-mint-glow);
+        }
+        
+        .performance-badge.top-25 {
+            background: linear-gradient(135deg, var(--warning-amber) 0%, var(--chart-tertiary) 100%);
+            color: var(--ooda-dark);
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        }
+        
+        .performance-badge.above-average {
+            background: var(--gradient-glass);
+            color: var(--info-blue);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            backdrop-filter: blur(4px);
+        }
+        
+        .performance-badge.average {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-light);
+        }
+        
+        /* Loading State - Premium Animated Loader */
+        .loading {
+            text-align: center;
+            padding: var(--space-3xl);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            position: relative;
+            margin: 0 auto var(--space-lg);
+        }
+        
+        .spinner::before,
+        .spinner::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 3px solid transparent;
+        }
+        
+        .spinner::before {
+            border-top-color: var(--ooda-mint);
+            animation: spin 1s linear infinite;
+        }
+        
+        .spinner::after {
+            border-right-color: var(--ooda-mint-light);
+            animation: spin 1.5s linear infinite reverse;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading p {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+            opacity: 0.9;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
+        /* Empty State - Glass Card Design */
+        .empty-state {
+            text-align: center;
+            padding: var(--space-3xl);
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border-radius: var(--radius-2xl);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            margin: var(--space-2xl) auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .empty-state::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--ooda-mint-glow) 0%, transparent 70%);
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+        
+        .empty-state-icon {
+            font-size: 80px;
+            margin-bottom: var(--space-lg);
+            opacity: 0.4;
+            filter: grayscale(50%);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-sm);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .empty-state p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Error State - Premium Alert Design */
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-red);
+            padding: var(--space-lg);
+            border-radius: var(--radius-lg);
+            margin: var(--space-lg) 0;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            font-size: 0.9375rem;
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            position: relative;
+            overflow: hidden;
+            animation: slideIn var(--transition-slow) ease-out;
+        }
+        
+        .error-message::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--danger-red);
+        }
+        
+        .error-icon {
+            font-size: 1.5rem;
+            margin-left: var(--space-sm);
+        }
+        
+        /* Premium Range Slider - OODA Design */
+        .slider-container {
+            position: relative;
+            padding: var(--space-sm) 0;
+        }
+        
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: var(--space-sm);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-full);
+            outline: none;
+            cursor: pointer;
+            margin-top: var(--space-sm);
+            position: relative;
+            overflow: visible;
+        }
+        
+        input[type="range"]::-webkit-slider-track {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-full);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: var(--gradient-mint);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 0 0 2px var(--bg-primary);
+            position: relative;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), 0 0 20px var(--ooda-mint-glow), 0 0 0 2px var(--bg-primary);
+        }
+        
+        input[type="range"]::-webkit-slider-thumb:active {
+            transform: scale(1.05);
+        }
+        
+        input[type="range"]::-moz-range-track {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-full);
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: var(--gradient-mint);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 0 0 2px var(--bg-primary);
+            border: none;
+        }
+        
+        input[type="range"]::-moz-range-thumb:hover {
+            transform: scale(1.15);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), 0 0 20px var(--ooda-mint-glow), 0 0 0 2px var(--bg-primary);
+        }
+        
+        /* Checkbox styling - Toggle Switch Design */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            appearance: none;
+            width: 48px;
+            height: 24px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-full);
+            position: relative;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .checkbox-container input[type="checkbox"]::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            background: var(--neutral-400);
+            transition: all var(--transition-base);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .checkbox-container input[type="checkbox"]:checked {
+            background: var(--gradient-mint);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 12px var(--ooda-mint-glow);
+        }
+        
+        .checkbox-container input[type="checkbox"]:checked::before {
+            transform: translateX(24px);
+            background: white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .checkbox-container label {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        /* Modal Styles - Premium Glass Design */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+            padding: var(--space-xl);
+            animation: fadeIn var(--transition-base) ease-out;
+        }
+        
+        .modal-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            width: 90%;
+            max-width: 1200px;
+            max-height: 90vh;
+            border-radius: var(--radius-2xl);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px var(--ooda-mint-glow);
+            display: flex;
+            flex-direction: column;
+            animation: slideIn var(--transition-slow) ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--ooda-mint), transparent);
+            opacity: 0.6;
+        }
+        
+        .modal-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            color: var(--primary-color);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            line-height: 1;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .modal-close:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+        
+        .modal-body {
+            padding: 30px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        /* Property Detail Sections */
+        .property-hero {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .property-image-section img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .property-info-section h3 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        
+        .property-location {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        
+        .quick-stat {
+            background: var(--bg-secondary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .quick-stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .quick-stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+        
+        .tabs-container {
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .tab-nav {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .tab-nav-item {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab-nav-item.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .tab-content-item {
+            display: none;
+        }
+        
+        .tab-content-item.active {
+            display: block;
+        }
+        
+        .chart-container {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .chart-container h4 {
+            margin: 0 0 15px 0;
+            color: var(--text-primary);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .data-table th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .expandable-section {
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .expandable-header {
+            background: var(--bg-secondary);
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .expandable-content {
+            padding: 20px;
+            display: none;
+        }
+        
+        .expandable-content.expanded {
+            display: block;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.25rem;
+            }
+            
+            .header-stats {
+                display: none;
+            }
+            
+            .property-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .results-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .search-grid {
+                gap: var(--space-md);
+            }
+        }
+        
+        /* Reduced Motion Support */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+            
+            .property-card:hover {
+                transform: none !important;
+            }
+            
+            .btn:hover {
+                transform: none !important;
+            }
+        }
+
+        /* ==============================================================================
+           COMPARABLE PROPERTIES SELECTION - SAFE ADDITION
+           ============================================================================== */
+        
+        /* Selection overlay on property cards */
+        .comp-selection-overlay {
+            position: absolute;
+            top: var(--space-sm);
+            right: var(--space-sm);
+            z-index: 100; /* Increased from 10 for better layering */
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+            pointer-events: none; /* Disable by default */
+        }
+
+        .property-card:hover .comp-selection-overlay,
+        .property-card.selected .comp-selection-overlay {
+            opacity: 1;
+            pointer-events: auto; /* Enable when visible */
+        }
+
+        .property-card.selected {
+            border-color: var(--ooda-mint);
+            box-shadow: 0 0 20px var(--ooda-mint-glow);
+            background: linear-gradient(135deg, 
+                        var(--glass-bg), 
+                        rgba(38, 208, 134, 0.05));
+        }
+
+        .selection-checkbox {
+            position: relative;
+            pointer-events: auto; /* Always clickable */
+        }
+
+        .selection-checkbox input[type="checkbox"] {
+            display: none;
+        }
+
+        .checkbox-custom {
+            width: 24px;
+            height: 24px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-base);
+            cursor: pointer;
+        }
+
+        .selection-checkbox input[type="checkbox"]:checked + .checkbox-label .checkbox-custom {
+            background: var(--gradient-mint);
+            border-color: var(--ooda-mint);
+            transform: scale(1.1);
+        }
+
+        .checkbox-icon {
+            width: 14px;
+            height: 14px;
+            stroke: white;
+            stroke-width: 2;
+            fill: none;
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+
+        .selection-checkbox input[type="checkbox"]:checked + .checkbox-label .checkbox-icon {
+            opacity: 1;
+        }
+
+        .selection-checkbox input[type="checkbox"]:disabled + .checkbox-label .checkbox-custom {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Floating selection panel */
+        .selection-panel {
+            position: fixed;
+            bottom: var(--space-xl);
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-lg) var(--space-xl);
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+            opacity: 0;
+            transition: all var(--transition-slow);
+            z-index: 1000;
+            min-width: 360px;
+        }
+
+        .selection-panel.active {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .selection-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .selection-counter {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .selection-counter.active {
+            color: var(--ooda-mint);
+        }
+
+        .clear-selections {
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-size: 0.9em;
+        }
+
+        .clear-selections:hover {
+            border-color: var(--border-accent);
+            color: var(--text-primary);
+        }
+
+        .analyze-button {
+            background: var(--gradient-mint);
+            color: white;
+            border: none;
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            box-shadow: 0 4px 12px rgba(38, 208, 134, 0.3);
+            font-size: 1em;
+        }
+
+        .analyze-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(38, 208, 134, 0.4);
+        }
+
+        .analyze-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .analyze-button.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .analyze-button.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile responsive adjustments */
+        @media (max-width: 768px) {
+            .selection-panel {
+                min-width: 320px;
+                padding: var(--space-md) var(--space-lg);
+            }
+            
+            .selection-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-sm);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="header-brand">
+                <div class="logo">A</div>
+                <div>
+                    <h1>AirDNA <span>Analytics</span></h1>
+                    <div class="header-subtitle">Premium Property Intelligence Platform</div>
+                </div>
+            </div>
+            <div class="header-stats">
+                <div class="header-stat positive">
+                    <div class="header-stat-value">$2.4M</div>
+                    <div class="header-stat-label">Total Revenue</div>
+                </div>
+                <div class="header-stat">
+                    <div class="header-stat-value">1,247</div>
+                    <div class="header-stat-label">Properties</div>
+                </div>
+                <div class="header-stat positive">
+                    <div class="header-stat-value">+12.5%</div>
+                    <div class="header-stat-label">YoY Growth</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <nav class="tabs">
+        <div class="tabs-container">
+            <div class="tab-buttons">
+                <div class="tab-indicator" id="tab-indicator"></div>
+                <button class="tab-button active" onclick="switchTab('distance')" id="distance-tab-btn">
+                    <span class="tab-icon">📍</span>
+                    Find by Distance
+                </button>
+                <button class="tab-button" onclick="switchTab('revenue')" id="revenue-tab-btn">
+                    <span class="tab-icon">💰</span>
+                    Top Revenue Performers
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="main-container">
+        <!-- Distance Search Tab -->
+        <div id="distance-tab" class="tab-content">
+            <div class="search-section">
+                <div class="search-header">
+                    <h2>Find Properties by Distance</h2>
+                    <p>Search for top-performing properties within a specific radius</p>
+                </div>
+                <form id="distance-search-form" class="search-grid">
+                    <div class="form-group">
+                        <label><span class="label-icon">📍</span> Search Location</label>
+                        <input type="text" id="distance-address" placeholder="Enter address or city" value="San Diego, CA">
+                    </div>
+                    <div class="form-group">
+                        <label><span class="label-icon">🛏️</span> Min Bedrooms</label>
+                        <select id="distance-min-beds">
+                            <option value="0">Any</option>
+                            <option value="1">1</option>
+                            <option value="2" selected>2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5+</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><span class="label-icon">🛏️</span> Max Bedrooms</label>
+                        <select id="distance-max-beds">
+                            <option value="10">Any</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4" selected>4</option>
+                            <option value="5">5</option>
+                            <option value="6">6+</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="distance-search-btn">
+                        <span>🔍</span> Search Properties
+                    </button>
+                </form>
+            </div>
+            
+            <div id="distance-results">
+                <!-- Results will be inserted here -->
+            </div>
+        </div>
+        
+        <!-- Revenue Tab -->
+        <div id="revenue-tab" class="tab-content" style="display: none;">
+            <div class="search-section">
+                <div class="search-header">
+                    <h2>Top 100 Revenue Performers</h2>
+                    <p>Discover the highest-earning properties in your market</p>
+                </div>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="enable-distance-filter" onchange="toggleDistanceFilter()">
+                    <label for="enable-distance-filter">Enable distance filter</label>
+                </div>
+                <form id="revenue-search-form" class="search-grid">
+                    <div class="form-group">
+                        <label><span class="label-icon">📍</span> Location Filter</label>
+                        <input type="text" id="revenue-location" placeholder="City or State (optional)">
+                    </div>
+                    <div class="form-group" id="distance-location-group" style="display: none;">
+                        <label><span class="label-icon">📍</span> Distance From</label>
+                        <input type="text" id="revenue-distance-location" placeholder="Address or city">
+                    </div>
+                    <div class="form-group" id="distance-radius-group" style="display: none;">
+                        <label><span class="label-icon">📏</span> Max Distance: <span id="revenue-distance-value">25</span> miles</label>
+                        <div class="slider-container">
+                            <input type="range" id="revenue-max-distance" min="1" max="100" value="25" step="1" 
+                                   oninput="document.getElementById('revenue-distance-value').textContent = this.value">
+                            <div class="slider-labels">
+                                <span>1 mi</span>
+                                <span>50 mi</span>
+                                <span>100 mi</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label><span class="label-icon">🛏️</span> Min Bedrooms</label>
+                        <select id="revenue-min-beds">
+                            <option value="0">Any</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5+</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><span class="label-icon">🛏️</span> Max Bedrooms</label>
+                        <select id="revenue-max-beds">
+                            <option value="10">Any</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6+</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="revenue-search-btn">
+                        <span>💰</span> Show Top 100
+                    </button>
+                </form>
+            </div>
+            
+            <div id="revenue-results">
+                <!-- Results will be inserted here -->
+            </div>
+        </div>
+    </main>
+    
+    <!-- Property Detail Modal -->
+    <div id="property-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Property Details</h2>
+                <button class="modal-close" onclick="closePropertyModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading property details...</p>
+                </div>
+                <div id="modal-content" style="display: none;">
+                    <!-- Content will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='localStorage_management.js') }}"></script>
+    <script>
+        // Storage manager is already initialized from localStorage_management.js
+        // Use window.storageManager to access it
+        
+        // API base URL
+        const API_BASE = window.location.origin;
+        
+        // State management
+        let currentTab = 'distance';
+        let searchResults = {
+            distance: null,
+            revenue: null
+        };
+        
+        // ================== STATE MANAGEMENT FUNCTIONS ==================
+        
+        // Save complete dashboard state to sessionStorage
+        function saveDashboardState() {
+            try {
+                const state = {
+                    filters: getCurrentFilters(),
+                    tab: currentTab,
+                    scrollPosition: window.scrollY,
+                    selectedComps: selectedComps,
+                    timestamp: Date.now(),
+                    // Store current search results if they exist
+                    hasResults: document.querySelectorAll('.property-card').length > 0
+                };
+                
+                sessionStorage.setItem('dashboard_state', JSON.stringify(state));
+                console.log('Dashboard state saved');
+            } catch (error) {
+                console.error('Failed to save dashboard state:', error);
+            }
+        }
+        
+        // Get current filter values
+        function getCurrentFilters() {
+            const filters = {
+                tab: currentTab,
+                timestamp: Date.now()
+            };
+            
+            if (currentTab === 'distance') {
+                filters.address = document.getElementById('distance-address')?.value || '';
+                filters.distanceMinBeds = document.getElementById('distance-min-beds')?.value || '1';
+                filters.distanceMaxBeds = document.getElementById('distance-max-beds')?.value || '10';
+            } else if (currentTab === 'revenue') {
+                filters.location = document.getElementById('revenue-location')?.value || '';
+                filters.revenueMinBeds = document.getElementById('revenue-min-beds')?.value || '1';
+                filters.revenueMaxBeds = document.getElementById('revenue-max-beds')?.value || '10';
+                filters.enableDistance = document.getElementById('enable-distance-filter')?.checked || false;
+                filters.distanceLocation = document.getElementById('revenue-distance-location')?.value || '';
+                filters.maxDistance = document.getElementById('revenue-max-distance')?.value || '25';
+            }
+            
+            return filters;
+        }
+        
+        // Restore dashboard state from sessionStorage
+        function restoreDashboardState() {
+            try {
+                const stateJson = sessionStorage.getItem('dashboard_state');
+                if (!stateJson) return;
+                
+                const state = JSON.parse(stateJson);
+                
+                // Check if state is recent (less than 30 minutes old)
+                if (Date.now() - state.timestamp > 1800000) {
+                    console.log('Dashboard state is stale, skipping restoration');
+                    sessionStorage.removeItem('dashboard_state');
+                    return;
+                }
+                
+                // Restore filters if they exist
+                if (state.filters) {
+                    restoreFiltersFromData(state.filters);
+                }
+                
+                // Restore scroll position after a delay
+                if (state.scrollPosition) {
+                    setTimeout(() => {
+                        window.scrollTo(0, state.scrollPosition);
+                    }, 500);
+                }
+                
+                // Restore selected comparisons
+                if (state.selectedComps && Array.isArray(state.selectedComps)) {
+                    selectedComps = state.selectedComps;
+                    updateSelectionUI();
+                }
+                
+                console.log('Dashboard state restored');
+            } catch (error) {
+                console.error('Failed to restore dashboard state:', error);
+                sessionStorage.removeItem('dashboard_state');
+            }
+        }
+        
+        // Restore filters from data object
+        function restoreFiltersFromData(decodedFilters) {
+            console.log('=== FILTER RESTORATION START ===');
+            console.log('Restoring filters:', decodedFilters);
+            
+            try {
+                // Switch tab immediately
+                if (decodedFilters.tab) {
+                    console.log('Switching to tab:', decodedFilters.tab);
+                    switchTab(decodedFilters.tab);
+                }
+                
+                // Use requestAnimationFrame for DOM sync
+                requestAnimationFrame(() => {
+                    if (decodedFilters.tab === 'distance') {
+                        // Set all distance filters synchronously
+                        if (decodedFilters.address) {
+                            document.getElementById('distance-address').value = decodedFilters.address;
+                        }
+                        if (decodedFilters.distanceMinBeds) {
+                            document.getElementById('distance-min-beds').value = decodedFilters.distanceMinBeds;
+                        }
+                        if (decodedFilters.distanceMaxBeds) {
+                            document.getElementById('distance-max-beds').value = decodedFilters.distanceMaxBeds;
+                        }
+                        console.log('Distance filters restored');
+                        
+                        // Trigger search after next frame
+                        requestAnimationFrame(() => {
+                            console.log('Triggering distance search...');
+                            triggerSearch('distance');
+                        });
+                        
+                    } else if (decodedFilters.tab === 'revenue') {
+                        // Set all revenue filters synchronously
+                        if (decodedFilters.location) {
+                            document.getElementById('revenue-location').value = decodedFilters.location;
+                        }
+                        if (decodedFilters.revenueMinBeds) {
+                            document.getElementById('revenue-min-beds').value = decodedFilters.revenueMinBeds;
+                        }
+                        if (decodedFilters.revenueMaxBeds) {
+                            document.getElementById('revenue-max-beds').value = decodedFilters.revenueMaxBeds;
+                        }
+                        if (decodedFilters.enableDistance !== undefined) {
+                            document.getElementById('enable-distance-filter').checked = decodedFilters.enableDistance;
+                        }
+                        if (decodedFilters.distanceLocation) {
+                            document.getElementById('revenue-distance-location').value = decodedFilters.distanceLocation;
+                        }
+                        if (decodedFilters.maxDistance) {
+                            document.getElementById('revenue-max-distance').value = decodedFilters.maxDistance;
+                            document.getElementById('revenue-distance-value').textContent = decodedFilters.maxDistance;
+                        }
+                        
+                        // Show/hide distance filter section based on checkbox
+                        document.getElementById('revenue-distance-filter').style.display = 
+                            decodedFilters.enableDistance ? 'block' : 'none';
+                        
+                        console.log('Revenue filters restored');
+                        
+                        // Trigger search after next frame
+                        requestAnimationFrame(() => {
+                            console.log('Triggering revenue search...');
+                            triggerSearch('revenue');
+                        });
+                    }
+                });
+                
+                console.log('=== FILTER RESTORATION COMPLETE ===');
+            } catch (error) {
+                console.error('Error in restoreFiltersFromData:', error);
+            }
+        }
+        
+        // Flag to prevent duplicate submissions with timeout tracking
+        let isSearching = false;
+        let searchTimeouts = new Set(); // Track active timeouts
+        
+        // Fixed search triggering with improved retry mechanism
+        function triggerSearch(tabName, retryCount = 0) {
+            // Prevent duplicate submissions
+            if (isSearching) {
+                console.log('Search already in progress, skipping...');
+                return;
+            }
+            
+            console.log(`Triggering search for ${tabName} tab (attempt ${retryCount + 1})`);
+            
+            const maxRetries = 2; // Reduced max retries
+            const form = document.getElementById(`${tabName}-search-form`);
+            
+            if (!form) {
+                console.error(`Form ${tabName}-search-form not found`);
+                return;
+            }
+            
+            // Improved tab visibility check
+            const tabContent = form.closest('.tab-content');
+            const isTabVisible = !tabContent || tabContent.style.display !== 'none';
+            
+            if (!isTabVisible) {
+                if (retryCount < maxRetries) {
+                    // Shorter delays and safer timeout tracking
+                    const delay = 300 + (retryCount * 200); // 300ms, 500ms
+                    console.log(`Tab not visible, retrying in ${delay}ms... (${retryCount + 1}/${maxRetries})`);
+                    
+                    const timeoutId = setTimeout(() => {
+                        searchTimeouts.delete(timeoutId);
+                        triggerSearch(tabName, retryCount + 1);
+                    }, delay);
+                    searchTimeouts.add(timeoutId);
+                } else {
+                    console.warn(`Tab not visible after ${maxRetries} attempts, showing manual trigger`);
+                    showSearchRestoreNotification(tabName);
+                }
+                return;
+            }
+            
+            // Set flag to prevent duplicates with longer timeout
+            isSearching = true;
+            const resetTimeout = setTimeout(() => { 
+                isSearching = false; 
+                console.log('Search flag reset after timeout');
+            }, 5000); // Increased to 5 seconds
+            
+            // Try submission methods in order of preference
+            try {
+                // Method 1: Try requestSubmit (best method)
+                if (typeof form.requestSubmit === 'function') {
+                    console.log('Using requestSubmit method');
+                    form.requestSubmit();
+                } 
+                // Method 2: Use stored handler reference (fallback)
+                else if (form._handler) {
+                    console.log('Using direct handler call');
+                    const event = new Event('submit', { bubbles: true, cancelable: true });
+                    // Prevent default to avoid page reload
+                    event.preventDefault = function() {};
+                    form._handler(event);
+                }
+                // Method 3: Dispatch event (last resort)
+                else {
+                    console.log('Using dispatchEvent method');
+                    const event = new Event('submit', { bubbles: true, cancelable: true });
+                    form.dispatchEvent(event);
+                }
+                
+                console.log(`✅ ${tabName} search triggered successfully`);
+                
+            } catch (error) {
+                console.error(`Error triggering search:`, error);
+                clearTimeout(resetTimeout);
+                isSearching = false;
+                
+                // More conservative retry - only retry on specific errors
+                if (retryCount < maxRetries && error.name !== 'TypeError') {
+                    const delay = 500 + (retryCount * 300);
+                    console.log(`Error occurred, retrying in ${delay}ms... (${retryCount + 1}/${maxRetries})`);
+                    
+                    const timeoutId = setTimeout(() => {
+                        searchTimeouts.delete(timeoutId);
+                        triggerSearch(tabName, retryCount + 1);
+                    }, delay);
+                    searchTimeouts.add(timeoutId);
+                } else {
+                    console.error(`Failed to trigger search after ${retryCount + 1} attempts`);
+                    showSearchRestoreNotification(tabName);
+                }
+            }
+        }
+        
+        // Clear all search timeouts (utility function)
+        function clearAllSearchTimeouts() {
+            searchTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
+            searchTimeouts.clear();
+            isSearching = false;
+            console.log('All search timeouts cleared');
+        }
+        
+        // User notification for manual trigger fallback
+        function showSearchRestoreNotification(tabName) {
+            const notification = document.createElement('div');
+            notification.className = 'restore-notification';
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #26d086, #1fa06a);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(38, 208, 134, 0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span>✓ Filters restored</span>
+                    <button onclick="triggerSearch('${tabName}'); this.parentElement.parentElement.remove();" 
+                            style="background: white; color: #26d086; border: none; padding: 5px 10px; 
+                                   border-radius: 4px; cursor: pointer; font-weight: 600;">
+                        Search Now
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+        
+        // ================== END STATE MANAGEMENT ==================
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // PHASE 1: CRITICAL - Attach event listeners FIRST
+            const distanceForm = document.getElementById('distance-search-form');
+            const revenueForm = document.getElementById('revenue-search-form');
+            
+            if (distanceForm) {
+                distanceForm.addEventListener('submit', handleDistanceSearch);
+                distanceForm._handler = handleDistanceSearch; // Store reference for direct call
+                console.log('Distance form handler attached');
+            }
+            if (revenueForm) {
+                revenueForm.addEventListener('submit', handleRevenueSearch);
+                revenueForm._handler = handleRevenueSearch; // Store reference for direct call
+                console.log('Revenue form handler attached');
+            }
+            
+            // PHASE 2: UI initialization
+            updateTabIndicator();
+            
+            // PHASE 3: State restoration (can now trigger search successfully)
+            // Check for returned filters or restore from session
+            const urlParams = new URLSearchParams(window.location.search);
+            const filters = urlParams.get('filters');
+            
+            if (filters) {
+                // Use requestAnimationFrame for better timing
+                requestAnimationFrame(() => {
+                    try {
+                        const decodedFilters = JSON.parse(atob(filters));
+                        
+                        // Validate filter timestamp
+                        if (decodedFilters.timestamp && (Date.now() - decodedFilters.timestamp > 3600000)) {
+                            console.warn('Filters are stale, using partial restoration');
+                        }
+                        
+                        // Restore filters with improved timing
+                        restoreFiltersFromData(decodedFilters);
+                        
+                        // Clear URL params after processing
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    } catch (e) {
+                        console.error('Error restoring filters:', e);
+                        // Try sessionStorage fallback
+                        restoreDashboardState();
+                    }
+                });
+            } else {
+                // Try to restore from sessionStorage if no URL filters
+                requestAnimationFrame(() => {
+                    restoreDashboardState();
+                });
+            }
+            
+            // Load initial data for revenue tab if no filters restored
+            if (!filters) {
+                loadTopRevenue();
+            }
+            
+            // Update tab indicator on window resize
+            window.addEventListener('resize', updateTabIndicator);
+            
+            // Safety: Clear search timeouts on page unload
+            window.addEventListener('beforeunload', clearAllSearchTimeouts);
+            window.addEventListener('unload', clearAllSearchTimeouts);
+        });
+        
+        // Tab switching
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            // Update UI
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(tabName + '-tab').style.display = 'block';
+            document.getElementById(tabName + '-tab-btn').classList.add('active');
+            
+            // Update tab indicator
+            updateTabIndicator();
+        }
+        
+        // Update tab indicator position
+        function updateTabIndicator() {
+            const activeTab = document.querySelector('.tab-button.active');
+            const indicator = document.getElementById('tab-indicator');
+            
+            if (activeTab && indicator) {
+                const tabRect = activeTab.getBoundingClientRect();
+                const containerRect = activeTab.parentElement.getBoundingClientRect();
+                
+                indicator.style.width = `${tabRect.width}px`;
+                indicator.style.left = `${tabRect.left - containerRect.left}px`;
+            }
+        }
+        
+        // Toggle distance filter visibility
+        function toggleDistanceFilter() {
+            const enabled = document.getElementById('enable-distance-filter').checked;
+            document.getElementById('distance-location-group').style.display = enabled ? 'block' : 'none';
+            document.getElementById('distance-radius-group').style.display = enabled ? 'block' : 'none';
+            
+            // Adjust grid layout
+            const form = document.getElementById('revenue-search-form');
+            if (enabled) {
+                form.style.gridTemplateColumns = '1fr 1fr 150px 150px 150px 120px';
+            } else {
+                form.style.gridTemplateColumns = '1fr 150px 150px 120px';
+            }
+        }
+        
+        // Distance search handler
+        async function handleDistanceSearch(e) {
+            e.preventDefault();
+            
+            const searchBtn = document.getElementById('distance-search-btn');
+            const resultsDiv = document.getElementById('distance-results');
+            
+            // Get form values
+            const address = document.getElementById('distance-address').value;
+            const minBeds = document.getElementById('distance-min-beds').value;
+            const maxBeds = document.getElementById('distance-max-beds').value;
+            
+            // Show loading state
+            searchBtn.disabled = true;
+            searchBtn.innerHTML = 'Searching...';
+            resultsDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Searching properties near ' + address + '...</p></div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/properties/nearby`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        address: address,
+                        min_beds: parseInt(minBeds) || 0,
+                        max_beds: parseInt(maxBeds) || 10,
+                        radius_miles: 10,
+                        limit: 50
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    searchResults.distance = data;
+                    displayDistanceResults(data);
+                } else {
+                    resultsDiv.innerHTML = `<div class="error-message"><span class="error-icon">⚠️</span>Error: ${data.error}</div>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="error-message"><span class="error-icon">⚠️</span>Error: ${error.message}</div>`;
+            } finally {
+                searchBtn.disabled = false;
+                searchBtn.innerHTML = 'Search Properties';
+                // Reset global search flag to prevent triggerSearch conflicts
+                isSearching = false;
+            }
+        }
+        
+        // Revenue search handler
+        async function handleRevenueSearch(e) {
+            e.preventDefault();
+            await loadTopRevenue();
+        }
+        
+        // Load top revenue properties
+        async function loadTopRevenue() {
+            const searchBtn = document.getElementById('revenue-search-btn');
+            const resultsDiv = document.getElementById('revenue-results');
+            
+            // Get form values
+            const location = document.getElementById('revenue-location').value;
+            const minBeds = document.getElementById('revenue-min-beds').value;
+            const maxBeds = document.getElementById('revenue-max-beds').value;
+            
+            // Get distance filter values if enabled
+            const distanceEnabled = document.getElementById('enable-distance-filter').checked;
+            const distanceLocation = document.getElementById('revenue-distance-location').value;
+            const maxDistance = document.getElementById('revenue-max-distance').value;
+            
+            // Show loading state
+            searchBtn.disabled = true;
+            searchBtn.innerHTML = 'Loading...';
+            resultsDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading top revenue properties...</p></div>';
+            
+            try {
+                const requestBody = {
+                    location: location,
+                    min_beds: parseInt(minBeds) || 0,
+                    max_beds: parseInt(maxBeds) || 10,
+                    limit: 100
+                };
+                
+                // Add distance parameters if enabled
+                if (distanceEnabled && distanceLocation) {
+                    requestBody.distance_from = distanceLocation;
+                    requestBody.max_distance = parseInt(maxDistance) || 25;
+                }
+                
+                const response = await fetch(`${API_BASE}/api/properties/top-revenue`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    searchResults.revenue = data;
+                    displayRevenueResults(data);
+                } else {
+                    resultsDiv.innerHTML = `<div class="error-message"><span class="error-icon">⚠️</span>Error: ${data.error}</div>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="error-message"><span class="error-icon">⚠️</span>Error: ${error.message}</div>`;
+            } finally {
+                searchBtn.disabled = false;
+                searchBtn.innerHTML = 'Show Top 100';
+                // Reset global search flag to prevent triggerSearch conflicts
+                isSearching = false;
+            }
+        }
+        
+        // Display distance search results
+        function displayDistanceResults(data) {
+            const resultsDiv = document.getElementById('distance-results');
+            
+            if (!data.properties || data.properties.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🏠</div>
+                        <h3>No properties found</h3>
+                        <p>Try adjusting your search criteria</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Calculate summary stats
+            const avgRevenue = Math.round(data.properties.reduce((sum, p) => sum + p.metrics.revenue_annual, 0) / data.properties.length);
+            const avgOccupancy = Math.round(data.properties.reduce((sum, p) => sum + p.metrics.occupancy_rate, 0) / data.properties.length);
+            const avgADR = Math.round(data.properties.reduce((sum, p) => sum + p.metrics.adr, 0) / data.properties.length);
+            
+            resultsDiv.innerHTML = `
+                <div class="results-stats">
+                    <div class="stat-card">
+                        <div class="stat-value">${data.properties.length}</div>
+                        <div class="stat-label">Properties Found</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">$${(avgRevenue / 1000).toFixed(0)}K</div>
+                        <div class="stat-label">Avg Annual Revenue</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${avgOccupancy}%</div>
+                        <div class="stat-label">Avg Occupancy</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">$${avgADR}</div>
+                        <div class="stat-label">Avg Daily Rate</div>
+                    </div>
+                </div>
+                <div class="property-grid">
+                    ${data.properties.map(property => createPropertyCard(property, 'distance')).join('')}
+                </div>
+            `;
+        }
+        
+        // Display revenue results
+        function displayRevenueResults(data) {
+            const resultsDiv = document.getElementById('revenue-results');
+            
+            if (!data.properties || data.properties.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💰</div>
+                        <h3>No properties found</h3>
+                        <p>Try adjusting your search criteria</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            resultsDiv.innerHTML = `
+                <div class="results-stats">
+                    <div class="stat-card">
+                        <div class="stat-value">${data.properties.length}</div>
+                        <div class="stat-label">Top Properties</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">$${(data.properties[0].metrics.revenue_annual / 1000).toFixed(0)}K</div>
+                        <div class="stat-label">#1 Revenue</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">$${(data.properties[Math.floor(data.properties.length / 2)].metrics.revenue_annual / 1000).toFixed(0)}K</div>
+                        <div class="stat-label">Median Revenue</div>
+                    </div>
+                </div>
+                <div class="property-grid">
+                    ${data.properties.map(property => createPropertyCard(property, 'revenue')).join('')}
+                </div>
+            `;
+        }
+        
+        // Create property card HTML
+        function createPropertyCard(property, type) {
+            const performanceBadge = getPerformanceBadge(property.metrics.performance_tier);
+            const distanceBadge = type === 'distance' || property.location.distance_miles ? 
+                `<span class="distance-badge">${property.location.distance_miles} mi</span>` : '';
+            const rankBadge = property.rank ? `<div class="property-rank">${property.rank}</div>` : '';
+            
+            // Handle image display
+            const imageHtml = property.details.main_image_url ? 
+                `<img src="${property.details.main_image_url}" alt="${property.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                 <div class="property-image-placeholder" style="display:none;">🏠</div>` :
+                `<div class="property-image-placeholder">🏠</div>`;
+            
+            // Format property type properly
+            const propertyType = formatPropertyType(property.details.property_type);
+            
+            // Create badges array
+            const badges = [];
+            if (property.details.is_superhost) {
+                badges.push('<span class="badge superhost">⭐ Superhost</span>');
+            }
+            if (property.details.has_license) {
+                badges.push('<span class="badge licensed">✓ Licensed</span>');
+            }
+            
+            // Calculate progress bar widths
+            const revenueProgress = Math.min((property.metrics.revenue_annual / 200000) * 100, 100);
+            const occupancyProgress = property.metrics.occupancy_rate;
+            
+            return `
+                <div class="property-card" onclick="viewPropertyDetails('${property.property_id}', event)" data-property-id="${property.property_id}">
+                    ${rankBadge}
+                    <div class="comp-selection-overlay" onclick="event.stopPropagation()">
+                        <div class="selection-checkbox">
+                            <input type="checkbox" 
+                                   id="comp-${property.property_id}" 
+                                   onclick="event.stopPropagation()"
+                                   onchange="togglePropertySelection('${property.property_id}', event)">
+                            <label for="comp-${property.property_id}" class="checkbox-label" onclick="event.stopPropagation()">
+                                <div class="checkbox-custom">
+                                    <svg class="checkbox-icon" viewBox="0 0 24 24">
+                                        <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" fill="none"/>
+                                    </svg>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="property-image">
+                        ${imageHtml}
+                        <div class="revenue-sparkline" id="sparkline-${property.property_id}">
+                            <canvas class="sparkline-canvas"></canvas>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-header">
+                            <h3 class="card-title">${property.title}</h3>
+                            <div class="card-location">
+                                <span>📍 ${property.location.city}, ${property.location.state}</span>
+                                ${distanceBadge}
+                            </div>
+                        </div>
+                        <div class="card-metrics">
+                            <div class="metric">
+                                <div class="metric-value revenue">$${(property.metrics.revenue_annual / 1000).toFixed(0)}K</div>
+                                <div class="metric-label">Revenue</div>
+                                <div class="metric-progress">
+                                    <div class="metric-progress-bar revenue" style="width: ${revenueProgress}%"></div>
+                                </div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value occupancy">${property.metrics.occupancy_rate}%</div>
+                                <div class="metric-label">Occupancy</div>
+                                <div class="metric-progress">
+                                    <div class="metric-progress-bar occupancy" style="width: ${occupancyProgress}%"></div>
+                                </div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value adr">$${property.metrics.adr}</div>
+                                <div class="metric-label">ADR</div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="property-details">
+                                <span>🏠 ${property.details.bedrooms}BR ${propertyType}</span>
+                            </div>
+                            <div class="property-badges">
+                                ${performanceBadge}
+                                ${badges.join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Format property type helper
+        function formatPropertyType(type) {
+            if (!type) return 'Property';
+            if (type.includes('6-20 Units')) return 'Multi-Unit';
+            if (type.includes('21-50 Units')) return 'Large Multi-Unit';
+            if (type.includes('50+ Units')) return 'Complex';
+            return type;
+        }
+        
+        // Get performance badge HTML
+        function getPerformanceBadge(tier) {
+            const badges = {
+                'top_10': '<span class="performance-badge top-10">🏆 Top 10%</span>',
+                'top_25': '<span class="performance-badge top-25">⭐ Top 25%</span>',
+                'above_average': '<span class="performance-badge above-average">↑ Above Avg</span>',
+                'average': '<span class="performance-badge average">→ Average</span>',
+                'below_average': '<span class="performance-badge average">↓ Below Avg</span>'
+            };
+            return badges[tier] || '';
+        }
+        
+        // View property details
+        function viewPropertyDetails(propertyId, event) {
+            // Safety check for checkbox clicks
+            if (event && event.target) {
+                if (event.target.closest('.comp-selection-overlay')) {
+                    return; // Don't navigate if clicking selection area
+                }
+            }
+            
+            // Save complete dashboard state before navigation
+            saveDashboardState();
+            
+            // Encode current filter state based on active tab
+            const currentFilters = {
+                tab: currentTab,
+                timestamp: Date.now() // Add timestamp for freshness check
+            };
+            
+            if (currentTab === 'distance') {
+                // Capture ALL distance tab fields
+                currentFilters.address = document.getElementById('distance-address').value;
+                currentFilters.distanceMinBeds = document.getElementById('distance-min-beds').value;
+                currentFilters.distanceMaxBeds = document.getElementById('distance-max-beds').value;
+            } else if (currentTab === 'revenue') {
+                // Capture ALL revenue tab fields
+                currentFilters.location = document.getElementById('revenue-location').value;
+                currentFilters.revenueMinBeds = document.getElementById('revenue-min-beds').value;
+                currentFilters.revenueMaxBeds = document.getElementById('revenue-max-beds').value;
+                currentFilters.enableDistance = document.getElementById('enable-distance-filter').checked;
+                currentFilters.distanceLocation = document.getElementById('revenue-distance-location').value;
+                currentFilters.maxDistance = document.getElementById('revenue-max-distance').value;
+            }
+            
+            const encodedFilters = btoa(JSON.stringify(currentFilters));
+            
+            // Navigate to property page with correct return URL
+            const currentPath = window.location.pathname || '/';
+            window.location.href = `/property/${propertyId}?from=${encodeURIComponent(currentPath)}&filters=${encodedFilters}`;
+        }
+        
+        // Open property detail modal
+        async function openPropertyModal(propertyId) {
+            const modal = document.getElementById('property-modal');
+            const modalLoading = document.getElementById('modal-loading');
+            const modalContent = document.getElementById('modal-content');
+            const modalTitle = document.getElementById('modal-title');
+            
+            // Show modal with loading state
+            modal.style.display = 'flex';
+            modalLoading.style.display = 'block';
+            modalContent.style.display = 'none';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/properties/${propertyId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    modalTitle.textContent = data.property.Listing_Title || `Property ${propertyId}`;
+                    modalContent.innerHTML = generatePropertyDetailHTML(data);
+                    modalLoading.style.display = 'none';
+                    modalContent.style.display = 'block';
+                    
+                    // Initialize charts after DOM is ready
+                    setTimeout(() => {
+                        if (data.monthly_data && data.monthly_data.length > 0) {
+                            createRevenueChart(data.monthly_data);
+                            createOccupancyChart(data.monthly_data);
+                            createSeasonalChart(data.seasonal_performance);
+                        }
+                    }, 100);
+                    
+                    // Initialize expandable sections
+                    initializeExpandables();
+                } else {
+                    modalContent.innerHTML = `<div class="error-message">Error loading property: ${data.error}</div>`;
+                    modalLoading.style.display = 'none';
+                    modalContent.style.display = 'block';
+                }
+            } catch (error) {
+                modalContent.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
+                modalLoading.style.display = 'none';
+                modalContent.style.display = 'block';
+            }
+        }
+        
+        // Close modal
+        function closePropertyModal() {
+            document.getElementById('property-modal').style.display = 'none';
+        }
+        
+        // Generate property detail HTML
+        function generatePropertyDetailHTML(data) {
+            const { property, stats, monthly_data, seasonal_performance } = data;
+            
+            // Format currency
+            const formatCurrency = (value) => `$${(value || 0).toLocaleString()}`;
+            const formatPercent = (value) => `${((value || 0) * 100).toFixed(1)}%`;
+            
+            return `
+                <div class="property-hero">
+                    <div class="property-image-section">
+                        ${property.Listing_Main_Image_URL ? 
+                            `<img src="${property.Listing_Main_Image_URL}" alt="${property.Listing_Title}">` :
+                            `<div class="property-image-placeholder" style="height: 300px;">🏠</div>`
+                        }
+                    </div>
+                    <div class="property-info-section">
+                        <h3>${property.Listing_Title || 'Property Details'}</h3>
+                        <div class="property-location">
+                            📍 ${property.City}, ${property.State} ${property.Postal_Code || ''}
+                            ${property.Neighborhood ? `• ${property.Neighborhood}` : ''}
+                        </div>
+                        <div class="quick-stats">
+                            <div class="quick-stat">
+                                <div class="quick-stat-value">${formatCurrency(stats.total_revenue)}</div>
+                                <div class="quick-stat-label">Total Revenue</div>
+                            </div>
+                            <div class="quick-stat">
+                                <div class="quick-stat-value">${formatPercent(stats.avg_occupancy)}</div>
+                                <div class="quick-stat-label">Avg Occupancy</div>
+                            </div>
+                            <div class="quick-stat">
+                                <div class="quick-stat-value">${formatCurrency(stats.avg_adr)}</div>
+                                <div class="quick-stat-label">Avg Daily Rate</div>
+                            </div>
+                            <div class="quick-stat">
+                                <div class="quick-stat-value">${stats.total_reservations || 0}</div>
+                                <div class="quick-stat-label">Total Bookings</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tabs-container">
+                    <div class="tab-nav">
+                        <button class="tab-nav-item active" onclick="switchDetailTab('performance')">Performance</button>
+                        <button class="tab-nav-item" onclick="switchDetailTab('monthly')">Monthly Data</button>
+                        <button class="tab-nav-item" onclick="switchDetailTab('details')">Property Info</button>
+                    </div>
+                </div>
+                
+                <div class="tab-content">
+                    <!-- Performance Tab -->
+                    <div id="performance-tab" class="tab-content-item active">
+                        <div class="chart-container">
+                            <h4>Revenue Trend</h4>
+                            <canvas id="revenue-chart" height="80"></canvas>
+                        </div>
+                        
+                        <div class="chart-container">
+                            <h4>Occupancy Rate Trend</h4>
+                            <canvas id="occupancy-chart" height="80"></canvas>
+                        </div>
+                        
+                        ${seasonal_performance && seasonal_performance.length > 0 ? `
+                        <div class="chart-container">
+                            <h4>Seasonal Performance</h4>
+                            <canvas id="seasonal-chart" height="80"></canvas>
+                        </div>
+                        ` : ''}
+                        
+                        ${stats.optimization_score ? `
+                        <div class="chart-container">
+                            <h4>Revenue Optimization</h4>
+                            <p>This property is capturing <strong>${formatPercent(stats.optimization_score)}</strong> of its revenue potential.</p>
+                            <p>Total missed opportunity: <strong>${formatCurrency(stats.total_revenue_potential - stats.total_revenue)}</strong></p>
+                        </div>
+                        ` : ''}
+                    </div>
+                    
+                    <!-- Monthly Data Tab -->
+                    <div id="monthly-tab" class="tab-content-item">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Revenue</th>
+                                    <th>Potential</th>
+                                    <th>Occupancy</th>
+                                    <th>ADR</th>
+                                    <th>Bookings</th>
+                                    <th>Available</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${monthly_data.map(month => `
+                                    <tr>
+                                        <td>${new Date(month.month).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })}</td>
+                                        <td>${formatCurrency(month.revenue)}</td>
+                                        <td>${formatCurrency(month.revenue_potential)}</td>
+                                        <td>${formatPercent(month.occupancy_rate)}</td>
+                                        <td>${formatCurrency(month.adr)}</td>
+                                        <td>${month.reservations}</td>
+                                        <td>${month.available_days}</td>
+                                        <td>${month.active ? '✅' : '❌'}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Property Details Tab -->
+                    <div id="details-tab" class="tab-content-item">
+                        <div class="property-details-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                            <div>
+                                <h4>Basic Information</h4>
+                                <table class="info-table" style="width: 100%;">
+                                    <tr><td><strong>Property Type:</strong></td><td>${property.Property_Type}</td></tr>
+                                    <tr><td><strong>Listing Type:</strong></td><td>${property.Listing_Type}</td></tr>
+                                    <tr><td><strong>Bedrooms:</strong></td><td>${property.Bedrooms}</td></tr>
+                                    <tr><td><strong>Bathrooms:</strong></td><td>${property.Bathrooms || 'N/A'}</td></tr>
+                                    <tr><td><strong>Max Guests:</strong></td><td>${property.Max_Guests || 'N/A'}</td></tr>
+                                    <tr><td><strong>Minimum Stay:</strong></td><td>${property.Minimum_Stay || 'N/A'} nights</td></tr>
+                                </table>
+                                
+                                <h4 style="margin-top: 20px;">Amenities</h4>
+                                <div>
+                                    ${property.Has_Pool ? '🏊 Pool' : ''}
+                                    ${property.Has_Hot_Tub ? '🛁 Hot Tub' : ''}
+                                    ${property.Has_Air_Con ? '❄️ AC' : ''}
+                                    ${property.Has_Kitchen ? '🍳 Kitchen' : ''}
+                                    ${property.Has_Parking ? '🚗 Parking' : ''}
+                                    ${property.Pets_Allowed ? '🐕 Pets OK' : ''}
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4>Host Information</h4>
+                                <table class="info-table" style="width: 100%;">
+                                    <tr><td><strong>Host Type:</strong></td><td>${property.Host_Type || 'N/A'}</td></tr>
+                                    <tr><td><strong>Superhost:</strong></td><td>${property.Airbnb_Superhost ? '⭐ Yes' : 'No'}</td></tr>
+                                    <tr><td><strong>Response Rate:</strong></td><td>${property.Response_Rate || 'N/A'}</td></tr>
+                                    <tr><td><strong>Overall Rating:</strong></td><td>${property.Overall_Rating ? property.Overall_Rating + '/5' : 'N/A'}</td></tr>
+                                    <tr><td><strong>Total Reviews:</strong></td><td>${property.Number_of_Reviews || 0}</td></tr>
+                                    <tr><td><strong>Licensed:</strong></td><td>${property.License ? '✅ Yes' : '❌ No'}</td></tr>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="expandable-section">
+                            <div class="expandable-header" onclick="toggleExpandable(this)">
+                                <span>Technical Details</span>
+                                <span>▼</span>
+                            </div>
+                            <div class="expandable-content">
+                                <table class="info-table" style="width: 100%;">
+                                    <tr><td><strong>Property ID:</strong></td><td>${property.Property_ID}</td></tr>
+                                    <tr><td><strong>Airbnb ID:</strong></td><td>${property.Airbnb_Property_ID || 'N/A'}</td></tr>
+                                    <tr><td><strong>VRBO ID:</strong></td><td>${property.Vrbo_Property_ID || 'N/A'}</td></tr>
+                                    <tr><td><strong>Property Manager:</strong></td><td>${property.Property_Manager || 'N/A'}</td></tr>
+                                    <tr><td><strong>Created Date:</strong></td><td>${property.Created_Date || 'N/A'}</td></tr>
+                                    <tr><td><strong>Coordinates:</strong></td><td>${property.Latitude}, ${property.Longitude}</td></tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Switch detail tabs
+        function switchDetailTab(tabName) {
+            document.querySelectorAll('.tab-nav-item').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content-item').forEach(tab => tab.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+        
+        // Toggle expandable sections
+        function toggleExpandable(header) {
+            const content = header.nextElementSibling;
+            content.classList.toggle('expanded');
+            header.querySelector('span:last-child').textContent = content.classList.contains('expanded') ? '▲' : '▼';
+        }
+        
+        // Initialize expandables
+        function initializeExpandables() {
+            document.querySelectorAll('.expandable-header').forEach(header => {
+                header.addEventListener('click', () => toggleExpandable(header));
+            });
+        }
+        
+        // Create revenue chart (simple implementation - in production use Chart.js)
+        function createRevenueChart(monthlyData) {
+            const canvas = document.getElementById('revenue-chart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = canvas.offsetWidth;
+            const height = canvas.height = 240;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            // Simple line chart
+            const data = monthlyData.slice(-12).reverse(); // Last 12 months
+            const maxRevenue = Math.max(...data.map(d => d.revenue));
+            const padding = 40;
+            
+            // Draw axes
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.beginPath();
+            ctx.moveTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+            
+            // Draw data
+            ctx.strokeStyle = '#1a73e8';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            data.forEach((month, i) => {
+                const x = padding + (i / (data.length - 1)) * (width - 2 * padding);
+                const y = height - padding - (month.revenue / maxRevenue) * (height - 2 * padding);
+                
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+                
+                // Draw point
+                ctx.fillStyle = '#1a73e8';
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+            
+            ctx.stroke();
+            
+            // Add labels
+            ctx.fillStyle = '#666';
+            ctx.font = '12px sans-serif';
+            data.forEach((month, i) => {
+                if (i % 3 === 0) { // Show every 3rd month
+                    const x = padding + (i / (data.length - 1)) * (width - 2 * padding);
+                    const date = new Date(month.month);
+                    const label = date.toLocaleDateString('en-US', { month: 'short' });
+                    ctx.fillText(label, x - 15, height - 20);
+                }
+            });
+        }
+        
+        // Create occupancy chart
+        function createOccupancyChart(monthlyData) {
+            const canvas = document.getElementById('occupancy-chart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = canvas.offsetWidth;
+            const height = canvas.height = 240;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            // Similar implementation to revenue chart but with occupancy data
+            const data = monthlyData.slice(-12).reverse();
+            const padding = 40;
+            
+            // Draw axes
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.beginPath();
+            ctx.moveTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+            
+            // Draw data
+            ctx.fillStyle = 'rgba(76, 175, 80, 0.3)';
+            ctx.strokeStyle = '#4caf50';
+            ctx.lineWidth = 2;
+            
+            data.forEach((month, i) => {
+                const x = padding + (i / (data.length - 1)) * (width - 2 * padding);
+                const y = height - padding - (month.occupancy_rate) * (height - 2 * padding);
+                const barWidth = (width - 2 * padding) / data.length * 0.8;
+                
+                // Draw bar
+                ctx.fillRect(x - barWidth/2, y, barWidth, height - padding - y);
+            });
+        }
+        
+        // Create seasonal chart
+        function createSeasonalChart(seasonalData) {
+            const canvas = document.getElementById('seasonal-chart');
+            if (!canvas || !seasonalData || seasonalData.length === 0) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = canvas.offsetWidth;
+            const height = canvas.height = 240;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            // Draw seasonal performance bars
+            const padding = 40;
+            const barWidth = (width - 2 * padding) / seasonalData.length * 0.8;
+            const maxRevenue = Math.max(...seasonalData.map(d => d.avg_revenue));
+            
+            seasonalData.forEach((season, i) => {
+                const x = padding + (i / seasonalData.length) * (width - 2 * padding) + barWidth/2;
+                const barHeight = (season.avg_revenue / maxRevenue) * (height - 2 * padding);
+                const y = height - padding - barHeight;
+                
+                // Draw bar
+                ctx.fillStyle = '#ff9800';
+                ctx.fillRect(x - barWidth/2, y, barWidth, barHeight);
+                
+                // Draw label
+                ctx.fillStyle = '#666';
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(season.month_name.substr(0, 3), x, height - 20);
+            });
+        }
+
+        // ==============================================================================
+        // COMPARABLE PROPERTIES SELECTION - SAFE ADDITION
+        // ==============================================================================
+
+        // Selection state management
+        let selectedComps = JSON.parse(localStorage.getItem('selected_comps') || '[]');
+        const MAX_SELECTIONS = 10;
+
+        // Initialize selection panel
+        function initializeSelectionPanel() {
+            const selectionPanel = document.createElement('div');
+            selectionPanel.className = 'selection-panel';
+            selectionPanel.innerHTML = `
+                <div class="selection-info">
+                    <span class="selection-counter">0/${MAX_SELECTIONS} selected</span>
+                    <button class="clear-selections" onclick="clearAllSelections()">Clear All</button>
+                </div>
+                <button class="analyze-button" onclick="analyzeComparables()" disabled>
+                    Generate 2025 Annual Projections
+                </button>
+            `;
+            document.body.appendChild(selectionPanel);
+            updateSelectionPanel();
+        }
+
+        // Toggle property selection
+        function togglePropertySelection(propertyId, event) {
+            if (event) {
+                event.stopPropagation(); // Prevent card click
+                event.preventDefault(); // Also prevent default
+                
+                // Stop immediate propagation for extra safety
+                if (event.stopImmediatePropagation) {
+                    event.stopImmediatePropagation();
+                }
+            }
+            
+            const index = selectedComps.indexOf(propertyId);
+            
+            if (index === -1) {
+                // Add selection
+                if (selectedComps.length < MAX_SELECTIONS) {
+                    selectedComps.push(propertyId);
+                    updateSelectionUI(propertyId, true);
+                }
+            } else {
+                // Remove selection
+                selectedComps.splice(index, 1);
+                updateSelectionUI(propertyId, false);
+            }
+            
+            updateSelectionPanel();
+            saveSelections();
+        }
+
+        // Update UI for individual property
+        function updateSelectionUI(propertyId, isSelected) {
+            // If no propertyId provided, update all selections from selectedComps array
+            if (!propertyId) {
+                selectedComps.forEach(id => {
+                    const card = document.querySelector(`[data-property-id="${id}"]`);
+                    if (card) {
+                        card.classList.add('selected');
+                        const checkbox = card.querySelector('input[type="checkbox"]');
+                        if (checkbox) {
+                            checkbox.checked = true;
+                        }
+                    }
+                });
+                updateSelectionPanel();
+                return;
+            }
+            
+            // Original single property update logic
+            const card = document.querySelector(`[data-property-id="${propertyId}"]`);
+            if (card) {
+                card.classList.toggle('selected', isSelected);
+                const checkbox = card.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                    checkbox.checked = isSelected;
+                }
+            }
+            
+            // Update disabled state for unselected checkboxes
+            const allCheckboxes = document.querySelectorAll('.selection-checkbox input[type="checkbox"]');
+            allCheckboxes.forEach(checkbox => {
+                if (!checkbox.checked) {
+                    checkbox.disabled = selectedComps.length >= MAX_SELECTIONS;
+                    checkbox.parentElement.classList.toggle('disabled', selectedComps.length >= MAX_SELECTIONS);
+                }
+            });
+        }
+
+        // Update selection panel
+        function updateSelectionPanel() {
+            const panel = document.querySelector('.selection-panel');
+            if (panel) {
+                const counter = panel.querySelector('.selection-counter');
+                const analyzeBtn = panel.querySelector('.analyze-button');
+                
+                counter.textContent = `${selectedComps.length}/${MAX_SELECTIONS} selected`;
+                counter.classList.toggle('active', selectedComps.length > 0);
+                analyzeBtn.disabled = selectedComps.length < 2;
+                
+                panel.classList.toggle('active', selectedComps.length > 0);
+            }
+        }
+
+        // Clear all selections
+        function clearAllSelections() {
+            const oldSelections = [...selectedComps];
+            selectedComps = [];
+            
+            oldSelections.forEach(propertyId => {
+                updateSelectionUI(propertyId, false);
+            });
+            
+            updateSelectionPanel();
+            saveSelections();
+        }
+
+        // Save selections to localStorage
+        function saveSelections() {
+            localStorage.setItem('selected_comps', JSON.stringify(selectedComps));
+        }
+
+        // Analyze comparables
+        async function analyzeComparables() {
+            if (selectedComps.length < 2) return;
+            
+            const analyzeBtn = document.querySelector('.analyze-button');
+            const originalText = analyzeBtn.textContent;
+            
+            // Show loading state
+            analyzeBtn.classList.add('loading');
+            analyzeBtn.disabled = true;
+            
+            try {
+                const response = await fetch('/api/comps/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        property_ids: selectedComps,
+                        analysis_type: 'standard'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Store analysis results with storage manager
+                    const stored = window.storageManager.saveData('analysis_results', data);
+                    
+                    if (!stored) {
+                        console.warn('Failed to save analysis results to localStorage');
+                    }
+                    
+                    // Navigate to analysis page
+                    window.location.href = '/analysis';
+                } else {
+                    showError(data.error || 'Analysis failed');
+                }
+            } catch (error) {
+                console.error('Analysis error:', error);
+                showError('Network error during analysis. Please try again.');
+            } finally {
+                analyzeBtn.classList.remove('loading');
+                analyzeBtn.disabled = selectedComps.length < 2;
+                analyzeBtn.textContent = originalText;
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            // Create temporary error notification
+            const errorDiv = document.createElement('div');
+            errorDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #EF4444, #DC2626);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+                z-index: 9999;
+                font-weight: 600;
+                max-width: 400px;
+            `;
+            errorDiv.textContent = message;
+            
+            document.body.appendChild(errorDiv);
+            
+            // Remove after 5 seconds
+            setTimeout(() => {
+                if (errorDiv.parentElement) {
+                    errorDiv.remove();
+                }
+            }, 5000);
+        }
+
+        // Restore selections on page load
+        function restoreSelections() {
+            selectedComps.forEach(propertyId => {
+                updateSelectionUI(propertyId, true);
+            });
+            updateSelectionPanel();
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSelectionPanel();
+            
+            // Restore selections after a short delay to ensure property cards are rendered
+            setTimeout(restoreSelections, 500);
+        });
+    </script>
+
+    <!-- Selection Panel (will be moved by JavaScript) -->
+    <div id="selection-panel-placeholder"></div>
+</body>
+</html>
